@@ -3,5 +3,5 @@ import 'package:lawyer_app/src/controllers/bottom_navigation_controller/bottom_n
 
 final bottomNavigationProvider =
     StateNotifierProvider<BottomNavigationController, int>((ref) {
-  return BottomNavigationController();
-});
+      return BottomNavigationController();
+    });

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
+import 'package:lawyer_app/src/models/bottom_navigation_model/bottom_nav_item.dart';
 import 'package:lawyer_app/src/providers/bottom_navigation_provider/bottom_navigation_provider.dart';
+import 'package:lawyer_app/src/widgets/common_widgets/custom_bottom_navbar.dart';
 import 'package:sizer/sizer.dart';
 
 class BottomNavigationScreen extends ConsumerStatefulWidget {
-  const BottomNavigationScreen({super.key});
+  final int initialIndex;
+  const BottomNavigationScreen({super.key, this.initialIndex = 0});
 
   @override
   ConsumerState<BottomNavigationScreen> createState() =>
@@ -27,82 +30,64 @@ class _BottomNavigationScreenState
     final currentIndex = ref.watch(bottomNavigationProvider);
 
     return Scaffold(
+      extendBody: true, // to make FAB overlap cleanly
       body: _screens[currentIndex],
 
-      // 🎥 Floating Action Button (Video)
-      floatingActionButton: FloatingActionButton(
-        onPressed: () =>
-            ref.read(bottomNavigationProvider.notifier).setIndex(2),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        shape: const CircleBorder(),
-        child: Ink(
-          padding: EdgeInsets.all(2.w),
-          decoration: const BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: AppColors.buttonGradientColor,
-          ),
-          child: const Icon(Icons.video_call, color: Colors.black, size: 32),
-        ),
-      ),
-
-      // 📍 Center position, slightly lifted
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-      // 🟡 Bottom bar
-      bottomNavigationBar: _buildBottomNavBar(currentIndex),
-    );
-  }
-
-  Widget _buildBottomNavBar(int currentIndex) {
-    return BottomAppBar(
-      surfaceTintColor: AppColors.blackColor,
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 3.h,
-      color: Colors.transparent,
-      child: Container(
-        width: double.infinity,
-        decoration: BoxDecoration(gradient: AppColors.buttonGradientColor),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _navItem(Icons.home, "Home", 0, currentIndex),
-            _navItem(Icons.chat_bubble_outline, "Chat", 1, currentIndex),
-            const SizedBox(width: 50), // space for FAB notch
-            _navItem(Icons.search, "Search", 3, currentIndex),
-            _navItem(
-              Icons.notifications_none,
-              "Notifications",
-              4,
-              currentIndex,
+      floatingActionButton: Container(
+        height: 8.h,
+        width: 8.h,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: AppColors.buttonGradientColor,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
             ),
           ],
         ),
+        child: FloatingActionButton(
+          onPressed: () =>
+              ref.read(bottomNavigationProvider.notifier).setIndex(2),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          shape: const CircleBorder(),
+          child: Icon(Icons.videocam, color: Colors.black, size: 3.5.h),
+        ),
       ),
-    );
-  }
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.miniCenterDocked,
 
-  Widget _navItem(IconData icon, String label, int index, int currentIndex) {
-    final bool isActive = index == currentIndex;
-
-    return GestureDetector(
-      onTap: () => ref.read(bottomNavigationProvider.notifier).setIndex(index),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            icon,
-            color: isActive ? Colors.black : Colors.black.withOpacity(0.6),
-            size: 24,
+      bottomNavigationBar: CustomBottomNavbar(
+        currentIndex: currentIndex,
+        onTap: (index) =>
+            ref.read(bottomNavigationProvider.notifier).setIndex(index),
+        items: [
+          BottomNavItem(
+            activeIcon: Icons.home,
+            inactiveIcon: Icons.home_outlined,
+            label: 'Home',
           ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isActive ? Colors.black : Colors.black.withOpacity(0.6),
-              fontSize: 12,
-              fontWeight: isActive ? FontWeight.bold : FontWeight.w400,
-            ),
+          BottomNavItem(
+            activeIcon: Icons.chat,
+            inactiveIcon: Icons.chat_outlined,
+            label: 'Chat',
+          ),
+          BottomNavItem(
+            activeIcon: Icons.video_call,
+            inactiveIcon: Icons.video_call_outlined,
+            label: '',
+          ),
+          BottomNavItem(
+            activeIcon: Icons.search,
+            inactiveIcon: Icons.search_outlined,
+            label: 'Search',
+          ),
+          BottomNavItem(
+            activeIcon: Icons.notifications,
+            inactiveIcon: Icons.notifications_outlined,
+            label: 'Notifications',
           ),
         ],
       ),

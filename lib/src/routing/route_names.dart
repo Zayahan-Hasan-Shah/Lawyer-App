@@ -1,4 +1,4 @@
-class RouteNames{
+class RouteNames {
   static const splashScreen = '/splashscreen';
   static const onboardingScreen = '/onboardingscreen';
   static const loginScreen = '/loginscreen';
@@ -7,4 +7,9 @@ class RouteNames{
   static const otpScreen = '/otpscreen';
   static const resetPasswordScreen = '/resetpasswordscreen';
   static const bottomNavigationScreen = '/bottomnavigationscreen';
+  static const homeScreen = '/homescreen';
+  static const chatScreen = '/chatscreen';
+  static const videoScreen = '/videoscreen';
+  static const searchScreen = '/searchscreen';
+  static const notificationScreen = '/notificationscreen';
 }

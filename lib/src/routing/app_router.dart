@@ -6,6 +6,11 @@ import 'package:lawyer_app/src/views/auth/otp_screen.dart';
 import 'package:lawyer_app/src/views/auth/reset_password_screen.dart';
 import 'package:lawyer_app/src/views/auth/signup_screen.dart';
 import 'package:lawyer_app/src/views/bottom_navigation/bottom_navigation_screen.dart';
+import 'package:lawyer_app/src/views/bottom_navigation/screens/chat/chat_screen.dart';
+import 'package:lawyer_app/src/views/bottom_navigation/screens/home/home_screen.dart';
+import 'package:lawyer_app/src/views/bottom_navigation/screens/notifications/notificaiotn_screen.dart';
+import 'package:lawyer_app/src/views/bottom_navigation/screens/search/search_screen.dart';
+import 'package:lawyer_app/src/views/bottom_navigation/screens/video/video_screen.dart';
 import 'package:lawyer_app/src/views/on_boarding/on_boarding_screen.dart';
 import 'package:lawyer_app/src/views/on_boarding/splash_screen.dart';
 
@@ -52,6 +57,31 @@ class AppRouter {
         path: RouteNames.bottomNavigationScreen,
         name: RouteNames.bottomNavigationScreen,
         builder: (context, state) => const BottomNavigationScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.homeScreen,
+        name: RouteNames.homeScreen,
+        builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.chatScreen,
+        name: RouteNames.chatScreen,
+        builder: (context, state) => const ChatScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.videoScreen,
+        name: RouteNames.videoScreen,
+        builder: (context, state) => const VideoScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.searchScreen,
+        name: RouteNames.searchScreen,
+        builder: (context, state) => const SearchScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.notificationScreen,
+        name: RouteNames.notificationScreen,
+        builder: (context, state) => const NotificaiotnScreen(),
       ),
     ],
   );

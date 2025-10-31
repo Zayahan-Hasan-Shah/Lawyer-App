@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/models/bottom_navigation_model/bottom_nav_item.dart';
 import 'package:lawyer_app/src/providers/bottom_navigation_provider/bottom_navigation_provider.dart';
+import 'package:lawyer_app/src/views/bottom_navigation/screens/home/home_screen.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_bottom_navbar.dart';
 import 'package:sizer/sizer.dart';
 
@@ -18,7 +19,7 @@ class BottomNavigationScreen extends ConsumerStatefulWidget {
 class _BottomNavigationScreenState
     extends ConsumerState<BottomNavigationScreen> {
   final List<Widget> _screens = [
-    const Center(child: Text('Home Screen')),
+    HomeScreen(),
     const Center(child: Text('Chat Screen')),
     const Center(child: Text('Video Screen')),
     const Center(child: Text('Search Screen')),

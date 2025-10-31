@@ -8,4 +8,7 @@ class AppAssets {
   static const familyLawyerImage = 'assets/images/family_lawyers.png';
   static const businessLawyerImage = 'assets/images/business_lawyers.png';
   static const immigrationLawyerImage = 'assets/images/immigration_lawyers.png';
+  static const taxLawyerImage = 'assets/images/tax_lawyers.png';
+
+  static const drawerIconImage = 'assets/icons/drawer_icon.png';
 }

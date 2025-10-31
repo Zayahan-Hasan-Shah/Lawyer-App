@@ -17,6 +17,8 @@ class AppColors {
   static const iconColor = Color(0xFFDAAB1C);
   // light description text color
   static const lightDescriptionTextColor = Color(0xFF948B94);
+  // case type color
+  static const caseTypeBackgroundColor = Color(0xFFF1CF4E);
 
   static const buttonGradientColor = LinearGradient(
     colors: [

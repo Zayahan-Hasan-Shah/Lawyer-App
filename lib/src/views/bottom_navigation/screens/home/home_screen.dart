@@ -6,6 +6,7 @@ import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/core/utils/home_screen_data/home_screen_data.dart';
 import 'package:lawyer_app/src/providers/home_screen_provider/search_provider.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_appbar.dart';
+import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:lawyer_app/src/widgets/home_widgets/home_screen_widget.dart';
 import 'package:lawyer_app/src/widgets/home_widgets/search_widget.dart';
 import 'package:sizer/sizer.dart';
@@ -36,8 +37,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SearchWidget(),
             SizedBox(height: 3.h),
+            SearchWidget(),
+            SizedBox(height: 1.h),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: EdgeInsetsGeometry.only(left: 1.h),
+                child: TextButton(
+                  onPressed: () {},
+                  child: CustomText(
+                    title: "View All",
+                    color: Colors.white,
+                    fontSize: 18.sp,
+                    weight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 1.h),
             Expanded(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 2.h),

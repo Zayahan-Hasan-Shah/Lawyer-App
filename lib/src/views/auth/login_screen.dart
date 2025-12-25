@@ -82,6 +82,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 1.h),
+        child: TextButton(
+          onPressed: () {
+            context.go(RouteNames.incomingUserScreen);
+          },
+          child: CustomText(
+            title: 'Back to Main Menu',
+            color: AppColors.hintTextColor,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(2.h),

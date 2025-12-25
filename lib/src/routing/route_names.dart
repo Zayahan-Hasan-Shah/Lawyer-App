@@ -1,6 +1,7 @@
 class RouteNames {
   static const splashScreen = '/splashscreen';
   static const onboardingScreen = '/onboardingscreen';
+  static const incomingUserScreen = '/incominguserscreen';
   static const loginScreen = '/loginscreen';
   static const signupScreen = '/signupscreen';
   static const forgotPasswordScreen = '/forgotpasswordscreen';
@@ -12,4 +13,6 @@ class RouteNames {
   static const videoScreen = '/videoscreen';
   static const searchScreen = '/searchscreen';
   static const notificationScreen = '/notificationscreen';
+  static const lawyerScreen = '/lawyerscreen';
+  static const chatDetailScreen = '/chatdetailscreen';
 }

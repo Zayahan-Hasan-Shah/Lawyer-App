@@ -14,20 +14,20 @@ class SearchLawyerWidget extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            flex: 2,
-            child: SizedBox(
-              height: 55.h,
-              width: double.infinity,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Image.asset(AppAssets.onboardingImage1, fit: BoxFit.cover),
-                  Container(color: AppColors.backgroundColor.withOpacity(0.1)),
-                ],
+            Expanded(
+              flex: 2,
+              child: SizedBox(
+                height: 55.h,
+                width: double.infinity,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.asset(AppAssets.onboardingImage1, fit: BoxFit.cover),
+                    Container(color: AppColors.backgroundColor.withOpacity(0.1)),
+                  ],
+                ),
               ),
             ),
-          ),
           SizedBox(height: 2.h),
           Expanded(
             child: Column(

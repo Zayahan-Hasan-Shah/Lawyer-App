@@ -1,11 +1,14 @@
 import 'package:go_router/go_router.dart';
+import 'package:lawyer_app/src/models/lawyer_model/lawyer_model.dart';
 import 'package:lawyer_app/src/routing/route_names.dart';
 import 'package:lawyer_app/src/views/auth/forgot_password_screen.dart';
+import 'package:lawyer_app/src/views/auth/incoming_user_type_screen.dart';
 import 'package:lawyer_app/src/views/auth/login_screen.dart';
 import 'package:lawyer_app/src/views/auth/otp_screen.dart';
 import 'package:lawyer_app/src/views/auth/reset_password_screen.dart';
 import 'package:lawyer_app/src/views/auth/signup_screen.dart';
 import 'package:lawyer_app/src/views/bottom_navigation/bottom_navigation_screen.dart';
+import 'package:lawyer_app/src/views/bottom_navigation/screens/chat/chat.dart';
 import 'package:lawyer_app/src/views/bottom_navigation/screens/chat/chat_screen.dart';
 import 'package:lawyer_app/src/views/bottom_navigation/screens/home/home_screen.dart';
 import 'package:lawyer_app/src/views/bottom_navigation/screens/notifications/notificaiotn_screen.dart';
@@ -13,6 +16,7 @@ import 'package:lawyer_app/src/views/bottom_navigation/screens/search/search_scr
 import 'package:lawyer_app/src/views/bottom_navigation/screens/video/video_screen.dart';
 import 'package:lawyer_app/src/views/on_boarding/on_boarding_screen.dart';
 import 'package:lawyer_app/src/views/on_boarding/splash_screen.dart';
+import 'package:lawyer_app/src/views/profile/lawyer_profile_screen.dart';
 
 class AppRouter {
   static final router = GoRouter(
@@ -27,6 +31,11 @@ class AppRouter {
         path: RouteNames.onboardingScreen,
         name: RouteNames.onboardingScreen,
         builder: (context, state) => const OnBoardingScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.incomingUserScreen,
+        name: RouteNames.incomingUserScreen,
+        builder: (context, state) => const IncomingUserTypeScreen(),
       ),
       GoRoute(
         path: RouteNames.signupScreen,
@@ -69,6 +78,11 @@ class AppRouter {
         builder: (context, state) => const ChatScreen(),
       ),
       GoRoute(
+        path: RouteNames.chatDetailScreen,
+        name: RouteNames.chatDetailScreen,
+        builder: (context, state) => const ChatDetailScreen(),
+      ),
+      GoRoute(
         path: RouteNames.videoScreen,
         name: RouteNames.videoScreen,
         builder: (context, state) => const VideoScreen(),
@@ -82,6 +96,17 @@ class AppRouter {
         path: RouteNames.notificationScreen,
         name: RouteNames.notificationScreen,
         builder: (context, state) => const NotificaiotnScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.lawyerScreen,
+        name: RouteNames.lawyerScreen,
+        builder: (context, state) {
+          // 1. Grab the lawyer that was passed via `extra`
+          final lawyer = state.extra as LawyerModel;
+
+          // 2. Return the screen with the required (non-nullable) lawyer
+          return LawyerProfileScreen(lawyer: lawyer);
+        },
       ),
     ],
   );

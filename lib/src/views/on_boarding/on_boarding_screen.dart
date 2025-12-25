@@ -116,7 +116,7 @@ class _OnBoardingScreenState extends ConsumerState<OnBoardingScreen> {
                         CustomButton(
                           text: "Skip",
                           onPressed: () {
-                            context.go(RouteNames.signupScreen);
+                            context.go(RouteNames.incomingUserScreen);
                             // _pageController.jumpToPage(
                             //   _onboardingScreens.length - 1,
                             // );

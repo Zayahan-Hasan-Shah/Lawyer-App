@@ -43,59 +43,91 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     super.dispose();
   }
 
-  Future<void> _signup() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      final name = _nameController.text.trim();
-      final email = _emailController.text.trim();
-      final phoneNumber = _phoneNumberController.text.trim();
-      final password = _passwordController.text.trim();
-      final address = _addressController.text.trim();
-      try {
-        final response = await ref
-            .read(signupProvider.notifier)
-            .signup(
-              name: name,
-              email: email,
-              phoneNumber: phoneNumber,
-              password: password,
-              address: address,
-            );
-        if (response != null) {
-          log("SignupScreen → Signup response: $response");
-          showDialog(
-            context: context,
-            builder: (_) => CustomDialog(
-              title: "Success",
-              description: response,
-              buttonText: "Continue",
-              icon: Icons.check_circle,
-              onPressed: () {
-                Navigator.pop(context);
-                context.go(RouteNames.loginScreen);
-              },
-              buttonGradient: const [Color(0xFF00FF7F), Color(0xFF006400)],
-            ),
-          );
-        }
-        log("SignupScreen → Signup failed, response is null");
-        _showErrorDialog(
-          "Signup Failed",
-          "Invalid signup details. Please try again.",
-        );
-      } catch (e, st) {
-        log("SignupScreen → Exception during Signup: $e\n$st");
-        _showErrorDialog(
-          "Error",
-          "An unexpected error occurred. Please try again.",
-        );
+  @override
+  void initState() {
+    super.initState();
+    // Listen once – show dialogs automatically
+    ref.listenManual<SignupState>(signupProvider, (previous, next) {
+      if (next is SignupSuccess) {
+        _showSuccessDialog(next.message);
+      } else if (next is SignupFailure) {
+        _showErrorDialog("Signup Failed", next.error);
       }
+      // Loading & Initial → do nothing
+    }, fireImmediately: false);
+  }
+
+  void _showSuccessDialog(String message) {
+    // clear fields for next attempt
+    _nameController.clear();
+    _emailController.clear();
+    _phoneNumberController.clear();
+    _passwordController.clear();
+    _addressController.clear();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => CustomDialog(
+        title: "Success",
+        description: message,
+        buttonText: "Continue",
+        icon: Icons.check_circle,
+        onPressed: () {
+          Navigator.of(context).pop(); // close dialog
+          context.go(RouteNames.loginScreen);
+        },
+        buttonGradient: const [Color(0xFF00FF7F), Color(0xFF006400)],
+      ),
+    );
+  }
+
+  Future<void> _signup() async {
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final fullName = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final phone = _phoneNumberController.text.trim();
+    final password = _passwordController.text.trim();
+    final address = _addressController.text.trim();
+
+    // ----> EXTRA CLIENT-SIDE CHECKS <----
+    if (fullName.isEmpty ||
+        email.isEmpty ||
+        phone.isEmpty ||
+        password.isEmpty ||
+        address.isEmpty) {
+      _showErrorDialog("Validation Error", "All fields are required.");
+      return;
     }
+
+    await ref
+        .read(signupProvider.notifier)
+        .signup(
+          fullName: fullName,
+          email: email,
+          phone: phone,
+          password: password,
+          address: address,
+        );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 1.h),
+        child: TextButton(
+          onPressed: () {
+            context.go(RouteNames.incomingUserScreen);
+          },
+          child: CustomText(
+            title: 'Back to Main Menu',
+            color: AppColors.hintTextColor,
+          ),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: EdgeInsets.all(2.h),

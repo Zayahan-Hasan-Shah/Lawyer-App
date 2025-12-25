@@ -52,4 +52,28 @@ class AppValidation {
     }
     return null;
   }
+
+  static String? validateFullName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "Full name can't be empty";
+    }
+
+    final name = value.trim();
+
+    final nameRegex = RegExp(r"^[\p{L} '-]+$", unicode: true);
+
+    if (!nameRegex.hasMatch(name)) {
+      return "Full name can only contain letters, spaces, hyphens (-), and apostrophes (')";
+    }
+
+    if (name.replaceAll(RegExp(r"[\s'-]"), '').isEmpty) {
+      return "Full name must contain at least one letter";
+    }
+
+    if (name.length < 3) {
+      return "Full name must be at least 3 characters long";
+    }
+
+    return null;
+  }
 }

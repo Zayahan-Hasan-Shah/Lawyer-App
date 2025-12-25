@@ -176,7 +176,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     return CustomTextField(
       controller: _nameController,
       hintText: "Full Name",
-      validator: AppValidation.checkText,
+      validator: AppValidation.validateFullName,
       textColor: AppColors.whiteColor,
       hintTextColor: AppColors.hintTextColor,
       prefixIcon: Icon(Icons.person, color: AppColors.iconColor, size: 20),

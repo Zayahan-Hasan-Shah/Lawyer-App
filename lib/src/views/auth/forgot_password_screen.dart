@@ -27,7 +27,7 @@ class ForgotPasswordScreen extends ConsumerStatefulWidget {
 class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  final StorageService _storageService = StorageService();
+  final StorageService _storageService = StorageService.instance;
 
   @override
   void dispose() {
@@ -44,7 +44,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             .forgotPassword(email: email);
         if (response != null) {
           log("ForgotPasswordScreen → ForgotPassword response: $response");
-          await _storageService.saveForgotEnail(email);
+          await _storageService.saveForgotEmail(email);
           log("Saving forgot email: $email");
           context.pushNamed(RouteNames.otpScreen);
         }

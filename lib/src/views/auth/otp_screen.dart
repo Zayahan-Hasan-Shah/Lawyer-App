@@ -152,7 +152,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
               style: TextStyle(color: AppColors.iconColor),
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
-                  final email = await StorageService().getForgotEmail();
+                  final email = await StorageService.instance.getForgotEmail();
                   log("Resend OTP tapped.");
                   ref
                       .read(forgotPasswordProvider.notifier)

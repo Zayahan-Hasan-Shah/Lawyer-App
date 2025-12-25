@@ -13,7 +13,7 @@ class ResetPasswordController extends StateNotifier<ResetPasswordState> {
   Future<String> resetPassword(String password) async {
     state = ResetPasswordStateLoading();
     try {
-      final email = await StorageService().getForgotEmail();
+      final email = await StorageService.instance.getForgotEmail();
       final bodySent = jsonEncode({"email": email, "password": password});
       final response = await http.post(
         Uri.parse(ApiUrl.resetPasswordUrl),
@@ -27,7 +27,7 @@ class ResetPasswordController extends StateNotifier<ResetPasswordState> {
       log("=====================================");
 
       if (email == 'zayahan@gmail.com' && password == 'zayahan123') {
-        await StorageService().deleteForgotEmail();
+        await StorageService.instance.deleteForgotEmail();
         return "Password Reset Successfully.";
       } else {
         state = ResetPasswordStateFailure("Reset Password Failed");

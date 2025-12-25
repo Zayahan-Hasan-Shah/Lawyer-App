@@ -1,52 +1,3 @@
-// import 'dart:developer';
-
-// import 'package:flutter_riverpod/legacy.dart';
-// import 'package:lawyer_app/src/core/utils/lawyer_dummy_data/lawyeR_dummy_data.dart';
-// import 'package:lawyer_app/src/core/utils/storage/storage_service.dart';
-// import 'package:lawyer_app/src/models/lawyer_model/lawyer_model.dart';
-// import 'package:lawyer_app/src/states/lawyer_states/lawyer_state.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:lawyer_app/src/core/constants/api_url.dart';
-
-// class LawyerController extends StateNotifier<LawyerState> {
-//   LawyerController() : super(LawyerInitial());
-
-//   Future<void> getLawyers() async {
-//     state = LawyerLoading();
-//     try {
-//       final StorageService _storage = StorageService();
-//       final token = await _storage.getToken();
-//       var header = {
-//         "Content-Type": "application/json",
-//         "Authorization": "Bearer $token",
-//       };
-//       final response = await http.get(
-//         Uri.parse(ApiUrl.getAllLayersUrl),
-//         headers: header,
-//       );
-
-//       if (response.statusCode == 200) {
-//         final List<LawyerModel> lawyers = LawyerModel.listFromJson(
-//           response.body,
-//         );
-//         log("=====================================");
-//         log("*** API URL : ${ApiUrl.getAllLayersUrl} ***");
-//         log("*** STATUS CODE : ${response.statusCode} ***");
-//         log("*** BODY : ${response.body} ***");
-//         log("=====================================");
-//         state = LawyerSuccess(lawyers);
-//         return;
-//       }
-//       state = LawyerError("No Lawyers found!");
-//     } catch (e, stackTrace) {
-//       log("LawyerController → Unexpected exception: $e");
-//       log("LawyerController → Stack trace: $stackTrace");
-//       state = LawyerError("Failed to found Lawyers. Please try again.");
-//     }
-//   }
-// }
-
-// lawyer_controller.dart
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter_riverpod/legacy.dart';
@@ -76,8 +27,7 @@ class LawyerController extends StateNotifier<LawyerState> {
     _isLoadingMore = true;
 
     try {
-      final storage = StorageService();
-      final token = await storage.getToken();
+      final token = await StorageService.instance.getAccessToken();
 
       final uri = Uri.parse(
         '${ApiUrl.getAllLayersUrl}?pageNumber=$_currentPage&pageSize=$_pageSize',
@@ -90,6 +40,12 @@ class LawyerController extends StateNotifier<LawyerState> {
           'Authorization': 'Bearer $token',
         },
       );
+
+      log("=== GET LAWYER API ===");
+      log("URL : ${ApiUrl.getAllLayersUrl}");
+      log("STATUS : ${response.statusCode}");
+      log("RES  : ${response.body}");
+      log("==================");
 
       if (response.statusCode == 200) {
         final jsonMap = json.decode(response.body);

@@ -1,41 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
+import 'package:lawyer_app/src/models/client_model/case_model/case_model.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_button.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
 
 class PendingCasesTab extends StatelessWidget {
-  PendingCasesTab({super.key});
+  final List<CaseModel> cases;
+  const PendingCasesTab({super.key, required this.cases});
 
-  final List<Map<String, String>> cases = [
-    {
-      "caseNo": "CR-245/2024",
-      "title": "State vs Rajesh Kumar",
-      "court": "Delhi High Court",
-      "status": "Next Hearing Scheduled",
-      "hearingDate": "12 Dec 2025",
-      "client": "Rajesh Kumar",
-    },
-    {
-      "caseNo": "CIVIL-112/2023",
-      "title": "Property Dispute - Sharma vs Verma",
-      "court": "Supreme Court of India",
-      "status": "Evidence Stage",
-      "hearingDate": "28 Jan 2026",
-      "client": "Amit Sharma",
-    },
-    {
-      "caseNo": "FAM-89/2025",
-      "title": "Divorce Petition",
-      "court": "Family Court, Mumbai",
-      "status": "Mediation in Progress",
-      "hearingDate": "05 Dec 2025",
-      "client": "Priya Singh",
-    },
-  ];
-
-  void _showCaseDetails(BuildContext context, Map<String, String> c) {
+  void _showCaseDetails(BuildContext context, CaseModel c) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -61,30 +36,24 @@ class PendingCasesTab extends StatelessWidget {
               ),
             ),
             SizedBox(height: 4.h),
-            Text(
-              c["title"]!,
-              style: TextStyle(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-                color: AppColors.whiteColor,
-              ),
+            CustomText(
+              title: c.title,
+              fontSize: 20.sp,
+              weight: FontWeight.bold,
+              color: AppColors.whiteColor,
             ),
             SizedBox(height: 1.h),
-            Text(
-              "Client: ${c["client"]}",
-              style: TextStyle(
-                fontSize: 15.sp,
-                color: AppColors.lightDescriptionTextColor,
-              ),
+            CustomText(
+              title: "Client: ${c.client}",
+              fontSize: 15.sp,
+              color: AppColors.lightDescriptionTextColor,
             ),
             SizedBox(height: 4.h),
-            Text(
-              "Case Details",
-              style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.brightYellowColor,
-              ),
+            CustomText(
+              title: "Case Details",
+              fontSize: 18.sp,
+              weight: FontWeight.w600,
+              color: AppColors.brightYellowColor,
             ),
             SizedBox(height: 2.h),
             Container(
@@ -98,13 +67,20 @@ class PendingCasesTab extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 children: [
-                  _row("Case Number", c["caseNo"]!, isHeader: true),
-                  _row("Court Name", c["court"]!),
-                  _row("Status", c["status"]!),
-                  _row(
+                  _tableRow("Case Number", c.caseNo, isHeader: true),
+                  _tableRow("Court Name", c.court),
+                  _tableRow("Status", c.status),
+                  _tableRow(
                     "Next Hearing",
-                    c["hearingDate"]!,
+                    c.hearingDate ?? "-",
                     valueColor: AppColors.brightYellowColor,
+                  ),
+                  _tableRow(
+                    "Category",
+                    c.category,
+                    valueColor: c.category == "Criminal"
+                        ? Colors.redAccent
+                        : Colors.blueAccent,
                   ),
                 ],
               ),
@@ -115,7 +91,6 @@ class PendingCasesTab extends StatelessWidget {
               onPressed: () => context.pop(),
               gradient: AppColors.buttonGradientColor,
               width: double.infinity,
-              fontSize: 18.sp,
             ),
           ],
         ),
@@ -123,7 +98,7 @@ class PendingCasesTab extends StatelessWidget {
     );
   }
 
-  static TableRow _row(
+  static TableRow _tableRow(
     String label,
     String value, {
     bool isHeader = false,
@@ -138,20 +113,20 @@ class PendingCasesTab extends StatelessWidget {
           padding: EdgeInsets.all(4.w),
           child: CustomText(
             title: label,
-            fontSize: 16.sp,
             color: isHeader
                 ? AppColors.brightYellowColor
                 : AppColors.lightDescriptionTextColor,
+            weight: FontWeight.w600,
           ),
         ),
         Padding(
           padding: EdgeInsets.all(4.w),
           child: CustomText(
             title: value,
-            fontSize: 16.sp,
-            color: isHeader
-                ? AppColors.brightYellowColor
-                : AppColors.lightDescriptionTextColor,
+            color:
+                valueColor ??
+                (isHeader ? AppColors.brightYellowColor : AppColors.whiteColor),
+            weight: FontWeight.w600,
           ),
         ),
       ],
@@ -162,12 +137,10 @@ class PendingCasesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     if (cases.isEmpty) {
       return Center(
-        child: Text(
-          "No pending cases",
-          style: TextStyle(
-            fontSize: 18.sp,
-            color: AppColors.lightDescriptionTextColor,
-          ),
+        child: CustomText(
+          title: "No pending cases",
+          fontSize: 18.sp,
+          color: AppColors.lightDescriptionTextColor,
         ),
       );
     }
@@ -207,7 +180,7 @@ class PendingCasesTab extends StatelessWidget {
                     ),
                     child: Center(
                       child: CustomText(
-                        title: c["caseNo"]!.split("/").last,
+                        title: c.caseNo.split("/").last,
                         fontSize: 14.sp,
                         weight: FontWeight.bold,
                         color: AppColors.blackColor,
@@ -220,7 +193,7 @@ class PendingCasesTab extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomText(
-                          title: c["title"]!,
+                          title: c.title,
                           fontSize: 16.sp,
                           weight: FontWeight.bold,
                           color: AppColors.whiteColor,
@@ -229,7 +202,7 @@ class PendingCasesTab extends StatelessWidget {
                         ),
                         SizedBox(height: 0.5.h),
                         CustomText(
-                          title: c["court"]!,
+                          title: c.court,
                           color: AppColors.lightDescriptionTextColor,
                           fontSize: 15.sp,
                         ),
@@ -243,7 +216,7 @@ class PendingCasesTab extends StatelessWidget {
                             ),
                             SizedBox(width: 2.w),
                             CustomText(
-                              title: "Next: ${c["hearingDate"]}",
+                              title: "Next: ${c.hearingDate}",
                               color: AppColors.brightYellowColor,
                               weight: FontWeight.w600,
                             ),
@@ -258,15 +231,23 @@ class PendingCasesTab extends StatelessWidget {
                       vertical: 1.h,
                     ),
                     decoration: BoxDecoration(
-                      color: AppColors.caseTypeBackgroundColor.withOpacity(0.2),
+                      color:
+                          (c.category == "Criminal"
+                                  ? Colors.redAccent
+                                  : Colors.blueAccent)
+                              .withOpacity(0.2),
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: AppColors.caseTypeBackgroundColor,
+                        color: c.category == "Criminal"
+                            ? Colors.redAccent
+                            : Colors.blueAccent,
                       ),
                     ),
                     child: CustomText(
-                      title: c["status"]!.split(" ").first,
-                      color: AppColors.brightYellowColor,
+                      title: c.category,
+                      color: c.category == "Criminal"
+                          ? Colors.redAccent
+                          : Colors.blueAccent,
                       weight: FontWeight.bold,
                       fontSize: 14.sp,
                     ),
@@ -274,7 +255,7 @@ class PendingCasesTab extends StatelessWidget {
                 ],
               ),
             ),
-          ),  
+          ),
         );
       },
     );

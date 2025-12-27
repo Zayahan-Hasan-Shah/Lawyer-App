@@ -1,40 +1,72 @@
-Map<String, dynamic> case_data = {
-  "code": 200,
+final Map<String, dynamic> mockCasesData = {
+  "status": 200,
   "data": {
-    "pending": {
-      "case_tab": "Pending Case",
-      "cases": [
-        {
-          "id": 1,
-          "case_type": "CRIMINAL",
-          "case_no": "123",
-          "date": "2025-10-12",
-          "title": "MURTAZA MURDER's CASE",
-          "case_detail":
-              "fasklfhj laflkadhf lauhfulad hfulahfadulfhauld hfgadu hf uladshflaudshfuladfh uawlehfah fluadsifuilahfuladk hfla",
-          "summary": "ajkhfdajh fluahduihfaulhfdaulf afhdlahl",
-          "status": "pending",
-          "hearing_date": "2025-10-25",
-          "court_name": "Hight court",
-        },
-        {
-          "id": 2,
-          "case_type": "CIVIL",
-          "case_no": "124",
-          "date": "2025-09-12",
-          "title": "PROPERTY CASE",
-          "case_detail":
-              "fasklfhj laflkadhf lauhfulad hfulahfadulfhauld hfgadu hf uladshflaudshfuladfh uawlehfah fluadsifuilahfuladk hfla",
-          "summary": "ajkhfdajh fluahduihfaulhfdaulf afhdlahl",
-          "status": "pending",
-          "hearing_date": "2025-09-25",
-          "court_name": "Supreme court",
-        },
-      ],
-    },
-    "dispose": {
-      "case_tab": "Dispose Cases"
-      
-    }
+    "pending_cases": [
+      {
+        "id": 1,
+        "caseNo": "CR-245/2024",
+        "title": "State vs Rajesh Kumar",
+        "court": "Delhi High Court",
+        "status": "Next Hearing Scheduled",
+        "hearingDate": "12 Dec 2025",
+        "client": "Rajesh Kumar",
+        "category": "Criminal",
+      },
+      {
+        "id": 2,
+        "caseNo": "CIVIL-112/2023",
+        "title": "Property Dispute - Sharma vs Verma",
+        "court": "Supreme Court of India",
+        "status": "Evidence Stage",
+        "hearingDate": "28 Jan 2026",
+        "client": "Amit Sharma",
+        "category": "Civil",
+      },
+      {
+        "id": 3,
+        "caseNo": "FAM-89/2025",
+        "title": "Divorce Petition",
+        "court": "Family Court, Mumbai",
+        "status": "Mediation in Progress",
+        "hearingDate": "05 Dec 2025",
+        "client": "Priya Singh",
+        "category": "Civil",
+      },
+    ],
+    "disposed_cases": [
+      {
+        "id": 101,
+        "caseNo": "CR-178/2023",
+        "title": "Theft Case - State vs Anil Mehta",
+        "court": "Sessions Court, Delhi",
+        "status": "Disposed - Convicted",
+        "disposedDate": "15 Nov 2025",
+        "outcome": "Accused sentenced to 2 years imprisonment",
+        "client": "Anil Mehta",
+        "category": "Criminal",
+      },
+      {
+        "id": 102,
+        "caseNo": "CIVIL-456/2022",
+        "title": "Contract Breach - ABC Corp vs XYZ Ltd",
+        "court": "Bombay High Court",
+        "status": "Disposed - Settled",
+        "disposedDate": "20 Oct 2025",
+        "outcome": "Out-of-court settlement reached",
+        "client": "ABC Corporation",
+        "category": "Civil",
+      },
+      {
+        "id": 103,
+        "caseNo": "FAM-201/2024",
+        "title": "Child Custody - Rohan Patel vs Neha Patel",
+        "court": "Family Court, Ahmedabad",
+        "status": "Disposed - Decree Granted",
+        "disposedDate": "08 Sep 2025",
+        "outcome": "Joint custody awarded with visitation rights",
+        "client": "Rohan Patel",
+        "category": "Civil",
+      },
+    ],
   },
 };

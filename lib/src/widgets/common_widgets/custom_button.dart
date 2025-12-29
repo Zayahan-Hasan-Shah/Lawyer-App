@@ -4,9 +4,10 @@ import 'package:sizer/sizer.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final bool outlined;
   final double? width;
+  final double? height;
   final Gradient? gradient;
   final Color? backgroundColor;
   final double? borderRadius;
@@ -21,6 +22,7 @@ class CustomButton extends StatelessWidget {
     required this.onPressed,
     this.outlined = false,
     this.width,
+    this.height,
     this.gradient,
     this.backgroundColor,
     this.borderRadius,
@@ -36,6 +38,7 @@ class CustomButton extends StatelessWidget {
     if (gradient != null) {
       return SizedBox(
         width: width,
+        height: height,
         child: DecoratedBox(
           decoration: BoxDecoration(
             gradient: gradient,
@@ -67,6 +70,7 @@ class CustomButton extends StatelessWidget {
     if (outlined) {
       return SizedBox(
         width: width,
+        height: height,
         child: OutlinedButton(
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
@@ -89,6 +93,7 @@ class CustomButton extends StatelessWidget {
     // --- Case 3: Solid backgroundColor OR default ---
     return SizedBox(
       width: width,
+      height: height,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(

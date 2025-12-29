@@ -18,7 +18,7 @@ class CaseController extends StateNotifier<CaseStates> {
       final response = mockCasesData;
 
       if (response['status'] != 200) {
-        throw Exception("Failed to load cases: ${response['status']}");
+        state = CaseFailureState(error: "Failed to load cases");
       }
 
       final data = response['data'] as Map<String, dynamic>;
@@ -39,7 +39,7 @@ class CaseController extends StateNotifier<CaseStates> {
       state = CaseSuccessState(data: allCases);
     } catch (e, stack) {
       log("Get All Cases → Error: $e\n$stack");
-      state = CaseFailureState(error: e.toString());
+      state = CaseFailureState(error: "Unable to Load Cases");
     }
   }
 }

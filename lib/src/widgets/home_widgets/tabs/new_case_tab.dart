@@ -1,42 +1,53 @@
+// new_case_tab.dart
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
+import 'package:lawyer_app/src/providers/client_provider/case_category_provider/case_category_provider.dart';
+import 'package:lawyer_app/src/widgets/common_widgets/custom_button.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
+import 'package:lawyer_app/src/widgets/home_widgets/new_case_widgets/new_case_stepper_modal.dart';
 import 'package:sizer/sizer.dart';
 
-class NewCaseTab extends StatelessWidget {
+class NewCaseTab extends ConsumerWidget {
   const NewCaseTab({super.key});
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.add_circle, size: 90, color: AppColors.brightYellowColor),
-          SizedBox(height: 3.h),
+          Icon(Icons.add_circle, size: 10.h, color: AppColors.iconColor),
+          SizedBox(height: 1.h),
           CustomText(
             title: "File New Case",
             fontSize: 24.sp,
             weight: FontWeight.bold,
             color: AppColors.whiteColor,
           ),
-          SizedBox(height: 2.h),
-          ElevatedButton.icon(
-            onPressed: () {},
-            icon: Icon(Icons.upload_file, color: AppColors.blackColor),
-            label: Text(
-              "Start Application",
-              style: TextStyle(
-                color: AppColors.blackColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            style: ElevatedButton.styleFrom(
-              // backgroundBuilder: (_, __, ___) => AppColors.buttonGradientColor,
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
+          SizedBox(height: 1.h),
+          CustomButton(
+            text: "Start Application",
+            onPressed: () async {
+              // Fetch categories first
+              await ref.read(caseCategoryProvider.notifier).getCategories();
+              // Then show modal
+              if (context.mounted) {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  backgroundColor: Colors.transparent,
+                  builder: (_) => const NewCaseStepperModal(),
+                );
+              }
+            },
+            gradient: AppColors.buttonGradientColor,
+            textColor: AppColors.blackColor,
+            fontSize: 16.sp,
+            borderRadius: 24,
+            width: 50.w,
+            height: 7.h,
           ),
         ],
       ),

@@ -168,7 +168,7 @@ class PendingCasesTab extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             onTap: () => _showCaseDetails(context, c),
             child: Padding(
-              padding: EdgeInsets.all(5.w),
+              padding: EdgeInsets.all(3.w),
               child: Row(
                 children: [
                   Container(
@@ -219,6 +219,7 @@ class PendingCasesTab extends StatelessWidget {
                               title: "Next: ${c.hearingDate}",
                               color: AppColors.brightYellowColor,
                               weight: FontWeight.w600,
+                              fontSize: 14.sp,
                             ),
                           ],
                         ),
@@ -226,6 +227,7 @@ class PendingCasesTab extends StatelessWidget {
                     ),
                   ),
                   Container(
+                    margin: EdgeInsets.only(left: 2.w),
                     padding: EdgeInsets.symmetric(
                       horizontal: 3.w,
                       vertical: 1.h,
@@ -236,7 +238,7 @@ class PendingCasesTab extends StatelessWidget {
                                   ? Colors.redAccent
                                   : Colors.blueAccent)
                               .withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(24),
+                      borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: c.category == "Criminal"
                             ? Colors.redAccent
@@ -249,7 +251,7 @@ class PendingCasesTab extends StatelessWidget {
                           ? Colors.redAccent
                           : Colors.blueAccent,
                       weight: FontWeight.bold,
-                      fontSize: 14.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ],

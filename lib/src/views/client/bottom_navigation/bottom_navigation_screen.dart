@@ -82,11 +82,11 @@ class _BottomNavigationScreenState
             inactiveIcon: Icons.video_call_outlined,
             label: '',
           ),
-          BottomNavItem(
-            activeIcon: Icons.search,
-            inactiveIcon: Icons.search_outlined,
-            label: 'Search',
-          ),
+          // BottomNavItem(
+          //   activeIcon: Icons.search,
+          //   inactiveIcon: Icons.search_outlined,
+          //   label: 'Search',
+          // ),
           BottomNavItem(
             activeIcon: Icons.notifications,
             inactiveIcon: Icons.notifications_outlined,

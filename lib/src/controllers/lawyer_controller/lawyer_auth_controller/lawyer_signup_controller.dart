@@ -13,6 +13,7 @@ class LawyerSignupController extends StateNotifier<LawyerSignupState> {
     required String phoneNumber,
     required String yearOfEnrollment,
     required String password,
+    required String category,
   }) async {
     state = LawyerSignupInitial();
 
@@ -24,8 +25,14 @@ class LawyerSignupController extends StateNotifier<LawyerSignupState> {
           barCouncilNo == '12345-678901-2' &&
           (phoneNumber == '923327699137' || phoneNumber == '03327699137') &&
           yearOfEnrollment == '2016' &&
-          password == '123qwe') {
+          password == '123qwe' &&
+          (category == 'Gold' ||
+              category == 'Platinum' ||
+              category == 'Silver' ||
+              category == 'Bronze' ||
+              category == "Green Card")) {
         state = LawyerSignupSuccess("Signup Successfull");
+        return;
       }
       state = LawyerSignupFailure("Signup Failed");
     } catch (e, st) {

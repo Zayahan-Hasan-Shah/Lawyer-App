@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/src/core/constants/app_assets.dart';
@@ -13,6 +12,7 @@ import 'package:lawyer_app/src/routing/route_names.dart';
 import 'package:lawyer_app/src/states/lawyer_states/lawyer_auth_state/lawyer_signup_state.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_button.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_dialog.dart';
+import 'package:lawyer_app/src/widgets/common_widgets/custom_dropdown.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text_field.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/loading_indicator.dart';
@@ -36,6 +36,20 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
       TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  String? _selectedCourt;
+  String? _selectedCategory;
+
+  final List<Map<String, String>> lawyerCategories = [
+    {"court": "Supreme Court", "category": "Platinum"},
+    {"court": "High Court", "category": "Gold"},
+    {"court": "City Court", "category": "Silver"},
+    {"court": "Student", "category": "Bronze"},
+    {"court": "Law Firm", "category": "Green Card"},
+  ];
+
+  late final List<String> courtNames = lawyerCategories
+      .map((item) => item["court"] as String)
+      .toList();
 
   @override
   void dispose() {
@@ -67,7 +81,8 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
     _phoneNumberController.clear();
     _yearOfEnrollmentController.clear();
     _passwordController.clear();
-
+    _selectedCategory = '';
+    _selectedCourt = '';
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -112,7 +127,8 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
         barCouncilNo.isEmpty ||
         phoneNumber.isEmpty ||
         yearOfEnroll.isEmpty ||
-        password.isEmpty) {
+        password.isEmpty ||
+        _selectedCategory == null) {
       _showErrorDialog("Validation Error", "All fields are required.");
       return;
     }
@@ -126,6 +142,7 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
           phoneNumber: phoneNumber,
           yearOfEnrollment: yearOfEnroll,
           password: password,
+          category: _selectedCategory!,
         );
   }
 
@@ -159,6 +176,8 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
                 _buildFullNameController(),
                 SizedBox(height: 1.h),
                 _buildEmailController(),
+                SizedBox(height: 1.h),
+                _buildCategoryDropdown(),
                 SizedBox(height: 1.h),
                 _buildBarCouncilController(),
                 SizedBox(height: 1.h),
@@ -254,6 +273,7 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
       prefixIcon: Icon(Icons.lock, color: AppColors.iconColor, size: 20),
       textColor: AppColors.whiteColor,
       hintTextColor: AppColors.hintTextColor,
+      obscureText: _obscurePassword,
       suffixIcon: IconButton(
         icon: Icon(
           _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -266,6 +286,36 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
           });
         },
       ),
+    );
+  }
+
+  Widget _buildCategoryDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomDropdown(
+          items: courtNames,
+          selectedItem: _selectedCourt ?? "Select Court",
+          onChanged: (String selectedCourt) {
+            setState(() {
+              _selectedCourt = selectedCourt;
+              // Find corresponding category
+              final selectedItem = lawyerCategories.firstWhere(
+                (item) => item["court"] == selectedCourt,
+              );
+              _selectedCategory = selectedItem["category"];
+            });
+          },
+        ),
+        if (_selectedCourt == null)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            child: Text(
+              "Please select your court",
+              style: TextStyle(color: Colors.red.shade300, fontSize: 12.sp),
+            ),
+          ),
+      ],
     );
   }
 

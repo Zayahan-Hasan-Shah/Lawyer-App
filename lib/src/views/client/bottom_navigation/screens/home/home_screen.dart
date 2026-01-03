@@ -5,6 +5,7 @@ import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/models/client_model/case_model/case_model.dart';
 import 'package:lawyer_app/src/providers/client_provider/client_cases_provider/client_case_provider.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_appbar.dart';
+import 'package:lawyer_app/src/widgets/common_widgets/custom_client_drawer.dart';
 import 'package:lawyer_app/src/widgets/home_widgets/tabs/cases_tab_button.dart';
 import 'package:lawyer_app/src/widgets/home_widgets/tabs/dispose_case_tab.dart';
 import 'package:lawyer_app/src/widgets/home_widgets/tabs/donation_tab.dart';
@@ -43,6 +44,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
       appBar: CustomAppbar(isDrawwer: true, logoImage: AppAssets.logoImage),
+      drawer: const CustomClientDrawer(),
       body: SafeArea(
         child: Column(
           children: [

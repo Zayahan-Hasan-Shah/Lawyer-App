@@ -23,10 +23,12 @@ class NewCaseStepperModal extends ConsumerStatefulWidget {
   const NewCaseStepperModal({super.key});
 
   @override
-  ConsumerState<NewCaseStepperModal> createState() => _NewCaseStepperModalState();
+  ConsumerState<NewCaseStepperModal> createState() =>
+      _NewCaseStepperModalState();
 }
 
-class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal> with SingleTickerProviderStateMixin {
+class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal>
+    with SingleTickerProviderStateMixin {
   int currentStep = 0;
 
   String? selectedCategory;
@@ -50,8 +52,13 @@ class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal> with 
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(duration: const Duration(milliseconds: 400), vsync: this);
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _animationController, curve: Curves.easeInOut));
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
     _animationController.forward();
   }
 
@@ -115,8 +122,10 @@ class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal> with 
           selectedDate: selectedAppointmentDate,
           selectedTime: selectedAppointmentTime,
           onTypeChanged: (type) => setState(() => appointmentType = type),
-          onDateChanged: (date) => setState(() => selectedAppointmentDate = date),
-          onTimeChanged: (time) => setState(() => selectedAppointmentTime = time),
+          onDateChanged: (date) =>
+              setState(() => selectedAppointmentDate = date),
+          onTimeChanged: (time) =>
+              setState(() => selectedAppointmentTime = time),
           onConfirm: _goToNext,
         );
       case 4:
@@ -134,11 +143,10 @@ class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal> with 
   }
 
   Future<void> _submitApplication() async {
-    context.pop();
-    await Future.delayed(const Duration(milliseconds: 400));
-
     try {
-      await ref.read(newCaseProvider.notifier).submitApplication(
+      await ref
+          .read(newCaseProvider.notifier)
+          .submitApplication(
             category: selectedCategory!,
             method: selectedMethod!,
             document: selectedFiles,
@@ -146,11 +154,8 @@ class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal> with 
             date: selectedAppointmentDate,
             time: selectedAppointmentTime,
           );
-
       if (selectedMethod == "whatsapp") await _openWhatsAppChat();
-
       if (!mounted) return;
-
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -162,11 +167,14 @@ class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal> with 
           buttonText: "Great!",
           icon: Icons.check_circle,
           buttonGradient: AppColors.buttonGradientColor.colors,
-          onPressed: () => context.pop(),
+          onPressed: () {
+            // Close dialog, then bottom sheet
+            Navigator.of(context).pop(); // close dialog
+            Navigator.of(context).pop(); // close bottom sheet
+          },
         ),
       );
     } catch (e) {
-      if (!mounted) return;
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -179,12 +187,62 @@ class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal> with 
           onPressed: () => context.pop(),
         ),
       );
+      if (!mounted) return;
+      // error dialog as you already have
     }
+    // context.pop();
+    // await Future.delayed(const Duration(milliseconds: 400));
+
+    // try {
+    //   await ref.read(newCaseProvider.notifier).submitApplication(
+    //         category: selectedCategory!,
+    //         method: selectedMethod!,
+    //         document: selectedFiles,
+    //         appointmentType: appointmentType!,
+    //         date: selectedAppointmentDate,
+    //         time: selectedAppointmentTime,
+    //       );
+
+    //   if (selectedMethod == "whatsapp") await _openWhatsAppChat();
+
+    //   if (!mounted) return;
+
+    //   showDialog(
+    //     context: context,
+    //     barrierDismissible: false,
+    //     builder: (_) => CustomDialog(
+    //       title: "Success!",
+    //       description: appointmentType == "video"
+    //           ? "Your video appointment application has been submitted! We'll send you payment details and schedule your call shortly."
+    //           : "Your application has been submitted successfully! Our team will contact you shortly.",
+    //       buttonText: "Great!",
+    //       icon: Icons.check_circle,
+    //       buttonGradient: AppColors.buttonGradientColor.colors,
+    //       onPressed: () => context.pop(),
+    //     ),
+    //   );
+    // } catch (e) {
+    //   if (!mounted) return;
+    //   showDialog(
+    //     context: context,
+    //     barrierDismissible: false,
+    //     builder: (_) => CustomDialog(
+    //       title: "Submission Failed",
+    //       description: e.toString(),
+    //       buttonText: "OK",
+    //       icon: Icons.error_outline,
+    //       buttonGradient: const [Color(0xFFFF6B6B), Color(0xFFC0392B)],
+    //       onPressed: () => context.pop(),
+    //     ),
+    //   );
+    // }
   }
 
   Future<void> _openWhatsAppChat() async {
     const phone = "923327699137";
-    final message = Uri.encodeComponent("Hello, I want to file a new case regarding $selectedCategory matter. Please guide me.");
+    final message = Uri.encodeComponent(
+      "Hello, I want to file a new case regarding $selectedCategory matter. Please guide me.",
+    );
     final uri = Uri.parse("https://wa.me/$phone?text=$message");
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -203,10 +261,19 @@ class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal> with 
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [AppColors.backgroundColor, AppColors.backgroundColor.withOpacity(0.95)],
+            colors: [
+              AppColors.backgroundColor,
+              AppColors.backgroundColor.withOpacity(0.95),
+            ],
           ),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
-          boxShadow: [BoxShadow(color: AppColors.brightYellowColor.withOpacity(0.1), blurRadius: 20, offset: const Offset(0, -5))],
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.brightYellowColor.withOpacity(0.1),
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
+          ],
         ),
         child: Column(
           children: [
@@ -215,14 +282,27 @@ class _NewCaseStepperModalState extends ConsumerState<NewCaseStepperModal> with 
               child: Column(
                 children: [
                   const DragHandle(),
-                  StepperHeader(currentStep: currentStep, steps: steps, onBackPressed: currentStep > 0 ? _goBack : null),
+                  StepperHeader(
+                    currentStep: currentStep,
+                    steps: steps,
+                    onBackPressed: currentStep > 0 ? _goBack : null,
+                  ),
                 ],
               ),
             ),
             Expanded(
               child: FadeTransition(
                 opacity: _fadeAnimation,
-                child: SingleChildScrollView(controller: scrollController, child: Padding(padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h), child: _currentStepContent())),
+                child: SingleChildScrollView(
+                  controller: scrollController,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 5.w,
+                      vertical: 2.h,
+                    ),
+                    child: _currentStepContent(),
+                  ),
+                ),
               ),
             ),
             if (currentStep == steps.length - 1)

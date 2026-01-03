@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:lawyer_app/src/services/notification_services/notification_service.dart';
 import 'package:lawyer_app/src/states/new_case_state/new_case_state.dart';
 
 class NewCaseController extends StateNotifier<NewCaseState> {
@@ -15,10 +16,8 @@ class NewCaseController extends StateNotifier<NewCaseState> {
     DateTime? date,
     TimeOfDay? time,
   }) async {
+    log('NewCaseController.submitApplication() called');
     state = NewCaseLoading();
-
-    // No API delay — instantly succeed (for now)
-    // Remove Future.delayed completely
 
     try {
       log("=== NEW CASE SUBMISSION (MOCK SUCCESS) ===");
@@ -33,10 +32,17 @@ class NewCaseController extends StateNotifier<NewCaseState> {
       }
       log("===========================================");
 
-      // Simulate successful submission instantly
       state = NewCaseSuccess(
         "Your application has been submitted successfully! Our team will contact you shortly.",
       );
+
+      try {
+        log('Attempting to show application submitted notification');
+        await NotificationService().showApplicationSubmittedNotification();
+        log('NotificationService.showApplicationSubmittedNotification() completed');
+      } catch (e, stack) {
+        log('NotificationService error: $e\n$stack');
+      }
     } catch (e, stack) {
       log("NewCaseController → Unexpected error: $e\n$stack");
       state = NewCaseFailure("Something went wrong. Please try again.");

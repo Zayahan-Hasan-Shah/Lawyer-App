@@ -15,4 +15,9 @@ class RouteNames {
   static const notificationScreen = '/notificationscreen';
   static const lawyerScreen = '/lawyerscreen';
   static const chatDetailScreen = '/chatdetailscreen';
+
+  // lawyer's screens
+  static const lawyerSignupScreen = '/lawyersignupscreen';
+  static const lawyerloginScreen = '/lawyerloginscreen';
+  static const lawyerDashboardScreen = '/lawyerDashboardScreen';
 }

@@ -7,24 +7,23 @@ import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/src/core/constants/app_assets.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/core/validation/app_validation.dart';
-import 'package:lawyer_app/src/providers/client_provider/auth_provider/login_provider.dart';
+import 'package:lawyer_app/src/providers/lawyer_provider/lawyer_auth_provider/lawyer_login_provider.dart';
 import 'package:lawyer_app/src/routing/route_names.dart';
-import 'package:lawyer_app/src/states/client_states/auth_states/login_state.dart';
+import 'package:lawyer_app/src/states/lawyer_states/lawyer_auth_state/lawyer_login_state.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_button.dart';
-import 'package:lawyer_app/src/widgets/common_widgets/custom_dialog.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text_field.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/loading_indicator.dart';
 import 'package:sizer/sizer.dart';
 
-class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+class LawyerLogin extends ConsumerStatefulWidget {
+  const LawyerLogin({super.key});
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LawyerLogin> createState() => _LawyerLoginState();
 }
 
-class _LoginScreenState extends ConsumerState<LoginScreen> {
+class _LawyerLoginState extends ConsumerState<LawyerLogin> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -37,45 +36,34 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _login() async {
+  Future<void> _lawyerLogin() async {
     if (_formKey.currentState?.validate() ?? false) {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
       try {
         final response = await ref
-            .read(loginProvider.notifier)
-            .login(email: email, password: password);
+            .read(lawyerLoginProvider.notifier)
+            .lawyerLogin(email: email, password: password);
         if (response != null) {
+          _showSnackBar("Login Successfull", isError: false);
           log("LoginScreen → Login response: $response");
-          showDialog(
-            context: context,
-            builder: (_) => CustomDialog(
-              title: "Success",
-              description: 'Login Successful!',
-              buttonText: "Continue",
-              icon: Icons.check_circle,
-              onPressed: () {
-                Navigator.pop(context);
-                context.go(RouteNames.bottomNavigationScreen);
-              },
-              buttonGradient: const [Color(0xFF00FF7F), Color(0xFF006400)],
-            ),
-          );
         } else {
-          log("LoginScreen → Login failed, response is null");
-          _showErrorDialog(
-            "Login Failed",
-            "Invalid Login details. Please try again.",
-          );
+          _showSnackBar("Login Failed", isError: true);
         }
-      } catch (e, st) {
-        log("LoginScreen → Exception during Login: $e\n$st");
-        _showErrorDialog(
-          "Error",
-          "An unexpected error occurred. Please try again.",
-        );
+      } catch (e) {
+        log("LoginScreen → Exception during Login: $e");
       }
     }
+  }
+
+  void _showSnackBar(String message, {bool isError = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red : Colors.green,
+        duration: const Duration(seconds: 4),
+      ),
+    );
   }
 
   @override
@@ -100,8 +88,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(
                   // width: double.infinity,
@@ -121,10 +109,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 SizedBox(height: 1.5.h),
                 _builPasswordTextField(),
                 SizedBox(height: 3.h),
-                _buildForgetPassword(),
-                SizedBox(height: 2.h),
                 _buildSignupButton(),
-                SizedBox(height: 1.h),
+                SizedBox(height: 2.h),
                 _signupTagLine(),
               ],
             ),
@@ -149,10 +135,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return CustomTextField(
       controller: _passwordController,
       hintText: "Password",
+      obscureText: _obscurePassword,
       validator: AppValidation.checkText,
       textColor: AppColors.whiteColor,
       hintTextColor: AppColors.hintTextColor,
-      obscureText: _obscurePassword,
       prefixIcon: Icon(Icons.lock, color: AppColors.iconColor, size: 20),
       suffixIcon: IconButton(
         icon: Icon(
@@ -169,36 +155,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Widget _buildForgetPassword() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        GestureDetector(
-          onTap: () {
-            context.push(RouteNames.forgotPasswordScreen);
-          },
-          child: CustomText(
-            title: "Forget Password?",
-            fontSize: 16.sp,
-            color: AppColors.iconColor,
-            weight: FontWeight.w900,
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildSignupButton() {
-    final loginState = ref.watch(loginProvider);
+    final loginState = ref.watch(lawyerLoginProvider);
     return SizedBox(
       width: double.infinity,
       height: 14.w,
-      child: loginState is LoginLoading
+      child: loginState is LawyerLoginLoading
           ? const Center(child: LoadingIndicator())
           : CustomButton(
               text: 'Sign In',
               fontSize: 16.sp,
-              onPressed: _login,
+              onPressed: _lawyerLogin,
               textColor: AppColors.blackColor,
               gradient: AppColors.buttonGradientColor,
               fontWeight: FontWeight.w600,
@@ -219,25 +186,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               style: TextStyle(color: AppColors.iconColor),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  context.go(RouteNames.signupScreen);
+                  context.go(RouteNames.lawyerSignupScreen);
                 },
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showErrorDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (_) => CustomDialog(
-        title: title,
-        description: message,
-        buttonText: "OK",
-        icon: Icons.error_outline,
-        buttonGradient: const [Color(0xFFFF6B6B), Color(0xFFC0392B)],
-        onPressed: () => Navigator.pop(context),
       ),
     );
   }

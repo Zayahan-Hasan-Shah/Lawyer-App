@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
-import 'package:lawyer_app/src/states/category_state/category_state.dart';
+import 'package:lawyer_app/src/states/client_states/category_state/category_state.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/failed_widget.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/loading_indicator.dart';

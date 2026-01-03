@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/src/core/constants/api_url.dart';
 import 'package:lawyer_app/src/core/utils/storage/storage_service.dart';
-import 'package:lawyer_app/src/states/auth_states/reset_password_state.dart';
+import 'package:lawyer_app/src/states/client_states/auth_states/reset_password_state.dart';
 
 class ResetPasswordController extends StateNotifier<ResetPasswordState> {
   ResetPasswordController() : super(ResetPasswordStateInitial());

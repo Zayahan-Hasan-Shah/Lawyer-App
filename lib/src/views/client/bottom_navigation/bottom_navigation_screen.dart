@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/models/bottom_navigation_model/bottom_nav_item.dart';
-import 'package:lawyer_app/src/providers/bottom_navigation_provider/bottom_navigation_provider.dart';
+import 'package:lawyer_app/src/providers/client_provider/bottom_navigation_provider/bottom_navigation_provider.dart';
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/chat/chat_screen.dart';
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/home/home_screen.dart';
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/search/search_screen.dart';

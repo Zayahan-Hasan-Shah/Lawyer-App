@@ -51,7 +51,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
-import 'package:lawyer_app/src/providers/home_screen_provider/search_provider.dart';
+import 'package:lawyer_app/src/providers/client_provider/home_screen_provider/search_provider.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text_field.dart';
 import 'package:sizer/sizer.dart';
 

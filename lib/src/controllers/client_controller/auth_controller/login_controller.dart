@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 import 'package:lawyer_app/src/core/constants/api_url.dart';
 import 'package:lawyer_app/src/core/utils/storage/storage_service.dart';
-import 'package:lawyer_app/src/states/auth_states/login_state.dart';
+import 'package:lawyer_app/src/states/client_states/auth_states/login_state.dart';
 
 class LoginController extends StateNotifier<LoginState> {
   LoginController() : super(LoginInitial());

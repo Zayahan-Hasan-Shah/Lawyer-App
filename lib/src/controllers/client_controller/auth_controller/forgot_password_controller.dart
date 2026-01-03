@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:http/http.dart' as http;
 import 'package:lawyer_app/src/core/constants/api_url.dart';
-import 'package:lawyer_app/src/states/auth_states/forogot_password_State.dart';
+import 'package:lawyer_app/src/states/client_states/auth_states/forogot_password_State.dart';
 
 class ForgotPasswordController extends StateNotifier<ForgotPasswordState> {
   ForgotPasswordController() : super(ForgotPasswordInitial());

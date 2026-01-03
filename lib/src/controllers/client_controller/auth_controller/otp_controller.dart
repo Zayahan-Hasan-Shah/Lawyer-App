@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/src/core/constants/api_url.dart';
-import 'package:lawyer_app/src/states/auth_states/otp_state.dart';
+import 'package:lawyer_app/src/states/client_states/auth_states/otp_state.dart';
 
 class OtpController extends StateNotifier<OtpState> {
   OtpController() : super(OtpStateInitial());

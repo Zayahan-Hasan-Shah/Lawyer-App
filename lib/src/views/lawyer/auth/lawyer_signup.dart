@@ -2,14 +2,15 @@ import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/src/core/constants/app_assets.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/core/validation/app_validation.dart';
-import 'package:lawyer_app/src/providers/client_provider/auth_provider/signup_provider.dart';
+import 'package:lawyer_app/src/providers/lawyer_provider/lawyer_auth_provider/lawyer_signup_provider.dart';
 import 'package:lawyer_app/src/routing/route_names.dart';
-import 'package:lawyer_app/src/states/client_states/auth_states/signup_state.dart';
+import 'package:lawyer_app/src/states/lawyer_states/lawyer_auth_state/lawyer_signup_state.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_button.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_dialog.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
@@ -17,53 +18,55 @@ import 'package:lawyer_app/src/widgets/common_widgets/custom_text_field.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/loading_indicator.dart';
 import 'package:sizer/sizer.dart';
 
-class SignupScreen extends ConsumerStatefulWidget {
-  const SignupScreen({super.key});
+class LawyerSignup extends ConsumerStatefulWidget {
+  const LawyerSignup({super.key});
 
   @override
-  ConsumerState<SignupScreen> createState() => _SignupScreenState();
+  ConsumerState<LawyerSignup> createState() => _LawyerSignupState();
 }
 
-class _SignupScreenState extends ConsumerState<SignupScreen> {
+class _LawyerSignupState extends ConsumerState<LawyerSignup> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _barCouncilNumberController =
+      TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _yearOfEnrollmentController =
+      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _fullNameController.dispose();
     _emailController.dispose();
+    _barCouncilNumberController.dispose();
     _phoneNumberController.dispose();
+    _yearOfEnrollmentController.dispose();
     _passwordController.dispose();
-    _addressController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    // Listen once – show dialogs automatically
-    ref.listenManual<SignupState>(signupProvider, (previous, next) {
-      if (next is SignupSuccess) {
+    ref.listenManual<LawyerSignupState>(lawyerSignupProvider, (prev, next) {
+      if (next is LawyerSignupSuccess) {
         _showSuccessDialog(next.message);
-      } else if (next is SignupFailure) {
+      } else if (next is LawyerSignupFailure) {
         _showErrorDialog("Signup Failed", next.error);
       }
-      // Loading & Initial → do nothing
-    }, fireImmediately: false);
+    });
   }
 
   void _showSuccessDialog(String message) {
-    // clear fields for next attempt
-    _nameController.clear();
+    _fullNameController.clear();
     _emailController.clear();
+    _barCouncilNumberController.clear();
     _phoneNumberController.clear();
+    _yearOfEnrollmentController.clear();
     _passwordController.clear();
-    _addressController.clear();
 
     showDialog(
       context: context,
@@ -74,41 +77,55 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
         buttonText: "Continue",
         icon: Icons.check_circle,
         onPressed: () {
-          Navigator.of(context).pop(); // close dialog
-          context.go(RouteNames.loginScreen);
+          Navigator.of(context).pop();
         },
         buttonGradient: const [Color(0xFF00FF7F), Color(0xFF006400)],
       ),
     );
   }
 
-  Future<void> _signup() async {
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (_) => CustomDialog(
+        title: title,
+        description: message,
+        buttonText: "OK",
+        icon: Icons.error_outline,
+        buttonGradient: const [Color(0xFFFF6B6B), Color(0xFFC0392B)],
+        onPressed: () => Navigator.pop(context),
+      ),
+    );
+  }
+
+  Future<void> _lawyerSignup() async {
     if (!(_formKey.currentState?.validate() ?? false)) return;
-
-    final fullName = _nameController.text.trim();
+    final fullName = _fullNameController.text.trim();
     final email = _emailController.text.trim();
-    final phone = _phoneNumberController.text.trim();
+    final barCouncilNo = _barCouncilNumberController.text.trim();
+    final phoneNumber = _phoneNumberController.text.trim();
+    final yearOfEnroll = _yearOfEnrollmentController.text.trim();
     final password = _passwordController.text.trim();
-    final address = _addressController.text.trim();
 
-    // ----> EXTRA CLIENT-SIDE CHECKS <----
     if (fullName.isEmpty ||
         email.isEmpty ||
-        phone.isEmpty ||
-        password.isEmpty ||
-        address.isEmpty) {
+        barCouncilNo.isEmpty ||
+        phoneNumber.isEmpty ||
+        yearOfEnroll.isEmpty ||
+        password.isEmpty) {
       _showErrorDialog("Validation Error", "All fields are required.");
       return;
     }
 
     await ref
-        .read(signupProvider.notifier)
-        .signup(
+        .read(lawyerSignupProvider.notifier)
+        .lawyerSignUp(
           fullName: fullName,
           email: email,
-          phone: phone,
+          barCouncilNo: barCouncilNo,
+          phoneNumber: phoneNumber,
+          yearOfEnrollment: yearOfEnroll,
           password: password,
-          address: address,
         );
   }
 
@@ -116,21 +133,9 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 1.h),
-        child: TextButton(
-          onPressed: () {
-            context.go(RouteNames.incomingUserScreen);
-          },
-          child: CustomText(
-            title: 'Back to Main Menu',
-            color: AppColors.hintTextColor,
-          ),
-        ),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(2.h),
+          padding: EdgeInsets.all(1.h),
           child: Form(
             key: _formKey,
             child: Column(
@@ -150,20 +155,24 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
                   color: AppColors.whiteColor,
                   weight: FontWeight.bold,
                 ),
-                SizedBox(height: 2.h),
-                _builNameTextField(),
-                SizedBox(height: 1.5.h),
-                _builPhoneNumberTextField(),
-                SizedBox(height: 1.5.h),
-                _builEmailTextField(),
-                SizedBox(height: 1.5.h),
-                _builPasswordTextField(),
-                SizedBox(height: 1.5.h),
-                _builAddressTextField(),
-                SizedBox(height: 2.h),
-                _buildSignupButton(),
+                SizedBox(height: 1.h),
+                _buildFullNameController(),
+                SizedBox(height: 1.h),
+                _buildEmailController(),
+                SizedBox(height: 1.h),
+                _buildBarCouncilController(),
+                SizedBox(height: 1.h),
+                _buildPhoneNumber(),
+                SizedBox(height: 1.h),
+                _buildYearOfEnroController(),
+                SizedBox(height: 1.h),
+                _buildPasswordController(),
+                SizedBox(height: 1.h),
+                _buildLawyerSignupButton(),
                 SizedBox(height: 1.h),
                 _loginTagLine(),
+                SizedBox(height: 2.h),
+                _buildBackButton(),
               ],
             ),
           ),
@@ -172,49 +181,79 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     );
   }
 
-  Widget _builNameTextField() {
+  Widget _buildFullNameController() {
     return CustomTextField(
-      controller: _nameController,
+      controller: _fullNameController,
+      validator: AppValidation.checkText,
+      keyboardType: TextInputType.name,
       hintText: "Full Name",
-      validator: AppValidation.validateFullName,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
       prefixIcon: Icon(Icons.person, color: AppColors.iconColor, size: 20),
-    );
-  }
-
-  Widget _builPhoneNumberTextField() {
-    return CustomTextField(
-      controller: _phoneNumberController,
-      hintText: "Phone Number",
-      validator: AppValidation.validatePhoneNumber,
-      keyboardType: TextInputType.phone,
       textColor: AppColors.whiteColor,
       hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.phone, color: AppColors.iconColor, size: 20),
     );
   }
 
-  Widget _builEmailTextField() {
+  Widget _buildEmailController() {
     return CustomTextField(
       controller: _emailController,
-      hintText: "Email",
       validator: AppValidation.validateEmail,
+      keyboardType: TextInputType.emailAddress,
+      hintText: "Email",
+      prefixIcon: Icon(Icons.mail, color: AppColors.iconColor, size: 20),
       textColor: AppColors.whiteColor,
       hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.mail, color: AppColors.iconColor, size: 20),
     );
   }
 
-  Widget _builPasswordTextField() {
+  Widget _buildBarCouncilController() {
     return CustomTextField(
-      controller: _passwordController,
-      hintText: "Password",
-      obscureText: _obscurePassword,
+      controller: _barCouncilNumberController,
       validator: AppValidation.checkText,
+      keyboardType: TextInputType.number,
+      hintText: "Bar Council Number",
+      prefixIcon: Icon(
+        Icons.qr_code_scanner,
+        color: AppColors.iconColor,
+        size: 20,
+      ),
       textColor: AppColors.whiteColor,
       hintTextColor: AppColors.hintTextColor,
+    );
+  }
+
+  Widget _buildPhoneNumber() {
+    return CustomTextField(
+      controller: _phoneNumberController,
+      validator: AppValidation.validatePhoneNumber,
+      keyboardType: TextInputType.phone,
+      hintText: "Phone Number",
+      prefixIcon: Icon(Icons.phone, color: AppColors.iconColor, size: 20),
+      textColor: AppColors.whiteColor,
+      hintTextColor: AppColors.hintTextColor,
+    );
+  }
+
+  Widget _buildYearOfEnroController() {
+    return CustomTextField(
+      controller: _yearOfEnrollmentController,
+      validator: AppValidation.checkText,
+      keyboardType: TextInputType.number,
+      hintText: "Year Of Enrollment",
+      prefixIcon: Icon(Icons.numbers, color: AppColors.iconColor, size: 20),
+      textColor: AppColors.whiteColor,
+      hintTextColor: AppColors.hintTextColor,
+    );
+  }
+
+  Widget _buildPasswordController() {
+    return CustomTextField(
+      controller: _passwordController,
+      validator: AppValidation.checkText,
+      keyboardType: TextInputType.text,
+      hintText: "Password",
       prefixIcon: Icon(Icons.lock, color: AppColors.iconColor, size: 20),
+      textColor: AppColors.whiteColor,
+      hintTextColor: AppColors.hintTextColor,
       suffixIcon: IconButton(
         icon: Icon(
           _obscurePassword ? Icons.visibility_off : Icons.visibility,
@@ -230,32 +269,17 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     );
   }
 
-  Widget _builAddressTextField() {
-    return CustomTextField(
-      controller: _addressController,
-      hintText: "Address",
-      validator: AppValidation.checkText,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(
-        Icons.location_history,
-        color: AppColors.iconColor,
-        size: 20,
-      ),
-    );
-  }
-
-  Widget _buildSignupButton() {
-    final signupState = ref.watch(signupProvider);
+  Widget _buildLawyerSignupButton() {
+    final lawyerSignupState = ref.watch(lawyerSignupProvider);
     return SizedBox(
       width: double.infinity,
       height: 14.w,
-      child: signupState is SignupLoading
+      child: lawyerSignupState is LawyerSignupLoading
           ? const Center(child: LoadingIndicator())
           : CustomButton(
               text: 'Signup',
               fontSize: 16.sp,
-              onPressed: _signup,
+              onPressed: _lawyerSignup,
               textColor: AppColors.blackColor,
               gradient: AppColors.buttonGradientColor,
               fontWeight: FontWeight.w600,
@@ -276,7 +300,7 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
               style: TextStyle(color: AppColors.iconColor),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  context.go(RouteNames.loginScreen);
+                  context.go(RouteNames.lawyerloginScreen);
                 },
             ),
           ],
@@ -285,16 +309,17 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     );
   }
 
-  void _showErrorDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (_) => CustomDialog(
-        title: title,
-        description: message,
-        buttonText: "OK",
-        icon: Icons.error_outline,
-        buttonGradient: const [Color(0xFFFF6B6B), Color(0xFFC0392B)],
-        onPressed: () => Navigator.pop(context),
+  Widget _buildBackButton() {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 1.h),
+      child: TextButton(
+        onPressed: () {
+          context.go(RouteNames.incomingUserScreen);
+        },
+        child: CustomText(
+          title: 'Back to Main Menu',
+          color: AppColors.hintTextColor,
+        ),
       ),
     );
   }

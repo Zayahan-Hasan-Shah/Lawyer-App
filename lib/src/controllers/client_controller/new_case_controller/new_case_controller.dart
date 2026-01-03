@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/src/services/notification_services/notification_service.dart';
-import 'package:lawyer_app/src/states/new_case_state/new_case_state.dart';
+import 'package:lawyer_app/src/states/client_states/new_case_state/new_case_state.dart';
 
 class NewCaseController extends StateNotifier<NewCaseState> {
   NewCaseController() : super(NewCaseInitial());

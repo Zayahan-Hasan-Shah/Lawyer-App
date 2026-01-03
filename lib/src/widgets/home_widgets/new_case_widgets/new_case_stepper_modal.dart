@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/providers/client_provider/case_category_provider/case_category_provider.dart';
-import 'package:lawyer_app/src/providers/new_case_provider/new_case_provider.dart';
+import 'package:lawyer_app/src/providers/client_provider/new_case_provider/new_case_provider.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_button.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_dialog.dart';
 import 'package:lawyer_app/src/widgets/home_widgets/new_case_widgets/appointment_step.dart';

@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/src/core/mock_data/cases_categories.dart';
 import 'package:lawyer_app/src/models/client_model/cases_categories_model/case_categories_model.dart';
-import 'package:lawyer_app/src/states/category_state/category_state.dart';
+import 'package:lawyer_app/src/states/client_states/category_state/category_state.dart';
 
 class CategoriesController extends StateNotifier<CategoryState> {
   CategoriesController() : super(CategoryInitialState());

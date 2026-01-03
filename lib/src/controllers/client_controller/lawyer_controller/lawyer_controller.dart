@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/src/core/constants/api_url.dart';
 import 'package:lawyer_app/src/core/utils/storage/storage_service.dart';
 import 'package:lawyer_app/src/models/lawyer_model/lawyer_model.dart';
-import 'package:lawyer_app/src/states/lawyer_states/lawyer_state.dart';
+import 'package:lawyer_app/src/states/client_states/lawyer_states/lawyer_state.dart';
 import 'package:http/http.dart' as http;
 
 class LawyerController extends StateNotifier<LawyerState> {

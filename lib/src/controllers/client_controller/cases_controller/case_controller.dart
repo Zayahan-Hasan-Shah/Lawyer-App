@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/src/core/mock_data/cases_data.dart';
 import 'package:lawyer_app/src/models/client_model/case_model/case_model.dart';
-import 'package:lawyer_app/src/states/case_states/case_states.dart';
+import 'package:lawyer_app/src/states/client_states/case_states/case_states.dart';
 
 class CaseController extends StateNotifier<CaseStates> {
   CaseController() : super(CaseInitialState());

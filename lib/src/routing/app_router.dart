@@ -14,6 +14,8 @@ import 'package:lawyer_app/src/views/client/bottom_navigation/screens/home/home_
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/notifications/notificaiotn_screen.dart';
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/search/search_screen.dart';
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/video/video_screen.dart';
+import 'package:lawyer_app/src/views/lawyer/auth/lawyer_login.dart';
+import 'package:lawyer_app/src/views/lawyer/auth/lawyer_signup.dart';
 import 'package:lawyer_app/src/views/on_boarding/on_boarding_screen.dart';
 import 'package:lawyer_app/src/views/on_boarding/splash_screen.dart';
 import 'package:lawyer_app/src/views/profile/lawyer_profile_screen.dart';
@@ -107,6 +109,18 @@ class AppRouter {
           // 2. Return the screen with the required (non-nullable) lawyer
           return LawyerProfileScreen(lawyer: lawyer);
         },
+      ),
+
+      // Lawyer's Screens
+      GoRoute(
+        path: RouteNames.lawyerSignupScreen,
+        name: RouteNames.lawyerSignupScreen,
+        builder: (context, state) => LawyerSignup(),
+      ),
+      GoRoute(
+        path: RouteNames.lawyerloginScreen,
+        name: RouteNames.lawyerloginScreen,
+        builder: (context, state) => LawyerLogin(),
       ),
     ],
   );

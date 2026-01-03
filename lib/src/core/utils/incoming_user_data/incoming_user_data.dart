@@ -25,7 +25,9 @@ List<Map<String, dynamic>> incomingUserData = [
     "icon": Icons.person,
     "title": "Lawyer",
     "description": "Subscribe as a \nLawyer",
-    "onTap": (WidgetRef ref, BuildContext context) {},
+    "onTap": (WidgetRef ref, BuildContext context) {
+      context.go(RouteNames.lawyerSignupScreen);
+    },
   },
   {
     "id": 4,

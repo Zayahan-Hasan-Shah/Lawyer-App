@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/src/core/constants/api_url.dart';
-import 'package:lawyer_app/src/states/auth_states/signup_state.dart';
+import 'package:lawyer_app/src/states/client_states/auth_states/signup_state.dart';
 import 'package:http/http.dart' as http;
 
 class SignupController extends StateNotifier<SignupState> {

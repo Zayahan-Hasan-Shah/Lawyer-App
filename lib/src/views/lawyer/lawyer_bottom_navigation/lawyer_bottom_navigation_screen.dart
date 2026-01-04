@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/models/bottom_navigation_model/bottom_nav_item.dart';
 import 'package:lawyer_app/src/providers/lawyer_provider/lawyer_bottom_navigation_provider/lawyer_bottom_navigation_provider.dart';
 import 'package:lawyer_app/src/views/lawyer/lawyer_bottom_navigation/screens/lawyer_dashboard_screen.dart';
@@ -22,11 +23,14 @@ class _LawyerBottomNavigationScreenState
     const Center(child: Text("Settings")),
     const LawyerProfileScreen(),
   ];
+
   @override
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(lawyerBottomNavigationProvider);
 
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      // extendBody: true, // This allows content to extend behind bottom nav
       body: _screens[currentIndex],
       bottomNavigationBar: CustomBottomNavbar(
         currentIndex: currentIndex,

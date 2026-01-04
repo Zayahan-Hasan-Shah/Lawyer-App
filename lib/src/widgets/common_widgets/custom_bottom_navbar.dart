@@ -18,45 +18,78 @@ class CustomBottomNavbar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 9.h,
-      decoration: BoxDecoration(
-        gradient: AppColors.buttonGradientColor,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
-            offset: const Offset(0, -2),
+      height: 8.5.h,
+      padding: EdgeInsets.only(bottom: 0.9.h),
+      color: Colors.transparent, // Transparent background
+      child: Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.symmetric(horizontal: 4.w),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AppColors.buttonGradientColor.colors.first.withOpacity(0.95),
+              AppColors.buttonGradientColor.colors.last.withOpacity(0.95),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        ],
+          borderRadius: BorderRadius.circular(30),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.20),
+              blurRadius: 16,
+              spreadRadius: 1,
+              offset: const Offset(0, 8),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(30),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: items.asMap().entries.map((entry) {
+              final index = entry.key;
+              final item = entry.value;
+              final isActive = index == currentIndex;
+
+              return Expanded(
+                child: InkWell(
+                  onTap: () => onTap(index),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _buildNavIcon(
+                        icon: isActive ? item.activeIcon : item.inactiveIcon,
+                        isActive: isActive,
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
       ),
-      child: BottomNavigationBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        currentIndex: currentIndex,
-        type: BottomNavigationBarType.fixed,
-        onTap: onTap,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black.withOpacity(0.6),
-        selectedLabelStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 12.sp,
-        ),
-        unselectedLabelStyle: TextStyle(
-          fontWeight: FontWeight.w800,
-          fontSize: 12.sp,
-        ),
-        items: items.asMap().entries.map((entry) {
-          final index = entry.key;
-          final item = entry.value;
-          final isActive = index == currentIndex;
+    );
+  }
 
-          return BottomNavigationBarItem(
-
-            icon: Icon(item.inactiveIcon, size: 36),
-            activeIcon: Icon(item.activeIcon, size: 36),
-            label: item.label,
-          );
-        }).toList(),
+  Widget _buildNavIcon({required IconData icon, required bool isActive}) {
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      height: 5.h,
+      curve: Curves.easeOutCubic,
+      padding: EdgeInsets.symmetric(
+        horizontal: isActive ? 4.w : 0,
+        vertical: 0.5.h,
+      ),
+      decoration: BoxDecoration(
+        color: isActive ? Colors.black.withOpacity(0.12) : Colors.transparent,
+        borderRadius: BorderRadius.circular(100),
+      ),
+      child: Icon(
+        icon,
+        size: 3.h,
+        color: isActive ? Colors.black : Colors.black.withOpacity(0.7),
       ),
     );
   }

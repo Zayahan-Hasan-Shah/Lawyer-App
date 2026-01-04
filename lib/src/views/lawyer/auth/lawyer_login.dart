@@ -46,6 +46,7 @@ class _LawyerLoginState extends ConsumerState<LawyerLogin> {
             .lawyerLogin(email: email, password: password);
         if (response != null) {
           _showSnackBar("Login Successfull", isError: false);
+          context.go(RouteNames.lawyerBottomNavigationScreen);
           log("LoginScreen → Login response: $response");
         } else {
           _showSnackBar("Login Failed", isError: true);

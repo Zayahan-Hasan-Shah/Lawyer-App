@@ -1,5 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/src/models/lawyer_model/lawyer_model.dart';
+import 'package:lawyer_app/src/models/lawyer_model/profile_model/lawyer_self_profile_model.dart';
 import 'package:lawyer_app/src/routing/route_names.dart';
 import 'package:lawyer_app/src/views/auth/forgot_password_screen.dart';
 import 'package:lawyer_app/src/views/auth/incoming_user_type_screen.dart';
@@ -16,9 +17,12 @@ import 'package:lawyer_app/src/views/client/bottom_navigation/screens/search/sea
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/video/video_screen.dart';
 import 'package:lawyer_app/src/views/lawyer/auth/lawyer_login.dart';
 import 'package:lawyer_app/src/views/lawyer/auth/lawyer_signup.dart';
+import 'package:lawyer_app/src/views/lawyer/lawyer_bottom_navigation/lawyer_bottom_navigation_screen.dart';
 import 'package:lawyer_app/src/views/on_boarding/on_boarding_screen.dart';
 import 'package:lawyer_app/src/views/on_boarding/splash_screen.dart';
 import 'package:lawyer_app/src/views/profile/lawyer_profile_screen.dart';
+import 'package:lawyer_app/src/views/lawyer/lawyer_bottom_navigation/screens/lawyer_profile_screen.dart'
+    as SelfProfile;
 
 class AppRouter {
   static final router = GoRouter(
@@ -121,6 +125,16 @@ class AppRouter {
         path: RouteNames.lawyerloginScreen,
         name: RouteNames.lawyerloginScreen,
         builder: (context, state) => LawyerLogin(),
+      ),
+      GoRoute(
+        path: RouteNames.lawyerBottomNavigationScreen,
+        name: RouteNames.lawyerBottomNavigationScreen,
+        builder: (context, state) => const LawyerBottomNavigationScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.lawyerPrfoileScreen,
+        name: RouteNames.lawyerPrfoileScreen,
+        builder: (context, state) => const SelfProfile.LawyerProfileScreen(),
       ),
     ],
   );

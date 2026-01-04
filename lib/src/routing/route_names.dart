@@ -20,4 +20,6 @@ class RouteNames {
   static const lawyerSignupScreen = '/lawyersignupscreen';
   static const lawyerloginScreen = '/lawyerloginscreen';
   static const lawyerDashboardScreen = '/lawyerDashboardScreen';
+  static const lawyerBottomNavigationScreen = '/lawyerbottomnavigationscreen';
+  static const lawyerPrfoileScreen = '/lawyerprofilescreen';
 }

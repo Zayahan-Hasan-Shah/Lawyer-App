@@ -68,6 +68,7 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
     ref.listenManual<LawyerSignupState>(lawyerSignupProvider, (prev, next) {
       if (next is LawyerSignupSuccess) {
         _showSuccessDialog(next.message);
+        context.go(RouteNames.lawyerloginScreen);
       } else if (next is LawyerSignupFailure) {
         _showErrorDialog("Signup Failed", next.error);
       }

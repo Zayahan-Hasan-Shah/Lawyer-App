@@ -10,6 +10,8 @@ class DisposedLawyerCasesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (cases.isEmpty) {
       return Center(
         child: CustomText(
@@ -28,18 +30,22 @@ class DisposedLawyerCasesTab extends StatelessWidget {
         return Container(
           margin: EdgeInsets.only(bottom: 2.5.h),
           decoration: BoxDecoration(
-            color: AppColors.inputBackgroundColor.withOpacity(0.9),
+            color: colorScheme.surface.withOpacity(0.95),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.greenAccent.withOpacity(0.6),
-              width: 1.5,
+              color: colorScheme.secondary.withOpacity(0.55),
+              width: 1.4,
             ),
           ),
           child: Padding(
             padding: EdgeInsets.all(5.w),
             child: Row(
               children: [
-                Icon(Icons.gavel_rounded, size: 8.h, color: Colors.greenAccent),
+                Icon(
+                  Icons.gavel_rounded,
+                  size: 8.h,
+                  color: colorScheme.secondary,
+                ),
                 SizedBox(width: 4.w),
                 Expanded(
                   child: Column(
@@ -47,7 +53,7 @@ class DisposedLawyerCasesTab extends StatelessWidget {
                     children: [
                       CustomText(
                         title: c.category,
-                        color: AppColors.brightYellowColor,
+                        color: colorScheme.secondary,
                         weight: FontWeight.bold,
                         fontSize: 14.sp,
                       ),
@@ -56,7 +62,7 @@ class DisposedLawyerCasesTab extends StatelessWidget {
                         title: c.title,
                         fontSize: 16.sp,
                         weight: FontWeight.bold,
-                        color: AppColors.whiteColor,
+                        color: colorScheme.onSurface,
                         maxLines: 2,
                       ),
                       SizedBox(height: 0.5.h),
@@ -70,7 +76,7 @@ class DisposedLawyerCasesTab extends StatelessWidget {
                       SizedBox(height: 0.5.h),
                       CustomText(
                         title: 'Disposed: ${c.disposedDate ?? '-'}',
-                        color: Colors.greenAccent,
+                        color: colorScheme.secondary,
                         weight: FontWeight.w600,
                         fontSize: 14.sp,
                       ),

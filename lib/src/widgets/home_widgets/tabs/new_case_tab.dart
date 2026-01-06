@@ -14,17 +14,23 @@ class NewCaseTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.add_circle, size: 10.h, color: AppColors.iconColor),
+          Icon(
+            Icons.add_circle,
+            size: 10.h,
+            color: colorScheme.primary,
+          ),
           SizedBox(height: 1.h),
           CustomText(
             title: "File New Case",
             fontSize: 24.sp,
             weight: FontWeight.bold,
-            color: AppColors.whiteColor,
+            color: colorScheme.onBackground,
           ),
           SizedBox(height: 1.h),
           CustomButton(
@@ -42,8 +48,8 @@ class NewCaseTab extends ConsumerWidget {
                 );
               }
             },
-            gradient: AppColors.buttonGradientColor,
-            textColor: AppColors.blackColor,
+            backgroundColor: colorScheme.primary,
+            textColor: colorScheme.onPrimary,
             fontSize: 16.sp,
             borderRadius: 24,
             width: 50.w,

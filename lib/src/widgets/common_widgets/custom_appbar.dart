@@ -36,8 +36,8 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Use the passed color, otherwise fall back to the default background
-    final bg = backgroundColor ?? AppColors.backgroundColor;
+    final colorScheme = Theme.of(context).colorScheme;
+    final bg = backgroundColor ?? colorScheme.surface.withOpacity(0.9);
 
     return AppBar(
       backgroundColor: bg,
@@ -59,8 +59,8 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       leading: isDrawwer
           ? _buildDrawerButton(context)
           : isBack
-          ? _buildBackButton(context)
-          : null,
+              ? _buildBackButton(context)
+              : null,
     );
   }
 
@@ -70,7 +70,8 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildDrawerButton(BuildContext context) {
     return IconButton(
       style: IconButton.styleFrom(
-        backgroundColor: AppColors.inputBackgroundColor,
+        backgroundColor:
+            Theme.of(context).colorScheme.surface.withOpacity(0.65),
         padding: EdgeInsets.all(0.8.h),
       ),
       icon: Image.asset(
@@ -89,7 +90,8 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   Widget _buildBackButton(BuildContext context) {
     return IconButton(
       style: IconButton.styleFrom(
-        backgroundColor: AppColors.inputBackgroundColor,
+        backgroundColor:
+            Theme.of(context).colorScheme.surface.withOpacity(0.65),
       ),
       icon: const Icon(
         Icons.chevron_left,

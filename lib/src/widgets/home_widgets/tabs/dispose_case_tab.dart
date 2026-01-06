@@ -10,6 +10,8 @@ class DisposedCasesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (cases.isEmpty) {
       return Center(
         child: CustomText(
@@ -28,11 +30,11 @@ class DisposedCasesTab extends StatelessWidget {
         return Container(
           margin: EdgeInsets.only(bottom: 2.5.h),
           decoration: BoxDecoration(
-            color: AppColors.inputBackgroundColor.withOpacity(0.9),
+            color: colorScheme.surface.withOpacity(0.95),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Colors.greenAccent.withOpacity(0.6),
-              width: 1.5,
+              color: colorScheme.secondary.withOpacity(0.55),
+              width: 1.4,
             ),
           ),
           child: Padding(
@@ -42,7 +44,7 @@ class DisposedCasesTab extends StatelessWidget {
                 Icon(
                   Icons.check_circle_rounded,
                   size: 60,
-                  color: Colors.greenAccent,
+                  color: colorScheme.secondary,
                 ),
                 SizedBox(width: 4.w),
                 Expanded(
@@ -53,7 +55,7 @@ class DisposedCasesTab extends StatelessWidget {
                         title: c.title,
                         fontSize: 16.sp,
                         weight: FontWeight.bold,
-                        color: AppColors.whiteColor,
+                        color: colorScheme.onSurface,
                       ),
                       SizedBox(height: 0.5.h),
                       CustomText(
@@ -64,7 +66,7 @@ class DisposedCasesTab extends StatelessWidget {
                       SizedBox(height: 1.h),
                       CustomText(
                         title: "Disposed: ${c.disposedDate}",
-                        color: Colors.greenAccent,
+                        color: colorScheme.secondary,
                         weight: FontWeight.w600,
                       ),
                       if (c.outcome != null)
@@ -81,13 +83,13 @@ class DisposedCasesTab extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.h),
                   decoration: BoxDecoration(
-                    color: AppColors.brightYellowColor.withOpacity(0.2),
+                    color: colorScheme.secondary.withOpacity(0.18),
                     borderRadius: BorderRadius.circular(24),
-                    border: Border.all(color: AppColors.brightYellowColor),
+                    border: Border.all(color: colorScheme.secondary),
                   ),
                   child: CustomText(
                     title: c.category,
-                    color: AppColors.brightYellowColor,
+                    color: colorScheme.secondary,
                     weight: FontWeight.bold,
                     fontSize: 14.sp,
                   ),

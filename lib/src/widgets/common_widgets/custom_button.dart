@@ -34,6 +34,8 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     // --- Case 1: Gradient background ---
     if (gradient != null) {
       return SizedBox(
@@ -74,15 +76,19 @@ class CustomButton extends StatelessWidget {
         child: OutlinedButton(
           onPressed: onPressed,
           style: OutlinedButton.styleFrom(
-            backgroundColor: backgroundColor ?? Colors.transparent,
+            backgroundColor:
+                backgroundColor ?? colorScheme.surface.withOpacity(0.1),
             shape: RoundedRectangleBorder(
-              side: BorderSide(color: borderColor ?? Colors.black, width: 20.w),
               borderRadius: BorderRadius.circular(borderRadius ?? 8),
+            ),
+            side: BorderSide(
+              color: borderColor ?? colorScheme.primary,
+              width: 1.4,
             ),
           ),
           child: CustomText(
             title: text,
-            color: textColor ?? Colors.black,
+            color: textColor ?? colorScheme.primary,
             fontSize: fontSize ?? 14.sp,
             weight: fontWeight ?? FontWeight.normal,
           ),
@@ -97,15 +103,16 @@ class CustomButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? Theme.of(context).primaryColor,
+          backgroundColor: backgroundColor ?? colorScheme.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 8),
           ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         ),
         child: Text(
           text,
           style: TextStyle(
-            color: textColor ?? Colors.white,
+            color: textColor ?? colorScheme.onPrimary,
             fontSize: fontSize ?? 14.sp,
             fontWeight: fontWeight ?? FontWeight.normal,
           ),

@@ -135,6 +135,8 @@ class PendingCasesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (cases.isEmpty) {
       return Center(
         child: CustomText(
@@ -153,16 +155,11 @@ class PendingCasesTab extends StatelessWidget {
         return Container(
           margin: EdgeInsets.only(bottom: 2.5.h),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.inputBackgroundColor,
-                AppColors.inputBackgroundColor.withOpacity(0.8),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: colorScheme.surface.withOpacity(0.95),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.iconColor.withOpacity(0.3)),
+            border: Border.all(
+              color: colorScheme.primary.withOpacity(0.28),
+            ),
           ),
           child: InkWell(
             borderRadius: BorderRadius.circular(20),
@@ -174,16 +171,23 @@ class PendingCasesTab extends StatelessWidget {
                   Container(
                     width: 60,
                     height: 60,
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: AppColors.buttonGradientColor,
+                      gradient: LinearGradient(
+                        colors: [
+                          colorScheme.primary,
+                          colorScheme.secondary,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                     ),
                     child: Center(
                       child: CustomText(
                         title: c.caseNo.split("/").last,
                         fontSize: 14.sp,
                         weight: FontWeight.bold,
-                        color: AppColors.blackColor,
+                        color: colorScheme.onPrimary,
                       ),
                     ),
                   ),
@@ -196,7 +200,7 @@ class PendingCasesTab extends StatelessWidget {
                           title: c.title,
                           fontSize: 16.sp,
                           weight: FontWeight.bold,
-                          color: AppColors.whiteColor,
+                          color: colorScheme.onSurface,
                           maxWords: 4,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -212,12 +216,12 @@ class PendingCasesTab extends StatelessWidget {
                             Icon(
                               Icons.access_time,
                               size: 18,
-                              color: AppColors.iconColor,
+                              color: colorScheme.tertiary,
                             ),
                             SizedBox(width: 2.w),
                             CustomText(
                               title: "Next: ${c.hearingDate}",
-                              color: AppColors.brightYellowColor,
+                              color: colorScheme.secondary,
                               weight: FontWeight.w600,
                               fontSize: 14.sp,
                             ),
@@ -236,20 +240,20 @@ class PendingCasesTab extends StatelessWidget {
                       color:
                           (c.category == "Criminal"
                                   ? Colors.redAccent
-                                  : Colors.blueAccent)
-                              .withOpacity(0.2),
+                                  : Colors.tealAccent)
+                              .withOpacity(0.18),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(
                         color: c.category == "Criminal"
                             ? Colors.redAccent
-                            : Colors.blueAccent,
+                            : Colors.tealAccent,
                       ),
                     ),
                     child: CustomText(
                       title: c.category,
                       color: c.category == "Criminal"
                           ? Colors.redAccent
-                          : Colors.blueAccent,
+                          : Colors.tealAccent,
                       weight: FontWeight.bold,
                       fontSize: 15.sp,
                     ),

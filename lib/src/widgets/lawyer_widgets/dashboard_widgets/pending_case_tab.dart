@@ -11,6 +11,8 @@ class PendingLawyerCasesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     if (cases.isEmpty) {
       return Center(
         child: CustomText(
@@ -26,22 +28,20 @@ class PendingLawyerCasesTab extends StatelessWidget {
       itemCount: cases.length,
       itemBuilder: (_, i) {
         final c = cases[i];
-        final probabilityPercent = (c.winProbability * 100).round();
-        final isHighChance = probabilityPercent >= 70;
 
         return Container(
           margin: EdgeInsets.only(bottom: 2.h),
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                AppColors.inputBackgroundColor,
-                AppColors.inputBackgroundColor.withOpacity(0.8),
-              ],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: colorScheme.surface.withOpacity(0.95),
             borderRadius: BorderRadius.circular(2.h),
-            border: Border.all(color: AppColors.iconColor.withOpacity(0.3)),
+            border: Border.all(color: colorScheme.primary.withOpacity(0.28)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.35),
+                blurRadius: 18,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
           child: Padding(
             padding: EdgeInsets.all(2.w),
@@ -58,16 +58,23 @@ class PendingLawyerCasesTab extends StatelessWidget {
                         Container(
                           width: 8.h,
                           height: 8.h,
-                          decoration: const BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            gradient: AppColors.buttonGradientColor,
+                            gradient: LinearGradient(
+                              colors: [
+                                colorScheme.primary,
+                                colorScheme.secondary,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
                           ),
                           child: Center(
                             child: CustomText(
                               title: c.caseNo.split('/').last,
                               fontSize: 14.sp,
                               weight: FontWeight.bold,
-                              color: AppColors.blackColor,
+                              color: colorScheme.onPrimary,
                             ),
                           ),
                         ),
@@ -81,13 +88,13 @@ class PendingLawyerCasesTab extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: (c.category == 'Criminal'
                                     ? Colors.redAccent
-                                    : Colors.blueAccent)
-                                .withOpacity(0.2),
+                                    : Colors.tealAccent)
+                                .withOpacity(0.18),
                             borderRadius: BorderRadius.circular(1.5.w),
                             border: Border.all(
                               color: c.category == 'Criminal'
                                   ? Colors.redAccent
-                                  : Colors.blueAccent,
+                                  : Colors.tealAccent,
                             ),
                           ),
                           child: Center(
@@ -95,7 +102,7 @@ class PendingLawyerCasesTab extends StatelessWidget {
                               title: c.category,
                               color: c.category == 'Criminal'
                                   ? Colors.redAccent
-                                  : Colors.blueAccent,
+                                  : Colors.tealAccent,
                               weight: FontWeight.bold,
                               fontSize: 15.sp,
                             ),
@@ -113,7 +120,7 @@ class PendingLawyerCasesTab extends StatelessWidget {
                             title: c.title,
                             fontSize: 16.sp,
                             weight: FontWeight.bold,
-                            color: AppColors.whiteColor,
+                            color: colorScheme.onSurface,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -133,14 +140,14 @@ class PendingLawyerCasesTab extends StatelessWidget {
                                     ? Icons.videocam
                                     : Icons.meeting_room,
                                 size: 24,
-                                color: AppColors.iconColor,
+                                color: colorScheme.tertiary,
                               ),
                               SizedBox(width: 2.w),
                               Expanded(
                                 child: CustomText(
                                   title:
                                       '${c.appointmentType} appointment • Next: ${c.hearingDate ?? '-'}',
-                                  color: AppColors.brightYellowColor,
+                                  color: colorScheme.secondary,
                                   weight: FontWeight.w600,
                                   fontSize: 14.sp,
                                   maxLines: 2,
@@ -154,57 +161,7 @@ class PendingLawyerCasesTab extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 1.8.h),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 4.2.h,
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 3.w,
-                        ),
-                        decoration: BoxDecoration(
-                          color: ((probabilityPercent < 50
-                                      ? Colors.redAccent
-                                      : isHighChance
-                                          ? Colors.greenAccent
-                                          : Colors.orangeAccent)
-                                  .withOpacity(0.16)),
-                          borderRadius: BorderRadius.circular(2.w),
-                          border: Border.all(
-                            color: probabilityPercent < 50
-                                ? Colors.redAccent
-                                : isHighChance
-                                    ? Colors.greenAccent
-                                    : Colors.orangeAccent,
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomText(
-                              title: 'Win Probability',
-                              color: AppColors.lightDescriptionTextColor,
-                              fontSize: 14.sp,
-                            ),
-                            CustomText(
-                              title: '$probabilityPercent%',
-                              color: probabilityPercent < 50
-                                  ? Colors.redAccent
-                                  : isHighChance
-                                      ? Colors.greenAccent
-                                      : Colors.orangeAccent,
-                              weight: FontWeight.bold,
-                              fontSize: 14.sp,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 1.h),
+                SizedBox(height: 1.2.h),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton.icon(
@@ -212,7 +169,7 @@ class PendingLawyerCasesTab extends StatelessWidget {
                     icon: const Icon(Icons.description, color: Colors.white70),
                     label: CustomText(
                       title: 'View Documents (${c.documents.length})',
-                      color: AppColors.whiteColor,
+                      color: colorScheme.primary,
                       fontSize: 14.sp,
                     ),
                   ),
@@ -231,9 +188,9 @@ class PendingLawyerCasesTab extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (_) => Container(
-        decoration: const BoxDecoration(
-          color: AppColors.backgroundColor,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface.withOpacity(0.98),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
         padding: EdgeInsets.fromLTRB(6.w, 3.h, 6.w, 4.h),
         child: Column(
@@ -245,7 +202,10 @@ class PendingLawyerCasesTab extends StatelessWidget {
                 width: 12.w,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: AppColors.pastelYellowColor,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .primary
+                      .withOpacity(0.4),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -255,7 +215,7 @@ class PendingLawyerCasesTab extends StatelessWidget {
               title: 'Case Documents',
               fontSize: 18.sp,
               weight: FontWeight.bold,
-              color: AppColors.whiteColor,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             SizedBox(height: 1.h),
             CustomText(

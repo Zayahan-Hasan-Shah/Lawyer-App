@@ -17,34 +17,29 @@ class CustomBottomNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       height: 8.5.h,
       padding: EdgeInsets.only(bottom: 0.9.h),
-      color: Colors.transparent, // Transparent background
+      color: Colors.transparent,
       child: Container(
         alignment: Alignment.center,
         margin: EdgeInsets.symmetric(horizontal: 4.w),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AppColors.buttonGradientColor.colors.first.withOpacity(0.95),
-              AppColors.buttonGradientColor.colors.last.withOpacity(0.95),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(30),
+          color: colorScheme.surface.withOpacity(0.92),
+          borderRadius: BorderRadius.circular(26),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.20),
-              blurRadius: 16,
-              spreadRadius: 1,
-              offset: const Offset(0, 8),
+              color: Colors.black.withOpacity(0.35),
+              blurRadius: 24,
+              spreadRadius: 0,
+              offset: const Offset(0, 10),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(26),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: items.asMap().entries.map((entry) {
@@ -74,6 +69,8 @@ class CustomBottomNavbar extends StatelessWidget {
   }
 
   Widget _buildNavIcon({required IconData icon, required bool isActive}) {
+    final colorScheme = ColorScheme.fromSeed(seedColor: AppColors.brightYellowColor);
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 220),
       height: 5.h,
@@ -83,13 +80,16 @@ class CustomBottomNavbar extends StatelessWidget {
         vertical: 0.5.h,
       ),
       decoration: BoxDecoration(
-        color: isActive ? Colors.black.withOpacity(0.12) : Colors.transparent,
+        color:
+            isActive ? colorScheme.primary.withOpacity(0.15) : Colors.transparent,
         borderRadius: BorderRadius.circular(100),
       ),
       child: Icon(
         icon,
-        size: 3.h,
-        color: isActive ? Colors.black : Colors.black.withOpacity(0.7),
+        size: isActive ? 3.1.h : 2.8.h,
+        color: isActive
+            ? colorScheme.primary
+            : Colors.white.withOpacity(0.65),
       ),
     );
   }

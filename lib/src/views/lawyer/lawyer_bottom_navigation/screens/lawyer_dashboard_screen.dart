@@ -41,7 +41,7 @@ class _LawyerDashboardScreenState extends ConsumerState<LawyerDashboardScreen> {
     final caseState = ref.watch(lawyerCaseControllerProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: CustomAppbar(isDrawwer: true, logoImage: AppAssets.logoImage),
       drawer: CustomClientDrawer(),
       body: SafeArea(
@@ -77,7 +77,8 @@ class _LawyerDashboardScreenState extends ConsumerState<LawyerDashboardScreen> {
                 initial: () => const SizedBox(),
                 loading: () => const Center(
                   child: CircularProgressIndicator(
-                    color: AppColors.brightYellowColor,
+                    // use primary accent from the global theme
+                    color: null,
                     strokeWidth: 4,
                   ),
                 ),

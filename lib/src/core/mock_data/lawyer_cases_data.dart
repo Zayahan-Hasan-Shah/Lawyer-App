@@ -11,7 +11,6 @@ final Map<String, dynamic> mockLawyerCasesData = {
         "client": "Imran Ali",
         "category": "Criminal",
         "appointmentType": "Walk-in",
-        "winProbability": 0.78,
         "documents": [
           "FIR Copy",
           "Charge Sheet",
@@ -28,7 +27,6 @@ final Map<String, dynamic> mockLawyerCasesData = {
         "client": "Ahmed Khan",
         "category": "Civil",
         "appointmentType": "Video",
-        "winProbability": 0.64,
         "documents": [
           "Sale Deed",
           "Fard Copy",
@@ -45,7 +43,6 @@ final Map<String, dynamic> mockLawyerCasesData = {
         "client": "Muhammad Raza",
         "category": "Civil",
         "appointmentType": "Walk-in",
-        "winProbability": 0.42,
         "documents": [
           "Initial Petition",
           "Site Plan",
@@ -63,7 +60,6 @@ final Map<String, dynamic> mockLawyerCasesData = {
         "client": "Bilal Ahmed",
         "category": "Criminal",
         "appointmentType": "Walk-in",
-        "winProbability": 0.0,
         "documents": [
           "Judgment Copy",
           "Final Arguments Notes",
@@ -80,7 +76,6 @@ final Map<String, dynamic> mockLawyerCasesData = {
         "client": "Ali Traders",
         "category": "Civil",
         "appointmentType": "Video",
-        "winProbability": 0.0,
         "documents": [
           "Settlement Agreement",
           "Final Order",

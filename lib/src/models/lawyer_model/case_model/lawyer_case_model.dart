@@ -7,7 +7,6 @@ class LawyerCaseModel {
   final String client;
   final String category;
   final String appointmentType; // Walk-in or Video
-  final double winProbability; // 0.0 - 1.0
   final List<String> documents; // In-app documents list
   final String? hearingDate; // pending only
   final String? disposedDate; // disposed only
@@ -22,7 +21,6 @@ class LawyerCaseModel {
     required this.client,
     required this.category,
     required this.appointmentType,
-    required this.winProbability,
     required this.documents,
     this.hearingDate,
     this.disposedDate,
@@ -39,7 +37,6 @@ class LawyerCaseModel {
       client: json['client'] as String,
       category: json['category'] as String,
       appointmentType: json['appointmentType'] as String,
-      winProbability: (json['winProbability'] as num).toDouble(),
       documents: (json['documents'] as List<dynamic>)
           .map((e) => e.toString())
           .toList(),

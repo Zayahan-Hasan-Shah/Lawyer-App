@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/models/bottom_navigation_model/bottom_nav_item.dart';
@@ -17,79 +18,105 @@ class CustomBottomNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      height: 8.5.h,
-      padding: EdgeInsets.only(bottom: 0.9.h),
-      color: Colors.transparent,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 4.w,
+        vertical: 2.5.h,
+      ),
       child: Container(
-        alignment: Alignment.center,
-        margin: EdgeInsets.symmetric(horizontal: 4.w),
+        height: 8.h,
         decoration: BoxDecoration(
-          color: colorScheme.surface.withOpacity(0.92),
-          borderRadius: BorderRadius.circular(26),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.35),
-              blurRadius: 24,
-              spreadRadius: 0,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(26),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: items.asMap().entries.map((entry) {
-              final index = entry.key;
-              final item = entry.value;
-              final isActive = index == currentIndex;
-
-              return Expanded(
-                child: InkWell(
-                  onTap: () => onTap(index),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildNavIcon(
-                        icon: isActive ? item.activeIcon : item.inactiveIcon,
-                        isActive: isActive,
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }).toList(),
+          color: AppColors.kSurface.withOpacity(0.88),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(
+            color: AppColors.kEmerald.withOpacity(0.15),
+            width: 1,
           ),
         ),
-      ),
-    );
-  }
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: items.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
+                final isActive = index == currentIndex;
 
-  Widget _buildNavIcon({required IconData icon, required bool isActive}) {
-    final colorScheme = ColorScheme.fromSeed(seedColor: AppColors.brightYellowColor);
+                return Expanded(
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () => onTap(index),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOutCubic,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Icon with scale + glow effect
+                          AnimatedScale(
+                            scale: isActive ? 1.18 : 1.0,
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOutBack,
+                            child: Container(
+                              padding: EdgeInsets.all(isActive ? 10 : 8),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: isActive
+                                    ? LinearGradient(
+                                        colors: [
+                                          AppColors.kEmerald.withOpacity(0.35),
+                                          AppColors.kEmeraldDark.withOpacity(0.15),
+                                        ],
+                                      )
+                                    : null,
+                                boxShadow: isActive
+                                    ? [
+                                        BoxShadow(
+                                          color: AppColors.kEmerald.withOpacity(0.4),
+                                          blurRadius: 16,
+                                          spreadRadius: 2,
+                                        ),
+                                      ]
+                                    : null,
+                              ),
+                              child: Icon(
+                                isActive ? item.activeIcon : item.inactiveIcon,
+                                size: 26,
+                                color: isActive
+                                    ? AppColors.kEmerald
+                                    : AppColors.kTextSecondary,
+                              ),
+                            ),
+                          ),
 
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      height: 5.h,
-      curve: Curves.easeOutCubic,
-      padding: EdgeInsets.symmetric(
-        horizontal: isActive ? 4.w : 0,
-        vertical: 0.5.h,
-      ),
-      decoration: BoxDecoration(
-        color:
-            isActive ? colorScheme.primary.withOpacity(0.15) : Colors.transparent,
-        borderRadius: BorderRadius.circular(100),
-      ),
-      child: Icon(
-        icon,
-        size: isActive ? 3.1.h : 2.8.h,
-        color: isActive
-            ? colorScheme.primary
-            : Colors.white.withOpacity(0.65),
+                          // Optional small active indicator dot (modern style)
+                          if (isActive)
+                            AnimatedOpacity(
+                              opacity: 1.0,
+                              duration: const Duration(milliseconds: 400),
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Container(
+                                  width: 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.kEmerald,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ),
       ),
     );
   }

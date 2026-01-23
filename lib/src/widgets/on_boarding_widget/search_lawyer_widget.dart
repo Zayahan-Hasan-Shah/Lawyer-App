@@ -10,7 +10,7 @@ class SearchLawyerWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: AppColors.kBgDark,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

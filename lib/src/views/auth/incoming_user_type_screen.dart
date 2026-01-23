@@ -19,51 +19,81 @@ class _IncomingUserTypeScreenState extends State<IncomingUserTypeScreen> {
         MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          color: AppColors.backgroundColor
-        ),
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: isLandscape ? 18.h : 14.h,
-                    width: isLandscape ? 35.w : 45.w,
-                    child: Image.asset(
-                      AppAssets.logoImage,
-                      fit: BoxFit.contain,
-                    ),
+      backgroundColor: AppColors.kBg,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(
+              horizontal: isLandscape ? 8.w : 6.w,
+              vertical: 4.h,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Logo with subtle lift
+                Container(
+                  height: isLandscape ? 20.h : 16.h,
+                  width: isLandscape ? 38.w : 48.w,
+                  decoration: BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.kEmerald.withOpacity(0.15),
+                        blurRadius: 40,
+                        spreadRadius: 5,
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 4.h),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: isLandscape ? 3 : 2,
-                      crossAxisSpacing: 3.w,
-                      mainAxisSpacing: 3.h,
-                      childAspectRatio: isLandscape ? 1.1 : 0.8,
-                    ),
-                    itemCount: incomingUserData.length,
-                    itemBuilder: (context, index) {
-                      final info = incomingUserData[index];
-                      return Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 2.w),
-                        child: IncomingUserCard(
-                          onTap: info["onTap"],
-                          icon: info["icon"],
-                          title: info["title"],
-                          description: info["description"],
-                        ),
-                      );
-                    },
+                  child: Image.asset(AppAssets.logoImage, fit: BoxFit.contain),
+                ),
+
+                SizedBox(height: isLandscape ? 1.5.h : 2.h),
+
+                // Optional elegant title
+                Text(
+                  "Choose Your Role",
+                  style: TextStyle(
+                    color: AppColors.kTextPrimary,
+                    fontSize: 24.sp,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 1.2,
                   ),
-                  SizedBox(height: 4.h),
-                ],
-              ),
+                ),
+
+                SizedBox(height: 0.5.h),
+
+                Text(
+                  "Get started in seconds",
+                  style: TextStyle(
+                    color: AppColors.kTextSecondary,
+                    fontSize: 15.sp,
+                  ),
+                ),
+
+                SizedBox(height: isLandscape ? 2.5.h : 3.h),
+
+                GridView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: isLandscape ? 3.w : 4.w,
+                    mainAxisSpacing: 4.h,
+                    childAspectRatio: isLandscape ? 1.15 : 0.9 ,
+                  ),
+                  itemCount: incomingUserData.length,
+                  itemBuilder: (context, index) {
+                    final info = incomingUserData[index];
+                    return IncomingUserCard(
+                      onTap: info["onTap"],
+                      icon: info["icon"],
+                      title: info["title"],
+                      description: info["description"],
+                    );
+                  },
+                ),
+
+                // SizedBox(height: 6.h),
+              ],
             ),
           ),
         ),

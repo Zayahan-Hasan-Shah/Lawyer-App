@@ -1,11 +1,9 @@
-// src/views/chat/chat_detail_screen.dart
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lawyer_app/src/controllers/chat_controller/chat_controller.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
-import 'package:lawyer_app/src/models/lawyer_model/lawyer_model.dart';
+import 'package:lawyer_app/src/controllers/chat_controller/chat_controller.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
 
@@ -17,49 +15,106 @@ class ChatDetailScreen extends ConsumerWidget {
     final lawyer = ref.watch(selectedLawyerProvider);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: AppColors.inputBackgroundColor,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+          icon: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: AppColors.kEmerald.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.arrow_back_ios_new_rounded,
+              color: AppColors.kEmerald,
+            ),
+          ),
           onPressed: () => context.pop(),
         ),
         title: Row(
           children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundColor: Colors.grey.shade800,
-              child: ClipOval(
-                child: CachedNetworkImage(
-                  imageUrl: lawyer?.profilePhoto ?? '',
-                  fit: BoxFit.cover,
-                  width: 40,
-                  height: 40,
-                  placeholder: (_, __) => const CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: AppColors.iconColor,
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: AppColors.kEmerald, width: 2.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: AppColors.kEmerald.withOpacity(0.25),
+                    blurRadius: 12,
+                    spreadRadius: 2,
                   ),
-                  errorWidget: (_, __, ___) =>
-                      const Icon(Icons.person, color: Colors.white70, size: 24),
+                ],
+              ),
+              child: ClipOval(
+                child: SizedBox(
+                  width: 4.h,
+                  height: 4.h,
+                  child: CachedNetworkImage(
+                    imageUrl: lawyer?.profilePhoto ?? '',
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: AppColors.kSurface,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: AppColors.kEmerald.withOpacity(0.6),
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: AppColors.kSurface,
+                      child: Icon(
+                        Icons.person_rounded,
+                        color: AppColors.kTextSecondary,
+                        size: 3.h,
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
-            SizedBox(width: 3.w),
+            SizedBox(width: 3.5.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomText(
-                    title: '${lawyer?.firstName} ${lawyer?.lastName}',
-                    color: Colors.white,
+                    title:
+                        '${lawyer?.firstName ?? ''} ${lawyer?.lastName ?? ''}'
+                            .trim(),
                     fontSize: 16.sp,
-                    weight: FontWeight.w600,
+                    weight: FontWeight.w700,
+                    color: AppColors.kTextPrimary,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  CustomText(
-                    title: 'Online',
-                    color: AppColors.iconColor,
-                    fontSize: 12.sp,
+                  SizedBox(height: 0.3.h),
+                  Row(
+                    children: [
+                      Container(
+                        width: 2.w,
+                        height: 2.w,
+                        decoration: BoxDecoration(
+                          color: Colors.greenAccent,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.greenAccent.withOpacity(0.5),
+                              blurRadius: 8,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 2.w),
+                      CustomText(
+                        title: 'Online',
+                        fontSize: 14.sp,
+                        color: Colors.greenAccent,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -68,108 +123,135 @@ class ChatDetailScreen extends ConsumerWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.call, color: Colors.white),
+            icon: Container(
+              padding: EdgeInsets.all(1.h),
+              decoration: BoxDecoration(
+                color: AppColors.kEmerald.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(Icons.call_rounded, color: AppColors.kEmerald),
+            ),
             onPressed: () {},
           ),
           IconButton(
-            icon: const Icon(Icons.more_vert, color: Colors.white),
+            icon: Container(
+              padding: EdgeInsets.all(1.h),
+              decoration: BoxDecoration(
+                color: AppColors.kEmerald.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(
+                Icons.more_vert_rounded,
+                color: AppColors.kEmerald,
+              ),
+            ),
             onPressed: () {},
           ),
         ],
       ),
 
-      // ------------------- Chat Body -------------------
-      body: Column(
-        children: [
-          // Messages List
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-              children: [
-                _buildDateHeader('Today'),
-
-                // Received message
-                _buildReceivedMessage(
-                  'Hi! I saw your profile and I need help with a family law case.',
-                  '10:30 AM',
-                ),
-
-                // Sent message
-                _buildSentMessage(
-                  'Hello! Sure, I can help. Could you tell me more about the case?',
-                  '10:32 AM',
-                ),
-
-                // Received message
-                _buildReceivedMessage(
-                  'Yes, it’s about child custody after divorce.',
-                  '10:33 AM',
-                ),
-
-                // Sent message
-                _buildSentMessage(
-                  'Got it. I specialize in family law. Let’s schedule a call.',
-                  '10:35 AM',
-                ),
-              ],
-            ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0D1117), Color(0xFF0A1F24), Color(0xFF08151A)],
+            stops: [0.0, 0.6, 1.0],
           ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.fromLTRB(
+                    5.w,
+                    kToolbarHeight +
+                        16, // ← Important fix: reserve space for AppBar
+                    5.w,
+                    2.h,
+                  ),
+                  reverse: true, // New messages appear at the bottom
+                  children: [
+                    _buildDateHeader('Today'),
+                    _buildReceivedMessage(
+                      'Hi! I saw your profile and I need help with a family law case.',
+                      '10:30 AM',
+                    ),
+                    _buildSentMessage(
+                      'Hello! Sure, I can help. Could you tell me more about the case?',
+                      '10:32 AM',
+                    ),
+                    _buildReceivedMessage(
+                      'Yes, it’s about child custody after divorce.',
+                      '10:33 AM',
+                    ),
+                    _buildSentMessage(
+                      'Got it. I specialize in family law. Let’s schedule a call.',
+                      '10:35 AM',
+                    ),
+                  ],
+                ),
+              ),
 
-          // ------------------- Input Area -------------------
-          _buildInputArea(),
-        ],
+              // Input area (fixed at bottom)
+              _buildInputArea(),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  // -------------------------------------------------
-  // Helper: Date header
-  // -------------------------------------------------
+  // Date header
   Widget _buildDateHeader(String date) {
     return Center(
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 2.h),
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        margin: EdgeInsets.symmetric(vertical: 2.5.h),
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.h),
         decoration: BoxDecoration(
-          color: AppColors.inputBackgroundColor,
+          color: AppColors.kSurface.withOpacity(0.88),
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: AppColors.kEmerald.withOpacity(0.15)),
         ),
         child: CustomText(
           title: date,
-          color: AppColors.hintTextColor,
-          fontSize: 12.sp,
+          fontSize: 13.sp,
+          color: AppColors.kTextSecondary,
         ),
       ),
     );
   }
 
-  // -------------------------------------------------
-  // Helper: Received message (left side)
-  // -------------------------------------------------
+  // Received message (lawyer → left side, dark bubble)
   Widget _buildReceivedMessage(String text, String time) {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
-        margin: EdgeInsets.only(bottom: 1.5.h),
-        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-        decoration: const BoxDecoration(
-          color: AppColors.inputBackgroundColor,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-            bottomRight: Radius.circular(16),
+        margin: EdgeInsets.only(bottom: 2.h, right: 20.w),
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.5.h),
+        decoration: BoxDecoration(
+          color: AppColors.kSurface.withOpacity(0.94),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+            bottomRight: Radius.circular(20),
           ),
+          border: Border.all(color: AppColors.kEmerald.withOpacity(0.12)),
         ),
-        constraints: BoxConstraints(maxWidth: 75.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomText(title: text, color: Colors.white, fontSize: 15.sp),
-            SizedBox(height: 0.3.h),
+            CustomText(
+              title: text,
+              fontSize: 15.5.sp,
+              color: AppColors.kTextPrimary,
+            ),
+            SizedBox(height: 0.6.h),
             CustomText(
               title: time,
-              color: AppColors.hintTextColor,
-              fontSize: 10.sp,
+              fontSize: 11.sp,
+              color: AppColors.kTextSecondary,
             ),
           ],
         ),
@@ -177,37 +259,41 @@ class ChatDetailScreen extends ConsumerWidget {
     );
   }
 
-  // -------------------------------------------------
-  // Helper: Sent message (right side)
-  // -------------------------------------------------
+  // Sent message (client → right side, emerald gradient)
   Widget _buildSentMessage(String text, String time) {
     return Align(
       alignment: Alignment.centerRight,
       child: Container(
-        margin: EdgeInsets.only(bottom: 1.5.h),
-        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        margin: EdgeInsets.only(bottom: 2.h, left: 20.w),
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.5.h),
         decoration: BoxDecoration(
-          gradient: AppColors.buttonGradientColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-            bottomLeft: Radius.circular(16),
+          gradient: LinearGradient(
+            colors: [AppColors.kEmerald, AppColors.kEmeraldDark],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+            bottomLeft: Radius.circular(20),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.kEmerald.withOpacity(0.35),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        constraints: BoxConstraints(maxWidth: 75.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            CustomText(
-              title: text,
-              color: AppColors.blackColor,
-              fontSize: 15.sp,
-            ),
-            SizedBox(height: 0.3.h),
+            CustomText(title: text, fontSize: 15.5.sp, color: Colors.white),
+            SizedBox(height: 0.6.h),
             CustomText(
               title: time,
-              color: AppColors.blackColor.withOpacity(0.7),
-              fontSize: 10.sp,
+              fontSize: 11.sp,
+              color: Colors.white.withOpacity(0.75),
             ),
           ],
         ),
@@ -215,67 +301,106 @@ class ChatDetailScreen extends ConsumerWidget {
     );
   }
 
-  // -------------------------------------------------
-  // Helper: Message input area
-  // -------------------------------------------------
+  // Message input area
   Widget _buildInputArea() {
     final controller = TextEditingController();
+
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 1.5.h),
-      color: AppColors.inputBackgroundColor,
+      padding: EdgeInsets.symmetric(horizontal: 2.5.w, vertical: 1.h),
+      decoration: BoxDecoration(
+        color: AppColors.kSurface.withOpacity(0.94),
+        border: Border(
+          top: BorderSide(
+            color: AppColors.kEmerald.withOpacity(0.15),
+            width: 1,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 16,
+            offset: const Offset(0, -6),
+          ),
+        ],
+      ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Attach button
-          IconButton(
-            icon: const Icon(Icons.attach_file, color: AppColors.iconColor),
-            onPressed: () {},
+          Container(
+            padding: EdgeInsets.all(1.w),
+            decoration: BoxDecoration(
+              color: AppColors.kEmerald.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              icon: Icon(Icons.attach_file_rounded),
+              color: AppColors.kEmerald,
+              iconSize: 2.h,
+              onPressed: () {},
+            ),
           ),
 
-          // Text field
+          SizedBox(width: 3.w),
+
+          // Text field (glass effect)
           Expanded(
-            child: TextField(
-              controller: controller,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Type a message...',
-                hintStyle: TextStyle(
-                  color: AppColors.hintTextColor,
-                  fontSize: 15.sp,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: AppColors.backgroundColor,
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 5.w,
-                  vertical: 1.h,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(color: AppColors.kEmerald.withOpacity(0.18)),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: TextField(
+                  controller: controller,
+                  style: TextStyle(
+                    color: AppColors.kTextPrimary,
+                    fontSize: 16.sp,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Type a message...',
+                    hintStyle: TextStyle(
+                      color: AppColors.kTextSecondary,
+                      fontSize: 16.sp,
+                    ),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 2.5.w,
+                      vertical: 1.h,
+                    ),
+                  ),
+                  maxLines: 20,
+                  minLines: 1,
                 ),
               ),
             ),
           ),
 
-          SizedBox(width: 2.w),
+          SizedBox(width: 1.5.w),
 
           // Send button
           GestureDetector(
             onTap: () {
               if (controller.text.trim().isNotEmpty) {
-                // TODO: send message
+                // TODO: Send message logic here
                 controller.clear();
               }
             },
             child: Container(
-              padding: EdgeInsets.all(12),
-              decoration: const BoxDecoration(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [AppColors.kEmerald, AppColors.kEmeraldDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 shape: BoxShape.circle,
-                gradient: AppColors.buttonGradientColor,
               ),
               child: const Icon(
-                Icons.send,
-                color: AppColors.blackColor,
-                size: 20,
+                Icons.send_rounded,
+                color: Colors.white,
+                size: 26,
               ),
             ),
           ),

@@ -47,7 +47,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: AppColors.kBgDark,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: CustomAppbar(title: '', isBack: true),
@@ -58,21 +58,42 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  // width: double.infinity,
-                  child: Image.asset(
-                    AppAssets.logoImage,
-                    alignment: Alignment.center,
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 14.h,
+                        width: 38.w,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.kEmerald.withOpacity(0.18),
+                              blurRadius: 32,
+                              spreadRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: Image.asset(
+                          AppAssets.logoImage,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      SizedBox(height: 3.5.h),
+                      CustomText(
+                        title: "OTP",
+                        fontSize: 20.sp,
+                        color: AppColors.kTextPrimary,
+                      ),
+                      SizedBox(height: 0.8.h),
+                      CustomText(
+                        title: "Enter the otp we have sent to you",
+                        color: AppColors.kTextSecondary,
+                        fontSize: 16.sp,
+                      ),
+                    ],
                   ),
-                ),
-                CustomText(
-                  title: "OTP!",
-                  fontSize: 24.sp,
-                  color: AppColors.whiteColor,
-                  weight: FontWeight.bold,
                 ),
                 SizedBox(height: 2.h),
                 _buildOtpField(),
@@ -94,21 +115,21 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
       appContext: context,
       length: 6,
       keyboardType: TextInputType.number,
-      cursorColor: AppColors.iconColor,
+      cursorColor: AppColors.whiteColor,
       obscureText: false,
       textStyle: TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.bold,
-        color: AppColors.iconColor,
+        color: AppColors.kInputBg,
       ),
       pinTheme: PinTheme(
         shape: PinCodeFieldShape.box,
         borderRadius: BorderRadius.circular(12),
         fieldHeight: 55,
         fieldWidth: 55,
-        activeColor: AppColors.iconColor,
-        inactiveColor: AppColors.pastelYellowColor,
-        selectedColor: AppColors.yellowColor,
+        activeColor: AppColors.kEmerald,
+        inactiveColor: AppColors.kSurfaceElevated,
+        selectedColor: AppColors.kSilver,
         activeFillColor: AppColors.inputBackgroundColor,
         inactiveFillColor: AppColors.inputBackgroundColor,
         selectedFillColor: AppColors.inputBackgroundColor,

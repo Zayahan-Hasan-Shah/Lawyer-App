@@ -24,17 +24,43 @@ class ReviewStep extends StatelessWidget {
     this.time,
   });
 
-  Widget _reviewItem(String label, String value) {
+  Widget _reviewItem({
+    required String label,
+    required String value,
+    Color? valueColor,
+    Widget? trailing,
+  }) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 1.5.h),
+      padding: EdgeInsets.symmetric(vertical: 1.8.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 35.w,
-            child: CustomText(title: "$label:", color: AppColors.brightYellowColor, fontSize: 14.sp, weight: FontWeight.w600),
+            width: 38.w,
+            child: CustomText(
+              title: label,
+              fontSize: 15.sp,
+              weight: FontWeight.w600,
+              color: AppColors.kTextSecondary,
+            ),
           ),
-          Expanded(child: CustomText(title: value, color: AppColors.whiteColor, fontSize: 14.sp)),
+          Expanded(
+            child: Row(
+              children: [
+                Expanded(
+                  child: CustomText(
+                    title: value,
+                    fontSize: 15.sp,
+                    weight: FontWeight.w600,
+                    color: valueColor ?? AppColors.kTextPrimary,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (trailing != null) trailing,
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -42,50 +68,116 @@ class ReviewStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formattedDateTime = date != null && time != null
+        ? "${DateFormat('dd MMM yyyy').format(date!)} at ${time!.format(context)}"
+        : "Not selected";
+
     return Container(
-      padding: EdgeInsets.all(5.w),
+      padding: EdgeInsets.all(2.5.w),
       decoration: BoxDecoration(
-        color: AppColors.inputBackgroundColor,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.brightYellowColor.withOpacity(0.2), width: 1.5),
+        color: AppColors.kSurface.withOpacity(0.92),
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: AppColors.kEmerald.withOpacity(0.18),
+          width: 0.5.w,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.35),
+            blurRadius: 24,
+            offset: const Offset(0, 12),
+          ),
+          BoxShadow(
+            color: AppColors.kEmerald.withOpacity(0.08),
+            blurRadius: 40,
+            spreadRadius: 2,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(3.w),
-                decoration: BoxDecoration(gradient: AppColors.buttonGradientColor, shape: BoxShape.circle),
-                child: Icon(Icons.assignment_outlined, color: AppColors.blackColor, size: 24.sp),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      AppColors.kEmerald.withOpacity(0.35),
+                      AppColors.kEmeraldDark.withOpacity(0.15),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Icon(
+                  Icons.assignment_turned_in_rounded,
+                  color: Colors.white,
+                  size: 4.h,
+                ),
               ),
-              SizedBox(width: 3.w),
-              CustomText(title: "Review Your Application", fontSize: 18.sp, weight: FontWeight.bold, color: AppColors.whiteColor),
+              SizedBox(width: 4.w),
+              CustomText(
+                title: "Review Your Application",
+                fontSize: 18.sp,
+                weight: FontWeight.w800,
+                color: AppColors.kTextPrimary,
+              ),
             ],
           ),
+
+          SizedBox(height: 3.5.h),
+          Divider(color: AppColors.kEmerald.withOpacity(0.15), height: 1),
+
           SizedBox(height: 3.h),
-          _reviewItem("Category", category ?? "Not selected"),
-          _reviewItem("Method", method == "upload" ? "Document Upload" : "Continue via WhatsApp"),
+
+          // Review items
+          _reviewItem(
+            label: "Case Category",
+            value: category ?? "Not selected",
+            valueColor: category != null ? AppColors.kEmerald : null,
+          ),
+
+          _reviewItem(
+            label: "Submission Method",
+            value: method == "upload" ? "Document Upload" : "WhatsApp Chat",
+            valueColor: method != null ? AppColors.kEmerald : null,
+          ),
+
           if (method == "upload") ...[
-            _reviewItem("Documents Attached", files.isEmpty ? "No documents attached" : "${files.length} file(s)"),
+            _reviewItem(
+              label: "Documents Attached",
+              value: files.isEmpty ? "No documents" : "${files.length} file(s)",
+              valueColor: files.isNotEmpty ? AppColors.kEmerald : null,
+            ),
+
             if (files.isNotEmpty)
               Padding(
-                padding: EdgeInsets.only(left: 8.w, top: 1.h, bottom: 2.h),
+                padding: EdgeInsets.only(left: 38.w, top: 0.8.h, bottom: 2.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: files.map((f) {
                     final name = f.path.split(RegExp(r'[/\\]')).last;
                     return Padding(
-                      padding: EdgeInsets.symmetric(vertical: 0.5.h),
+                      padding: EdgeInsets.symmetric(vertical: 0.6.h),
                       child: Row(
                         children: [
-                          Icon(Icons.insert_drive_file, size: 16.sp, color: AppColors.brightYellowColor),
-                          SizedBox(width: 2.w),
+                          Icon(
+                            Icons.insert_drive_file_rounded,
+                            size: 18,
+                            color: AppColors.kEmerald,
+                          ),
+                          SizedBox(width: 2.5.w),
                           Expanded(
-                            child: CustomText(
-                              title: name,
-                              fontSize: 13.sp,
-                              color: AppColors.whiteColor.withOpacity(0.85),
+                            child: Text(
+                              name,
+                              style: TextStyle(
+                                color: AppColors.kTextPrimary,
+                                fontSize: 14.sp,
+                              ),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -97,21 +189,40 @@ class ReviewStep extends StatelessWidget {
                 ),
               ),
           ],
-          _reviewItem("Appointment Type", appointmentType == "video" ? "Video Call (Paid)" : "Walk-in Appointment"),
-          if (appointmentType == "walkin" && date != null && time != null)
-            _reviewItem("Date & Time", "${DateFormat('dd MMM yyyy').format(date!)} at ${time!.format(context)}"),
+
+          _reviewItem(
+            label: "Appointment Type",
+            value: appointmentType == "video"
+                ? "Video Call (Paid)"
+                : "Walk-in Appointment",
+            valueColor: appointmentType != null ? AppColors.kEmerald : null,
+          ),
+
+          if (appointmentType == "walkin")
+            _reviewItem(
+              label: "Preferred Date & Time",
+              value: formattedDateTime,
+              valueColor: (date != null && time != null)
+                  ? AppColors.kEmerald
+                  : null,
+            ),
+
           if (appointmentType == "video")
             Padding(
-              padding: EdgeInsets.only(left: 8.w, top: 1.h),
+              padding: EdgeInsets.only(left: 38.w, top: 1.h),
               child: Row(
                 children: [
-                  Icon(Icons.info_outline, size: 16.sp, color: AppColors.brightYellowColor),
-                  SizedBox(width: 2.w),
+                  Icon(
+                    Icons.info_outline_rounded,
+                    size: 20,
+                    color: AppColors.kEmerald,
+                  ),
+                  SizedBox(width: 2.5.w),
                   Expanded(
                     child: CustomText(
-                      title: "Payment required before call",
-                      fontSize: 13.sp,
-                      color: AppColors.lightDescriptionTextColor,
+                      title: "Payment required before scheduling video call",
+                      fontSize: 13.8.sp,
+                      color: AppColors.kTextSecondary,
                     ),
                   ),
                 ],

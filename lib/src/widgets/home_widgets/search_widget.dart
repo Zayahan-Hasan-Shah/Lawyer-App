@@ -46,47 +46,27 @@
 //     );
 //   }
 // }
-
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/providers/client_provider/home_screen_provider/search_provider.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text_field.dart';
-import 'package:sizer/sizer.dart';
 
-/// A reusable search bar widget.
-///
-/// Can be used across the app (home, lawyer list, search screens, etc.)
-/// Supports Riverpod integration or custom onChanged callbacks.
 class SearchWidget extends ConsumerStatefulWidget {
-  /// Placeholder text inside the search bar
   final String hintText;
-
-  /// Optional: Whether to use Riverpod search provider
   final bool useSearchProvider;
-
-  /// Optional: Custom onChanged callback (for manual handling)
   final ValueChanged<String>? onChanged;
-
-  /// Optional: Leading icon (defaults to search)
   final IconData? prefixIcon;
-
-  /// Optional: Text color for input
   final Color? textColor;
-
-  /// Optional: Hint text color
   final Color? hintTextColor;
-
-  /// Optional: Background color (if you want to override)
   final Color? backgroundColor;
-
-  /// Optional: Controller (if external state management is needed)
   final TextEditingController? controller;
 
   const SearchWidget({
     super.key,
-    this.hintText = "Search...",
+    this.hintText = "Search lawyers, cases...",
     this.useSearchProvider = true,
     this.onChanged,
     this.prefixIcon,
@@ -101,49 +81,72 @@ class SearchWidget extends ConsumerStatefulWidget {
 }
 
 class _SearchWidgetState extends ConsumerState<SearchWidget> {
-  late TextEditingController _internalController;
+  late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    _internalController = widget.controller ?? TextEditingController();
+    _controller = widget.controller ?? TextEditingController();
   }
 
   @override
   void dispose() {
     if (widget.controller == null) {
-      _internalController.dispose();
+      _controller.dispose();
     }
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Only use provider if requested
     final searchQueryNotifier = widget.useSearchProvider
-        ? ref.watch(searchQueryProvider.notifier)
+        ? ref.read(searchQueryProvider.notifier)
         : null;
 
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 2.h),
-      child: CustomTextField(
-        controller: _internalController,
-        hintText: widget.hintText,
-        textColor: widget.textColor ?? AppColors.whiteColor,
-        hintTextColor: widget.hintTextColor ?? AppColors.hintTextColor,
-        suffixIcon: Icon(
-          widget.prefixIcon ?? Icons.search,
-          color: AppColors.iconColor,
-          size: 20,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppColors.kEmerald.withOpacity(0.18),
+          width: 1.2,
         ),
-        onChanged: (value) {
-          if (widget.useSearchProvider) {
-            searchQueryNotifier!.state = value.trim();
-          }
-          if (widget.onChanged != null) {
-            widget.onChanged!(value.trim());
-          }
-        },
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: CustomTextField(
+            controller: _controller,
+            hintText: widget.hintText,
+            textColor: widget.textColor ?? AppColors.kTextPrimary,
+            hintTextColor: widget.hintTextColor ?? AppColors.kTextSecondary,
+            prefixIcon: Padding(
+              padding: const EdgeInsets.only(left: 16),
+              child: Icon(
+                widget.prefixIcon ?? Icons.search_rounded,
+                color: AppColors.kEmerald,
+                size: 26,
+              ),
+            ),
+            fillColor:
+                widget.backgroundColor ?? AppColors.kSurface.withOpacity(0.85),
+            onChanged: (value) {
+              final trimmed = value.trim();
+              if (widget.useSearchProvider) {
+                searchQueryNotifier?.state = trimmed;
+              }
+              widget.onChanged?.call(trimmed);
+            },
+            borderRadius: 20,
+          ),
+        ),
       ),
     );
   }

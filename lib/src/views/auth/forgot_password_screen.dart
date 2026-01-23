@@ -58,40 +58,57 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: AppColors.kBgDark,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: CustomAppbar(title: '', isBack: true),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(2.h),
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.h),
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  // width: double.infinity,
-                  child: Image.asset(
-                    AppAssets.logoImage,
-                    alignment: Alignment.center,
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 14.h,
+                        width: 38.w,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.kEmerald.withOpacity(0.18),
+                              blurRadius: 32,
+                              spreadRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: Image.asset(
+                          AppAssets.logoImage,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      SizedBox(height: 3.h),
+                      CustomText(
+                        title: "Forgot Password!",
+                        fontSize: 24.sp,
+                        color: AppColors.whiteColor,
+                        weight: FontWeight.bold,
+                      ),
+                      SizedBox(height: 2.h),
+                      CustomText(
+                        title: "Enter email address to get a verification code",
+                        fontSize: 15.sp,
+                        color: AppColors.lightDescriptionTextColor,
+                        weight: FontWeight.bold,
+                      ),
+                    ],
                   ),
                 ),
-                CustomText(
-                  title: "Forgot Password!",
-                  fontSize: 24.sp,
-                  color: AppColors.whiteColor,
-                  weight: FontWeight.bold,
-                ),
-                SizedBox(height: 2.h),
-                CustomText(
-                  title: "Enter email address to get a verification code",
-                  fontSize: 15.sp,
-                  color: AppColors.lightDescriptionTextColor,
-                  weight: FontWeight.bold,
-                ),
+
                 SizedBox(height: 2.h),
                 _builEmailTextField(),
                 SizedBox(height: 2.h),
@@ -107,11 +124,12 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   Widget _builEmailTextField() {
     return CustomTextField(
       controller: _emailController,
-      hintText: "Email",
+      hintText: "Email Address",
+      prefixIcon: Icon(Icons.mail_rounded, color: AppColors.kEmerald, size: 22),
       validator: AppValidation.validateEmail,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.mail, color: AppColors.iconColor, size: 20),
+      keyboardType: TextInputType.emailAddress,
+      textColor: AppColors.kTextPrimary,
+      hintTextColor: AppColors.kTextSecondary,
     );
   }
 
@@ -127,9 +145,13 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
               fontSize: 16.sp,
               onPressed: _forgotPassword,
               textColor: AppColors.blackColor,
-              gradient: AppColors.buttonGradientColor,
-              fontWeight: FontWeight.w600,
-              borderRadius: 30,
+              gradient: LinearGradient(
+                colors: [AppColors.kEmerald, AppColors.kEmeraldDark],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              fontWeight: FontWeight.w700,
+              borderRadius: 16,
             ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
 
@@ -37,31 +38,69 @@ class CustomButton extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     // --- Case 1: Gradient background ---
+    // if (gradient != null) {
+    //   return SizedBox(
+    //     width: width,
+    //     height: height,
+    //     child: DecoratedBox(
+    //       decoration: BoxDecoration(
+    //         gradient: gradient,
+    //         borderRadius: BorderRadius.circular(borderRadius ?? 8),
+    //       ),
+    //       child: ElevatedButton(
+    //         style: ElevatedButton.styleFrom(
+    //           backgroundColor: Colors.transparent,
+    //           shadowColor: Colors.transparent,
+    //           shape: RoundedRectangleBorder(
+    //             borderRadius: BorderRadius.circular(borderRadius ?? 8),
+    //           ),
+    //         ),
+    //         onPressed: onPressed,
+    //         child: Text(
+    //           text,
+    //           style: TextStyle(
+    //             color: textColor ?? Colors.white,
+    //             fontSize: fontSize ?? 14.sp,
+    //             fontWeight: fontWeight ?? FontWeight.normal,
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
+
     if (gradient != null) {
-      return SizedBox(
+      return Container(
         width: width,
-        height: height,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            gradient: gradient,
-            borderRadius: BorderRadius.circular(borderRadius ?? 8),
-          ),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              ),
+        height: height ?? 56,
+        decoration: BoxDecoration(
+          gradient: gradient,
+          borderRadius: BorderRadius.circular(borderRadius ?? 16),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.kEmerald.withOpacity(0.35),
+              blurRadius: 16,
+              offset: const Offset(0, 6),
             ),
-            onPressed: onPressed,
-            child: Text(
-              text,
-              style: TextStyle(
-                color: textColor ?? Colors.white,
-                fontSize: fontSize ?? 14.sp,
-                fontWeight: fontWeight ?? FontWeight.normal,
-              ),
+          ],
+        ),
+        child: ElevatedButton(
+          onPressed: onPressed,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(borderRadius ?? 16),
+            ),
+            elevation: 0,
+          ),
+          child: Text(
+            text,
+            style: TextStyle(
+              color: textColor ?? Colors.white,
+              fontSize: fontSize ?? 16.sp,
+              fontWeight: fontWeight ?? FontWeight.w700,
+              letterSpacing: 0.5,
             ),
           ),
         ),

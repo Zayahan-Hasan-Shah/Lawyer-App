@@ -37,160 +37,214 @@ class _LawyerLoginState extends ConsumerState<LawyerLogin> {
   }
 
   Future<void> _lawyerLogin() async {
-    if (_formKey.currentState?.validate() ?? false) {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
-      try {
-        final response = await ref
-            .read(lawyerLoginProvider.notifier)
-            .lawyerLogin(email: email, password: password);
-        if (response != null) {
-          _showSnackBar("Login Successfull", isError: false);
-          context.go(RouteNames.lawyerBottomNavigationScreen);
-          log("LoginScreen → Login response: $response");
-        } else {
-          _showSnackBar("Login Failed", isError: true);
-        }
-      } catch (e) {
-        log("LoginScreen → Exception during Login: $e");
+    if (!(_formKey.currentState?.validate() ?? false)) return;
+
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+
+    try {
+      final response = await ref
+          .read(lawyerLoginProvider.notifier)
+          .lawyerLogin(email: email, password: password);
+
+      if (response != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text("Login Successful"),
+            backgroundColor: Colors.green.shade700,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        );
+        context.go(RouteNames.lawyerBottomNavigationScreen);
+      } else {
+        _showErrorSnackBar("Invalid credentials");
       }
+    } catch (e) {
+      log("Login error: $e");
+      _showErrorSnackBar("Something went wrong. Please try again.");
     }
   }
 
-  void _showSnackBar(String message, {bool isError = false}) {
+  void _showErrorSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
-        duration: const Duration(seconds: 4),
+        backgroundColor: Colors.red.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(lawyerLoginProvider) is LawyerLoginLoading;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 1.h),
-        child: TextButton(
-          onPressed: () {
-            context.go(RouteNames.incomingUserScreen);
-          },
-          child: CustomText(
-            title: 'Back to Main Menu',
-            color: AppColors.hintTextColor,
-          ),
-        ),
-      ),
+      backgroundColor: AppColors.kBgDark, // deep dark background
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(2.h),
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.h),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  // width: double.infinity,
-                  child: Image.asset(
-                    AppAssets.logoImage,
-                    alignment: Alignment.center,
+                // Logo + Header
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 14.h,
+                        width: 38.w,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.kEmerald.withOpacity(0.18),
+                              blurRadius: 32,
+                              spreadRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: Image.asset(
+                          AppAssets.logoImage,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      SizedBox(height: 3.5.h),
+                      CustomText(
+                        title: "Welcome",
+                        fontSize: 20.sp,
+                        color: AppColors.kTextPrimary,
+                      ),
+                      SizedBox(height: 0.8.h),
+                      CustomText(
+                        title: "Sign in to access your cases",
+                        color: AppColors.kTextSecondary,
+                        fontSize: 16.sp,
+                      ),
+                    ],
                   ),
                 ),
-                CustomText(
-                  title: "Sign In",
-                  fontSize: 24.sp,
-                  color: AppColors.whiteColor,
-                  weight: FontWeight.bold,
+
+                SizedBox(height: 6.h),
+
+                // Fields
+                CustomTextField(
+                  controller: _emailController,
+                  hintText: "Email Address",
+                  prefixIcon: Icon(
+                    Icons.mail_rounded,
+                    color: AppColors.kEmerald,
+                    size: 22,
+                  ),
+                  validator: AppValidation.validateEmail,
+                  keyboardType: TextInputType.emailAddress,
+                  textColor: AppColors.kTextPrimary,
+                  hintTextColor: AppColors.kTextSecondary,
                 ),
-                SizedBox(height: 2.h),
-                _builEmailTextField(),
-                SizedBox(height: 1.5.h),
-                _builPasswordTextField(),
-                SizedBox(height: 3.h),
-                _buildSignupButton(),
-                SizedBox(height: 2.h),
-                _signupTagLine(),
+
+                SizedBox(height: 2.4.h),
+
+                CustomTextField(
+                  controller: _passwordController,
+                  hintText: "Password",
+                  obscureText: _obscurePassword,
+                  validator: AppValidation.checkText,
+                  textColor: AppColors.kTextPrimary,
+                  hintTextColor: AppColors.kTextSecondary,
+                  prefixIcon: Icon(
+                    Icons.lock_rounded,
+                    color: AppColors.kEmerald,
+                    size: 22,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
+                      color: AppColors.kEmerald.withOpacity(0.8),
+                      size: 22,
+                    ),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                  ),
+                ),
+
+                SizedBox(height: 4.5.h),
+
+                // Login Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: isLoading
+                      ? const Center(
+                          child: LoadingIndicator(color: AppColors.kEmerald),
+                        )
+                      : CustomButton(
+                          text: 'Sign In',
+                          onPressed: _lawyerLogin,
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.kEmerald,
+                              AppColors.kEmeraldDark,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          textColor: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                          borderRadius: 16,
+                        ),
+                ),
+
+                SizedBox(height: 4.h),
+
+                // Signup link
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Don't have an account? ",
+                      style: TextStyle(
+                        color: AppColors.kTextSecondary,
+                        fontSize: 15.sp,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Sign Up',
+                          style: TextStyle(
+                            color: AppColors.kEmerald,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () =>
+                                context.go(RouteNames.lawyerSignupScreen),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 5.h),
+
+                // Back to role selection
+                TextButton(
+                  onPressed: () => context.go(RouteNames.incomingUserScreen),
+                  child: Text(
+                    '← Back to Role Selection',
+                    style: TextStyle(
+                      color: AppColors.kTextSecondary,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _builEmailTextField() {
-    return CustomTextField(
-      controller: _emailController,
-      hintText: "Email",
-      validator: AppValidation.validateEmail,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.mail, color: AppColors.iconColor, size: 20),
-    );
-  }
-
-  Widget _builPasswordTextField() {
-    return CustomTextField(
-      controller: _passwordController,
-      hintText: "Password",
-      obscureText: _obscurePassword,
-      validator: AppValidation.checkText,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.lock, color: AppColors.iconColor, size: 20),
-      suffixIcon: IconButton(
-        icon: Icon(
-          _obscurePassword ? Icons.visibility_off : Icons.visibility,
-          color: AppColors.iconColor,
-        ),
-        onPressed: () {
-          setState(() {
-            _obscurePassword = !_obscurePassword;
-            log("LoginScreen → Password visibility: $_obscurePassword");
-          });
-        },
-      ),
-    );
-  }
-
-  Widget _buildSignupButton() {
-    final loginState = ref.watch(lawyerLoginProvider);
-    return SizedBox(
-      width: double.infinity,
-      height: 14.w,
-      child: loginState is LawyerLoginLoading
-          ? const Center(child: LoadingIndicator())
-          : CustomButton(
-              text: 'Sign In',
-              fontSize: 16.sp,
-              onPressed: _lawyerLogin,
-              textColor: AppColors.blackColor,
-              gradient: AppColors.buttonGradientColor,
-              fontWeight: FontWeight.w600,
-              borderRadius: 30,
-            ),
-    );
-  }
-
-  Widget _signupTagLine() {
-    return Center(
-      child: RichText(
-        text: TextSpan(
-          text: "Don't have a  account?",
-          style: TextStyle(color: AppColors.hintTextColor, fontSize: 16.sp),
-          children: [
-            TextSpan(
-              text: ' Sign up',
-              style: TextStyle(color: AppColors.iconColor),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  context.go(RouteNames.lawyerSignupScreen);
-                },
-            ),
-          ],
         ),
       ),
     );

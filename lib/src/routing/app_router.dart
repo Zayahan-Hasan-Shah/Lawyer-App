@@ -11,7 +11,7 @@ import 'package:lawyer_app/src/views/client/bottom_navigation/bottom_navigation_
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/chat/chat.dart';
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/chat/chat_screen.dart';
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/home/home_screen.dart';
-import 'package:lawyer_app/src/views/client/bottom_navigation/screens/notifications/notificaiotn_screen.dart';
+import 'package:lawyer_app/src/views/client/bottom_navigation/screens/notifications/notification_screen.dart';
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/search/search_screen.dart';
 import 'package:lawyer_app/src/views/client/bottom_navigation/screens/video/video_screen.dart';
 import 'package:lawyer_app/src/views/lawyer/auth/lawyer_login.dart';
@@ -100,7 +100,7 @@ class AppRouter {
       GoRoute(
         path: RouteNames.notificationScreen,
         name: RouteNames.notificationScreen,
-        builder: (context, state) => const NotificaiotnScreen(),
+        builder: (context, state) => const NotificationScreen(),
       ),
       GoRoute(
         path: RouteNames.lawyerScreen,

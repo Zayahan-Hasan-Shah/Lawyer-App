@@ -6,8 +6,8 @@ import 'package:lawyer_app/src/routing/route_names.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
 
-class CustomClientDrawer extends StatelessWidget {
-  const CustomClientDrawer({super.key});
+class CustomLawyerDrawer extends StatelessWidget {
+  const CustomLawyerDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -55,17 +55,17 @@ class CustomClientDrawer extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
-                        Icons.home_rounded,
+                        Icons.gavel_rounded,
                         color: AppColors.kEmerald,
                         size: 28,
                       ),
                     ),
                     SizedBox(width: 4.w),
                     CustomText(
-                      title: 'Client Panel',
+                      title: 'Lawyer Panel',
                       fontSize: 20.sp,
                       weight: FontWeight.w800,
-                      color: AppColors.whiteColor,
+                      color: AppColors.kTextPrimary,
                     ),
                   ],
                 ),
@@ -81,20 +81,38 @@ class CustomClientDrawer extends StatelessWidget {
 
               SizedBox(height: 2.h),
 
-              // Drawer items (placeholder for future items)
+              // Drawer items (you can add more later)
               _buildDrawerItem(
-                icon: Icons.dashboard_customize_rounded,
+                icon: Icons.dashboard_rounded,
                 title: 'Dashboard',
                 onTap: () {
                   Navigator.pop(context);
+                  // already on dashboard
                 },
               ),
 
-              // TODO: Add more drawer items here as needed
+              // Placeholder for future items
+              _buildDrawerItem(
+                icon: Icons.description_rounded,
+                title: 'My Cases',
+                onTap: () {
+                  Navigator.pop(context);
+                  // navigate if needed
+                },
+              ),
+
+              _buildDrawerItem(
+                icon: Icons.person_rounded,
+                title: 'Profile',
+                onTap: () {
+                  Navigator.pop(context);
+                  // context.go(RouteNames.lawyerProfile);
+                },
+              ),
 
               const Spacer(),
 
-              // Logout item styled like lawyer drawer
+              // Logout section
               Padding(
                 padding: EdgeInsets.fromLTRB(6.w, 2.h, 6.w, 5.h),
                 child: _buildDrawerItem(
@@ -147,40 +165,37 @@ class CustomClientDrawer extends StatelessWidget {
     );
   }
 
-  void _confirmAndLogout(BuildContext context) async {
-    final rootContext = context;
-
-    final bool? confirmed = await showDialog<bool>(
-      context: rootContext,
-      barrierDismissible: true,
+  Future<void> _confirmAndLogout(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
       builder: (dialogContext) {
         return AlertDialog(
           backgroundColor: AppColors.kSurface.withOpacity(0.96),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: const Text(
+          title: Text(
             'Logout',
-            style: TextStyle(color: AppColors.kTextPrimary, fontWeight: FontWeight.w700),
+            style: TextStyle(
+              color: AppColors.kTextPrimary,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-          content: const Text(
-            'Are you sure you want to logout?',
+          content: Text(
+            'Are you sure you want to sign out?',
             style: TextStyle(color: AppColors.kTextSecondary),
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text(
+              onPressed: () => Navigator.pop(dialogContext, false),
+              child: Text(
                 'Cancel',
                 style: TextStyle(color: AppColors.kTextSecondary),
               ),
             ),
             TextButton(
-              onPressed: () => Navigator.of(dialogContext).pop(true),
-              child: const Text(
-                'Logout',
-                style: TextStyle(color: Colors.redAccent),
-              ),
+              onPressed: () => Navigator.pop(dialogContext, true),
+              child: Text('Logout', style: TextStyle(color: Colors.redAccent)),
             ),
           ],
         );
@@ -189,8 +204,8 @@ class CustomClientDrawer extends StatelessWidget {
 
     if (confirmed == true) {
       await StorageService.instance.clearAllAuthData();
-      Navigator.of(rootContext).pop();
-      rootContext.goNamed(RouteNames.incomingUserScreen);
+      Navigator.pop(context); // close drawer
+      context.go(RouteNames.incomingUserScreen);
     }
   }
 }

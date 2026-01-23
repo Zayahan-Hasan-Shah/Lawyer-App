@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -24,9 +25,14 @@ class UploadStep extends StatefulWidget {
 }
 
 class _UploadStepState extends State<UploadStep> {
-  void _showSnackBar(String message) {
+  void _showSnackBar(String message, {bool isError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: Colors.red[700]),
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isError ? Colors.red.shade700 : Colors.green.shade700,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
     );
   }
 
@@ -39,11 +45,13 @@ class _UploadStepState extends State<UploadStep> {
     for (var xFile in picked) {
       final file = File(xFile.path);
       if (await file.length() <= 5 * 1024 * 1024) {
+        // 5MB limit
         validFiles.add(file);
       } else {
-        _showSnackBar("Image ${xFile.name} exceeds 5MB");
+        _showSnackBar("Image '${xFile.name}' exceeds 5MB limit");
       }
     }
+
     if (validFiles.isNotEmpty) {
       widget.onFilesChanged([...widget.selectedFiles, ...validFiles]);
     }
@@ -53,7 +61,16 @@ class _UploadStepState extends State<UploadStep> {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'png', 'jpg', 'jpeg'],
+      allowedExtensions: [
+        'pdf',
+        'doc',
+        'docx',
+        'xls',
+        'xlsx',
+        'png',
+        'jpg',
+        'jpeg',
+      ],
     );
 
     if (result == null) return;
@@ -65,10 +82,11 @@ class _UploadStepState extends State<UploadStep> {
         if (file.lengthSync() <= 5 * 1024 * 1024) {
           validFiles.add(file);
         } else {
-          _showSnackBar("${pf.name} exceeds 5MB");
+          _showSnackBar("${pf.name} exceeds 5MB limit");
         }
       }
     }
+
     if (validFiles.isNotEmpty) {
       widget.onFilesChanged([...widget.selectedFiles, ...validFiles]);
     }
@@ -77,30 +95,70 @@ class _UploadStepState extends State<UploadStep> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Upload area / file list
+        // Upload area title
+        CustomText(
+          title: "Upload Case Documents",
+          fontSize: 20.sp,
+          weight: FontWeight.w700,
+          color: AppColors.kTextPrimary,
+        ),
+        SizedBox(height: 0.8.h),
+        CustomText(
+          title: "Supported formats: PDF, Word, Excel, Images (Max 5MB each)",
+          fontSize: 14.sp,
+          color: AppColors.kTextSecondary,
+        ),
+        SizedBox(height: 3.h),
+
+        // Upload drop zone / file list
         Container(
+          width: double.infinity,
           padding: EdgeInsets.all(5.w),
           decoration: BoxDecoration(
-            color: AppColors.inputBackgroundColor,
+            color: AppColors.kSurface.withOpacity(0.92),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.brightYellowColor.withOpacity(0.2), width: 1.5),
+            border: Border.all(
+              color: AppColors.kEmerald.withOpacity(0.25),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
+            ],
           ),
           child: widget.selectedFiles.isEmpty
               ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      padding: EdgeInsets.all(6.w),
-                      decoration: BoxDecoration(color: AppColors.brightYellowColor.withOpacity(0.1), shape: BoxShape.circle),
-                      child: Icon(Icons.cloud_upload_outlined, size: 60.sp, color: AppColors.brightYellowColor),
+                      padding: EdgeInsets.all(5.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.kEmerald.withOpacity(0.12),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.cloud_upload_rounded,
+                        size: 60,
+                        color: AppColors.kEmerald,
+                      ),
                     ),
-                    SizedBox(height: 2.h),
-                    CustomText(title: "Upload your documents", fontSize: 18.sp, weight: FontWeight.w600, color: AppColors.whiteColor),
+                    SizedBox(height: 2.5.h),
+                    CustomText(
+                      title: "Drag & drop or tap to upload",
+                      fontSize: 17.sp,
+                      weight: FontWeight.w600,
+                      color: AppColors.kTextPrimary,
+                    ),
                     SizedBox(height: 1.h),
                     CustomText(
-                      title: "Images, PDF, Word, Excel (Max 5MB each)",
-                      fontSize: 12.sp,
-                      color: AppColors.lightDescriptionTextColor,
+                      title: "PDF, DOC, XLS, PNG, JPG (Max 5MB per file)",
+                      fontSize: 13.5.sp,
+                      color: AppColors.kTextSecondary,
                       alignText: TextAlign.center,
                     ),
                   ],
@@ -112,24 +170,71 @@ class _UploadStepState extends State<UploadStep> {
                   itemBuilder: (_, i) {
                     final file = widget.selectedFiles[i];
                     final fileName = file.path.split(RegExp(r'[/\\]')).last;
-                    final isImage = ['.png', '.jpg', '.jpeg'].any((ext) => fileName.toLowerCase().endsWith(ext));
+                    final isImage = [
+                      '.png',
+                      '.jpg',
+                      '.jpeg',
+                    ].any((ext) => fileName.toLowerCase().endsWith(ext));
+
                     return Container(
-                      margin: EdgeInsets.only(bottom: 2.h),
-                      padding: EdgeInsets.all(3.w),
-                      decoration: BoxDecoration(color: AppColors.backgroundColor, borderRadius: BorderRadius.circular(12)),
+                      margin: EdgeInsets.only(bottom: 1.8.h),
+                      padding: EdgeInsets.all(3.5.w),
+                      decoration: BoxDecoration(
+                        color: AppColors.kInputBg.withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: AppColors.kEmerald.withOpacity(0.2),
+                        ),
+                      ),
                       child: Row(
                         children: [
                           Container(
-                            padding: EdgeInsets.all(2.w),
-                            decoration: BoxDecoration(color: AppColors.brightYellowColor.withOpacity(0.2), borderRadius: BorderRadius.circular(8)),
-                            child: Icon(isImage ? Icons.image : Icons.description, color: AppColors.brightYellowColor, size: 24.sp),
+                            padding: const EdgeInsets.all(12),
+                            decoration: BoxDecoration(
+                              color: AppColors.kEmerald.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              isImage
+                                  ? Icons.image_rounded
+                                  : Icons.description_rounded,
+                              color: AppColors.kEmerald,
+                              size: 28,
+                            ),
                           ),
-                          SizedBox(width: 3.w),
-                          Expanded(child: CustomText(title: fileName, fontSize: 14.sp, color: AppColors.whiteColor, maxLines: 2, overflow: TextOverflow.ellipsis)),
+                          SizedBox(width: 4.w),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  title: fileName,
+                                  fontSize: 15.sp,
+                                  color: AppColors.kTextPrimary,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: 0.4.h),
+                                Text(
+                                  "${(file.lengthSync() / 1024 / 1024).toStringAsFixed(1)} MB • ${isImage ? 'Image' : 'Document'}",
+                                  style: TextStyle(
+                                    color: AppColors.kTextSecondary,
+                                    fontSize: 12.5.sp,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           IconButton(
-                            icon: Icon(Icons.close, color: Colors.red[400]),
+                            icon: Icon(
+                              Icons.close_rounded,
+                              color: Colors.redAccent,
+                              size: 26,
+                            ),
                             onPressed: () {
-                              final newList = List<File>.from(widget.selectedFiles)..removeAt(i);
+                              final newList = List<File>.from(
+                                widget.selectedFiles,
+                              )..removeAt(i);
                               widget.onFilesChanged(newList);
                             },
                           ),
@@ -139,38 +244,64 @@ class _UploadStepState extends State<UploadStep> {
                   },
                 ),
         ),
-        SizedBox(height: 4.h),
+
+        SizedBox(height: 4.5.h),
+
+        // Action Buttons
         Row(
           children: [
             Expanded(
               child: CustomButton(
                 text: "Gallery",
                 onPressed: _pickImageFromGallery,
-                gradient: AppColors.buttonGradientColor,
-                textColor: AppColors.blackColor,
+                gradient: LinearGradient(
+                  colors: [AppColors.kEmerald, AppColors.kEmeraldDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                textColor: Colors.white,
                 fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                borderRadius: 16,
               ),
             ),
             SizedBox(width: 3.w),
             Expanded(
               child: CustomButton(
-                text: "Files",
+                text: "Choose Files",
                 onPressed: _pickFiles,
-                backgroundColor: AppColors.inputBackgroundColor,
-                textColor: AppColors.whiteColor,
+                gradient: LinearGradient(
+                  colors: [AppColors.kEmerald, AppColors.kEmeraldDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                textColor: Colors.white,
                 fontSize: 16.sp,
+                fontWeight: FontWeight.w700,
+                borderRadius: 16,
               ),
             ),
           ],
         ),
+
         if (widget.selectedFiles.isNotEmpty) ...[
-          SizedBox(height: 3.h),
-          CustomButton(
-            text: "Continue",
-            onPressed: widget.onContinue,
-            gradient: AppColors.buttonGradientColor,
-            textColor: AppColors.blackColor,
-            fontSize: 18.sp,
+          SizedBox(height: 4.h),
+          SizedBox(
+            width: double.infinity,
+            height: 58,
+            child: CustomButton(
+              text: "Continue",
+              onPressed: widget.onContinue,
+              gradient: LinearGradient(
+                colors: [AppColors.kEmerald, AppColors.kEmeraldDark],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              textColor: Colors.white,
+              fontSize: 17.sp,
+              fontWeight: FontWeight.w700,
+              borderRadius: 16,
+            ),
           ),
         ],
       ],

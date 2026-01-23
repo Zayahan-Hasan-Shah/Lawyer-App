@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,6 +37,8 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
   String? _selectedCourt;
   String? _selectedCategory;
 
+  late final ProviderSubscription<LawyerSignupState> _signupListener;
+
   final List<Map<String, String>> lawyerCategories = [
     {"court": "Supreme Court", "category": "Platinum"},
     {"court": "High Court", "category": "Gold"},
@@ -53,6 +53,7 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
 
   @override
   void dispose() {
+    _signupListener.close();
     _fullNameController.dispose();
     _emailController.dispose();
     _barCouncilNumberController.dispose();
@@ -65,7 +66,8 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
   @override
   void initState() {
     super.initState();
-    ref.listenManual<LawyerSignupState>(lawyerSignupProvider, (prev, next) {
+    _signupListener =
+        ref.listenManual<LawyerSignupState>(lawyerSignupProvider, (prev, next) {
       if (next is LawyerSignupSuccess) {
         _showSuccessDialog(next.message);
         context.go(RouteNames.lawyerloginScreen);
@@ -149,50 +151,115 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(lawyerSignupProvider) is LawyerSignupLoading;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
+      backgroundColor: AppColors.kBgDark,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(1.h),
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  // width: double.infinity,
-                  child: Image.asset(
-                    AppAssets.logoImage,
-                    alignment: Alignment.center,
+                // Logo + Title
+                Center(
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 14.h,
+                        width: 40.w,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.kEmerald.withOpacity(0.2),
+                              blurRadius: 20,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Image.asset(
+                          AppAssets.logoImage,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      SizedBox(width: 4.w),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            title: "Lawyer\nRegistration",
+                            color: AppColors.kTextPrimary,
+                            fontSize: 20.sp,
+                            weight: FontWeight.w800,
+                            maxLines: 2,
+                          ),
+                          // SizedBox(height: 0.4.h),
+                          CustomText(
+                            title: "Join the professional\nlegal network",
+                            color: AppColors.kTextSecondary,
+                            fontSize: 16.sp,
+                            maxLines: 2,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-                CustomText(
-                  title: "Sign Up",
-                  fontSize: 24.sp,
-                  color: AppColors.whiteColor,
-                  weight: FontWeight.bold,
+                SizedBox(height: 4.h),
+                // Fields with better spacing
+                _buildField(
+                  "Full Name",
+                  _fullNameController,
+                  Icons.person,
+                  AppValidation.checkText,
                 ),
-                SizedBox(height: 1.h),
-                _buildFullNameController(),
-                SizedBox(height: 1.h),
-                _buildEmailController(),
-                SizedBox(height: 1.h),
-                _buildCategoryDropdown(),
-                SizedBox(height: 1.h),
-                _buildBarCouncilController(),
-                SizedBox(height: 1.h),
-                _buildPhoneNumber(),
-                SizedBox(height: 1.h),
-                _buildYearOfEnroController(),
-                SizedBox(height: 1.h),
-                _buildPasswordController(),
-                SizedBox(height: 1.h),
-                _buildLawyerSignupButton(),
-                SizedBox(height: 1.h),
-                _loginTagLine(),
                 SizedBox(height: 2.h),
-                _buildBackButton(),
+                _buildField(
+                  "Email Address",
+                  _emailController,
+                  Icons.mail,
+                  AppValidation.validateEmail,
+                  keyboardType: TextInputType.emailAddress,
+                ),
+                SizedBox(height: 2.h),
+                _buildCategoryDropdown(),
+                SizedBox(height: 2.h),
+                _buildField(
+                  "Bar Council Number",
+                  _barCouncilNumberController,
+                  Icons.qr_code_scanner,
+                  AppValidation.checkText,
+                  keyboardType: TextInputType.number,
+                ),
+                SizedBox(height: 2.h),
+                _buildField(
+                  "Phone Number",
+                  _phoneNumberController,
+                  Icons.phone,
+                  AppValidation.validatePhoneNumber,
+                  keyboardType: TextInputType.phone,
+                ),
+                SizedBox(height: 2.h),
+                _buildField(
+                  "Year of Enrollment",
+                  _yearOfEnrollmentController,
+                  Icons.calendar_today,
+                  AppValidation.checkText,
+                  keyboardType: TextInputType.number,
+                ),
+                SizedBox(height: 2.h),
+                _buildPasswordField(),
+                SizedBox(height: 3.h),
+                // Button
+                _buildLawyerSignupButton(isLoading),
+                SizedBox(height: 1.5.h),
+                // Login link
+                Center(child: _loginTagLine()),
+                SizedBox(height: 2.h),
+                // Back
+                Center(child: _buildBackButton()),
               ],
             ),
           ),
@@ -201,91 +268,39 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
     );
   }
 
-  Widget _buildFullNameController() {
+  Widget _buildField(
+    String hint,
+    TextEditingController controller,
+    IconData icon,
+    String? Function(String?)? validator, {
+    TextInputType? keyboardType,
+  }) {
     return CustomTextField(
-      controller: _fullNameController,
-      validator: AppValidation.checkText,
-      keyboardType: TextInputType.name,
-      hintText: "Full Name",
-      prefixIcon: Icon(Icons.person, color: AppColors.iconColor, size: 20),
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
+      controller: controller,
+      hintText: hint,
+      prefixIcon: Icon(icon, color: AppColors.kEmerald, size: 22),
+      validator: validator,
+      keyboardType: keyboardType,
+      textColor: AppColors.kTextPrimary,
+      hintTextColor: AppColors.kTextSecondary,
     );
   }
 
-  Widget _buildEmailController() {
-    return CustomTextField(
-      controller: _emailController,
-      validator: AppValidation.validateEmail,
-      keyboardType: TextInputType.emailAddress,
-      hintText: "Email",
-      prefixIcon: Icon(Icons.mail, color: AppColors.iconColor, size: 20),
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-    );
-  }
-
-  Widget _buildBarCouncilController() {
-    return CustomTextField(
-      controller: _barCouncilNumberController,
-      validator: AppValidation.checkText,
-      keyboardType: TextInputType.number,
-      hintText: "Bar Council Number",
-      prefixIcon: Icon(
-        Icons.qr_code_scanner,
-        color: AppColors.iconColor,
-        size: 20,
-      ),
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-    );
-  }
-
-  Widget _buildPhoneNumber() {
-    return CustomTextField(
-      controller: _phoneNumberController,
-      validator: AppValidation.validatePhoneNumber,
-      keyboardType: TextInputType.phone,
-      hintText: "Phone Number",
-      prefixIcon: Icon(Icons.phone, color: AppColors.iconColor, size: 20),
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-    );
-  }
-
-  Widget _buildYearOfEnroController() {
-    return CustomTextField(
-      controller: _yearOfEnrollmentController,
-      validator: AppValidation.checkText,
-      keyboardType: TextInputType.number,
-      hintText: "Year Of Enrollment",
-      prefixIcon: Icon(Icons.numbers, color: AppColors.iconColor, size: 20),
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-    );
-  }
-
-  Widget _buildPasswordController() {
+  Widget _buildPasswordField() {
     return CustomTextField(
       controller: _passwordController,
-      validator: AppValidation.checkText,
-      keyboardType: TextInputType.text,
-      hintText: "Password",
-      prefixIcon: Icon(Icons.lock, color: AppColors.iconColor, size: 20),
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
+      hintText: "Create Password",
+      prefixIcon: Icon(Icons.lock, color: AppColors.kEmerald, size: 22),
       obscureText: _obscurePassword,
+      validator: AppValidation.checkText,
+      textColor: AppColors.kTextPrimary,
+      hintTextColor: AppColors.kTextSecondary,
       suffixIcon: IconButton(
         icon: Icon(
           _obscurePassword ? Icons.visibility_off : Icons.visibility,
-          color: AppColors.iconColor,
+          color: AppColors.kEmerald.withOpacity(0.8),
         ),
-        onPressed: () {
-          setState(() {
-            _obscurePassword = !_obscurePassword;
-            log("LoginScreen → Password visibility: $_obscurePassword");
-          });
-        },
+        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
       ),
     );
   }
@@ -296,11 +311,11 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
       children: [
         CustomDropdown(
           items: courtNames,
-          selectedItem: _selectedCourt ?? "Select Court",
+          selectedItem: _selectedCourt,
+          hint: "Select Court",
           onChanged: (String selectedCourt) {
             setState(() {
               _selectedCourt = selectedCourt;
-              // Find corresponding category
               final selectedItem = lawyerCategories.firstWhere(
                 (item) => item["court"] == selectedCourt,
               );
@@ -310,67 +325,68 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
         ),
         if (_selectedCourt == null)
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            padding: const EdgeInsets.only(left: 16, top: 6),
             child: Text(
               "Please select your court",
-              style: TextStyle(color: Colors.red.shade300, fontSize: 12.sp),
+              style: TextStyle(
+                color: Colors.redAccent.withOpacity(0.9),
+                fontSize: 14.sp,
+              ),
             ),
           ),
       ],
     );
   }
 
-  Widget _buildLawyerSignupButton() {
-    final lawyerSignupState = ref.watch(lawyerSignupProvider);
+  Widget _buildLawyerSignupButton(bool isLoading) {
     return SizedBox(
       width: double.infinity,
-      height: 14.w,
-      child: lawyerSignupState is LawyerSignupLoading
-          ? const Center(child: LoadingIndicator())
+      height: 56,
+      child: isLoading
+          ? Center(child: LoadingIndicator(color: AppColors.kEmerald))
           : CustomButton(
-              text: 'Signup',
-              fontSize: 16.sp,
+              text: 'Create Lawyer Account',
               onPressed: _lawyerSignup,
-              textColor: AppColors.blackColor,
-              gradient: AppColors.buttonGradientColor,
-              fontWeight: FontWeight.w600,
-              borderRadius: 30,
+              gradient: LinearGradient(
+                colors: [AppColors.kEmerald, AppColors.kEmeraldDark],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              textColor: Colors.white,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+              borderRadius: 16,
             ),
     );
   }
 
+  // Keep your _loginTagLine and _buildBackButton, just update colors
   Widget _loginTagLine() {
-    return Center(
-      child: RichText(
-        text: TextSpan(
-          text: "Already have an account?",
-          style: TextStyle(color: AppColors.hintTextColor, fontSize: 16.sp),
-          children: [
-            TextSpan(
-              text: ' Sign In',
-              style: TextStyle(color: AppColors.iconColor),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  context.go(RouteNames.lawyerloginScreen);
-                },
+    return RichText(
+      text: TextSpan(
+        text: "Already registered? ",
+        style: TextStyle(color: AppColors.kTextSecondary, fontSize: 15.sp),
+        children: [
+          TextSpan(
+            text: 'Sign In',
+            style: TextStyle(
+              color: AppColors.kEmerald,
+              fontWeight: FontWeight.w600,
             ),
-          ],
-        ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = () => context.go(RouteNames.lawyerloginScreen),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildBackButton() {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 1.h),
-      child: TextButton(
-        onPressed: () {
-          context.go(RouteNames.incomingUserScreen);
-        },
-        child: CustomText(
-          title: 'Back to Main Menu',
-          color: AppColors.hintTextColor,
-        ),
+    return TextButton(
+      onPressed: () => context.go(RouteNames.incomingUserScreen),
+      child: Text(
+        '← Back to Role Selection',
+        style: TextStyle(color: AppColors.kTextSecondary, fontSize: 14.sp),
       ),
     );
   }

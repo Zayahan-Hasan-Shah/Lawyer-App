@@ -1,3 +1,45 @@
+// import 'package:flutter/material.dart';
+// import 'package:lawyer_app/src/core/constants/app_colors.dart';
+// import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
+// import 'package:sizer/sizer.dart';
+
+// class CasesTabButton extends StatelessWidget {
+//   final String title;
+//   final int index;
+//   final int selectedTab;
+//   final ValueChanged<int> onTap;
+//   const CasesTabButton({
+//     super.key,
+//     required this.title,
+//     required this.index,
+//     required this.selectedTab,
+//     required this.onTap,
+//   });
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final bool isSelected = selectedTab == index;
+//     return GestureDetector(
+//       onTap: () => onTap(index),
+//       child: AnimatedContainer(
+//         duration: const Duration(milliseconds: 250),
+//         padding: EdgeInsets.symmetric(vertical: 0.8.h, horizontal: 6.w),
+//         decoration: BoxDecoration(
+//           color: isSelected ? AppColors.brightYellowColor : Colors.transparent,
+//           borderRadius: BorderRadius.circular(12),
+//           border: Border.all(color: AppColors.brightYellowColor, width: 0.4.w),
+//         ),
+//         child: CustomText(
+//           title: title,
+//           color: isSelected ? Colors.white : AppColors.brightYellowColor,
+//           fontSize: 16.sp,
+//           weight: FontWeight.w600,
+//         ),
+//       ),
+//     );
+//   }
+// }
+
 import 'package:flutter/material.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
@@ -8,6 +50,7 @@ class CasesTabButton extends StatelessWidget {
   final int index;
   final int selectedTab;
   final ValueChanged<int> onTap;
+
   const CasesTabButton({
     super.key,
     required this.title,
@@ -18,22 +61,38 @@ class CasesTabButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isSelected = selectedTab == index;
+    final isSelected = selectedTab == index;
+
     return GestureDetector(
       onTap: () => onTap(index),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        padding: EdgeInsets.symmetric(vertical: 0.8.h, horizontal: 6.w),
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 0.8.h),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.brightYellowColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.brightYellowColor, width: 0.4.w),
+          color: isSelected
+              ? AppColors.kEmerald.withOpacity(0.22)
+              : AppColors.kSurface.withOpacity(0.6),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? AppColors.kEmerald : Colors.transparent,
+            width: 0.4,
+          ),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: AppColors.kEmerald.withOpacity(0.25),
+                    blurRadius: 8,
+                    spreadRadius: 2,
+                  ),
+                ]
+              : null,
         ),
         child: CustomText(
           title: title,
-          color: isSelected ? Colors.white : AppColors.brightYellowColor,
+          color: isSelected ? AppColors.kEmerald : AppColors.kTextSecondary,
           fontSize: 16.sp,
-          weight: FontWeight.w600,
+          weight: isSelected ? FontWeight.w700 : FontWeight.w500,
         ),
       ),
     );

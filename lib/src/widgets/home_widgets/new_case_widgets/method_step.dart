@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
@@ -16,62 +18,150 @@ class MethodStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _methodCard("Upload Document", Icons.upload_file, "upload"),
-        SizedBox(height: 3.h),
-        _methodCard("Continue via WhatsApp", Icons.message, "whatsapp"),
+        CustomText(
+          title: "How would you like to proceed?",
+          fontSize: 20.sp,
+          weight: FontWeight.w700,
+          color: AppColors.kTextPrimary,
+        ),
+        SizedBox(height: 1.h),
+        CustomText(
+          title: "Choose your preferred method to submit case details",
+          fontSize: 15.sp,
+          color: AppColors.kTextSecondary,
+          maxLines: 2,
+        ),
+        SizedBox(height: 4.h),
+
+        // Upload method card
+        _methodCard(
+          title: "Upload Documents",
+          subtitle: "Securely upload files (PDF, images, etc.)",
+          icon: Icons.upload_file_rounded,
+          value: "upload",
+        ),
+
+        SizedBox(height: 2.5.h),
+
+        // WhatsApp method card
+        _methodCard(
+          title: "Continue via WhatsApp",
+          subtitle: "Chat directly with our team for quick assistance",
+          icon: Icons.phone_enabled_sharp,
+          value: "whatsapp",
+          isWhatsApp: true,
+        ),
       ],
     );
   }
 
-  Widget _methodCard(String title, IconData icon, String value) {
+  Widget _methodCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required String value,
+    bool isWhatsApp = false,
+  }) {
     final isSelected = selectedMethod == value;
+
     return GestureDetector(
       onTap: () => onMethodSelected(value),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: EdgeInsets.all(3.w),
+        duration: const Duration(milliseconds: 320),
+        curve: Curves.easeOutCubic,
+        padding: EdgeInsets.all(2.w),
         decoration: BoxDecoration(
-          gradient: isSelected ? AppColors.buttonGradientColor : null,
-          color: isSelected ? null : AppColors.inputBackgroundColor,
+          color: AppColors.kSurface.withOpacity(0.92),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: AppColors.brightYellowColor.withOpacity(isSelected ? 0 : 0.3),
-            width: 1.5,
+            color: isSelected
+                ? AppColors.kEmerald.withOpacity(0.65)
+                : AppColors.kEmerald.withOpacity(0.15),
+            width: isSelected ? 2.2 : 1.2,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.brightYellowColor.withOpacity(0.3),
-                    blurRadius: 15,
-                    offset: const Offset(0, 5),
+                    color: AppColors.kEmerald.withOpacity(0.38),
+                    blurRadius: 20,
+                    spreadRadius: 3,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.28),
+                    blurRadius: 24,
+                    offset: const Offset(0, 10),
                   ),
                 ]
-              : null,
+              : [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.22),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                  ),
+                ],
         ),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Icon container
             Container(
-              padding: EdgeInsets.all(2.w),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: isSelected
-                    ? AppColors.blackColor.withOpacity(0.1)
-                    : AppColors.brightYellowColor.withOpacity(0.1),
-                shape: BoxShape.circle,
+                gradient: isSelected
+                    ? LinearGradient(
+                        colors: [
+                          AppColors.kEmerald.withOpacity(0.35),
+                          AppColors.kEmeraldDark.withOpacity(0.15),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : null,
+                color: isSelected ? null : AppColors.kEmerald.withOpacity(0.08),
+                borderRadius: BorderRadius.circular(16),
               ),
-              child: Icon(icon, size: 20.sp, color: isSelected ? AppColors.blackColor : AppColors.brightYellowColor),
+              child: Icon(
+                icon,
+                size: 4.h,
+                color: isSelected ? Colors.white : AppColors.kEmerald,
+              ),
             ),
-            SizedBox(width: 4.w),
+            SizedBox(width: 5.w),
+
+            // Text content
             Expanded(
-              child: CustomText(
-                title: title,
-                color: isSelected ? AppColors.blackColor : AppColors.whiteColor,
-                fontSize: 16.sp,
-                weight: FontWeight.w600,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomText(
+                    title: title,
+                    fontSize: 17.sp,
+                    weight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                    color: isSelected
+                        ? AppColors.kEmerald
+                        : AppColors.kTextPrimary,
+                  ),
+                  SizedBox(height: 0.5.h),
+                  CustomText(
+                    title: subtitle,
+                    color: AppColors.kTextSecondary,
+                    fontSize: 14.sp,
+                    maxLines: 2,
+                  ),
+                ],
               ),
             ),
-            if (isSelected) Icon(Icons.arrow_forward_ios, color: AppColors.blackColor, size: 16.sp),
+
+            // Selection indicator
+            if (isSelected)
+              Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.kEmerald,
+                size: 28,
+              ),
           ],
         ),
       ),

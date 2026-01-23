@@ -7,19 +7,27 @@ class DragHandle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(top: 2.h),
-      width: 15.w,
-      height: 5,
-      decoration: BoxDecoration(
-        gradient: AppColors.buttonGradientColor,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.brightYellowColor.withOpacity(0.3),
-            blurRadius: 8,
-          ),
-        ],
+    return Center(
+      child: Container(
+        margin: EdgeInsets.only(top: 1.5.h, bottom: 1.h),
+        width: 14.w,
+        height: 6,
+        decoration: BoxDecoration(
+          color: AppColors.kEmerald.withOpacity(0.35),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.kEmerald.withOpacity(0.28),
+              blurRadius: 12,
+              spreadRadius: 2,
+            ),
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
       ),
     );
   }

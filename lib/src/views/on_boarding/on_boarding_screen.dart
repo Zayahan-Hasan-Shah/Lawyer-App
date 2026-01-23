@@ -49,7 +49,7 @@ class _OnBoardingScreenState extends ConsumerState<OnBoardingScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
+        backgroundColor: AppColors.kBgDark,
         body: Stack(
           fit: StackFit.expand,
           children: [
@@ -70,7 +70,7 @@ class _OnBoardingScreenState extends ConsumerState<OnBoardingScreen> {
                 SizedBox(height: 2.h),
                 ShaderMask(
                   shaderCallback: (Rect bounds) {
-                    return AppColors.buttonGradientColor.createShader(bounds);
+                    return AppColors.btnLnGradColor.createShader(bounds);
                   },
                   blendMode: BlendMode.srcIn,
                   child: SmoothPageIndicator(
@@ -103,10 +103,10 @@ class _OnBoardingScreenState extends ConsumerState<OnBoardingScreen> {
                                 context.go(RouteNames.signupScreen);
                               }
                             : _onNextPressed,
-                        gradient: AppColors.buttonGradientColor,
+                        gradient: AppColors.btnLnGradColor,
                         width: double.infinity,
                         borderRadius: 30,
-                        textColor: AppColors.blackColor,
+                        textColor: AppColors.whiteColor,
                         fontSize: 16.sp,
                       ),
                       SizedBox(height: 2.h),
@@ -121,7 +121,7 @@ class _OnBoardingScreenState extends ConsumerState<OnBoardingScreen> {
                             //   _onboardingScreens.length - 1,
                             // );
                           },
-                          backgroundColor: AppColors.backgroundColor,
+                          backgroundColor: AppColors.kInputBg,
                           width: double.infinity,
                           borderRadius: 30,
                           textColor: AppColors.whiteColor,

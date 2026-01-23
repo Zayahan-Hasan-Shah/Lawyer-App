@@ -11,7 +11,6 @@ import 'package:lawyer_app/src/providers/client_provider/auth_provider/login_pro
 import 'package:lawyer_app/src/routing/route_names.dart';
 import 'package:lawyer_app/src/states/client_states/auth_states/login_state.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_button.dart';
-import 'package:lawyer_app/src/widgets/common_widgets/custom_dialog.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text_field.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/loading_indicator.dart';
@@ -47,32 +46,41 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             .login(email: email, password: password);
         if (response != null) {
           log("LoginScreen → Login response: $response");
-          showDialog(
-            context: context,
-            builder: (_) => CustomDialog(
-              title: "Success",
-              description: 'Login Successful!',
-              buttonText: "Continue",
-              icon: Icons.check_circle,
-              onPressed: () {
-                Navigator.pop(context);
-                context.go(RouteNames.bottomNavigationScreen);
-              },
-              buttonGradient: const [Color(0xFF00FF7F), Color(0xFF006400)],
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Login Successful'),
+              backgroundColor: Colors.green.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           );
+          context.go(RouteNames.bottomNavigationScreen);
         } else {
           log("LoginScreen → Login failed, response is null");
-          _showErrorDialog(
-            "Login Failed",
-            "Invalid Login details. Please try again.",
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('Invalid Login details. Please try again.'),
+              backgroundColor: Colors.red.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
           );
         }
       } catch (e, st) {
         log("LoginScreen → Exception during Login: $e\n$st");
-        _showErrorDialog(
-          "Error",
-          "An unexpected error occurred. Please try again.",
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('An unexpected error occurred. Please try again.'),
+            backgroundColor: Colors.red.shade700,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
         );
       }
     }
@@ -81,40 +89,49 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 1.h),
-        child: TextButton(
-          onPressed: () {
-            context.go(RouteNames.incomingUserScreen);
-          },
-          child: CustomText(
-            title: 'Back to Main Menu',
-            color: AppColors.hintTextColor,
-          ),
-        ),
-      ),
+      backgroundColor: AppColors.kBgDark,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(2.h),
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 4.h),
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  // width: double.infinity,
-                  child: Image.asset(
-                    AppAssets.logoImage,
-                    alignment: Alignment.center,
+                Center(
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 14.h,
+                        width: 38.w,
+                        decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.kEmerald.withOpacity(0.18),
+                              blurRadius: 32,
+                              spreadRadius: 4,
+                            ),
+                          ],
+                        ),
+                        child: Image.asset(
+                          AppAssets.logoImage,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      SizedBox(height: 3.5.h),
+                      CustomText(
+                        title: "Welcome",
+                        fontSize: 20.sp,
+                        color: AppColors.kTextPrimary,
+                      ),
+                      SizedBox(height: 0.8.h),
+                      CustomText(
+                        title: "Sign in to access your cases",
+                        color: AppColors.kTextSecondary,
+                        fontSize: 16.sp,
+                      ),
+                    ],
                   ),
-                ),
-                CustomText(
-                  title: "Sign In",
-                  fontSize: 24.sp,
-                  color: AppColors.whiteColor,
-                  weight: FontWeight.bold,
                 ),
                 SizedBox(height: 2.h),
                 _builEmailTextField(),
@@ -126,6 +143,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 _buildSignupButton(),
                 SizedBox(height: 1.h),
                 _signupTagLine(),
+                SizedBox(height: 5.h),
+
+                // Back to role selection
+                TextButton(
+                  onPressed: () => context.go(RouteNames.incomingUserScreen),
+                  child: Text(
+                    '← Back to Role Selection',
+                    style: TextStyle(
+                      color: AppColors.kTextSecondary,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -137,11 +167,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Widget _builEmailTextField() {
     return CustomTextField(
       controller: _emailController,
-      hintText: "Email",
+      hintText: "Email Address",
+      prefixIcon: Icon(Icons.mail_rounded, color: AppColors.kEmerald, size: 22),
       validator: AppValidation.validateEmail,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.mail, color: AppColors.iconColor, size: 20),
+      keyboardType: TextInputType.emailAddress,
+      textColor: AppColors.kTextPrimary,
+      hintTextColor: AppColors.kTextSecondary,
     );
   }
 
@@ -149,22 +180,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     return CustomTextField(
       controller: _passwordController,
       hintText: "Password",
-      validator: AppValidation.checkText,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
       obscureText: _obscurePassword,
-      prefixIcon: Icon(Icons.lock, color: AppColors.iconColor, size: 20),
+      validator: AppValidation.checkText,
+      textColor: AppColors.kTextPrimary,
+      hintTextColor: AppColors.kTextSecondary,
+      prefixIcon: Icon(Icons.lock_rounded, color: AppColors.kEmerald, size: 22),
       suffixIcon: IconButton(
         icon: Icon(
-          _obscurePassword ? Icons.visibility_off : Icons.visibility,
-          color: AppColors.iconColor,
+          _obscurePassword
+              ? Icons.visibility_off_rounded
+              : Icons.visibility_rounded,
+          color: AppColors.kEmerald.withOpacity(0.8),
+          size: 22,
         ),
-        onPressed: () {
-          setState(() {
-            _obscurePassword = !_obscurePassword;
-            log("LoginScreen → Password visibility: $_obscurePassword");
-          });
-        },
+        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
       ),
     );
   }
@@ -180,7 +209,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: CustomText(
             title: "Forget Password?",
             fontSize: 16.sp,
-            color: AppColors.iconColor,
+            color: AppColors.kEmerald,
             weight: FontWeight.w900,
           ),
         ),
@@ -197,12 +226,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           ? const Center(child: LoadingIndicator())
           : CustomButton(
               text: 'Sign In',
-              fontSize: 16.sp,
               onPressed: _login,
-              textColor: AppColors.blackColor,
-              gradient: AppColors.buttonGradientColor,
-              fontWeight: FontWeight.w600,
-              borderRadius: 30,
+              gradient: LinearGradient(
+                colors: [AppColors.kEmerald, AppColors.kEmeraldDark],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              textColor: Colors.white,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+              borderRadius: 16,
             ),
     );
   }
@@ -216,7 +249,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           children: [
             TextSpan(
               text: ' Sign up',
-              style: TextStyle(color: AppColors.iconColor),
+              style: TextStyle(color: AppColors.kEmerald),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   context.go(RouteNames.signupScreen);
@@ -224,20 +257,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  void _showErrorDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (_) => CustomDialog(
-        title: title,
-        description: message,
-        buttonText: "OK",
-        icon: Icons.error_outline,
-        buttonGradient: const [Color(0xFFFF6B6B), Color(0xFFC0392B)],
-        onPressed: () => Navigator.pop(context),
       ),
     );
   }

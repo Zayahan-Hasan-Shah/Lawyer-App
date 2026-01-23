@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -46,19 +44,16 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
   @override
   void initState() {
     super.initState();
-    // Listen once – show dialogs automatically
-    ref.listenManual<SignupState>(signupProvider, (previous, next) {
+    ref.listenManual<SignupState>(signupProvider, (prev, next) {
       if (next is SignupSuccess) {
         _showSuccessDialog(next.message);
       } else if (next is SignupFailure) {
         _showErrorDialog("Signup Failed", next.error);
       }
-      // Loading & Initial → do nothing
-    }, fireImmediately: false);
+    });
   }
 
   void _showSuccessDialog(String message) {
-    // clear fields for next attempt
     _nameController.clear();
     _emailController.clear();
     _phoneNumberController.clear();
@@ -69,15 +64,29 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
       context: context,
       barrierDismissible: false,
       builder: (_) => CustomDialog(
-        title: "Success",
+        title: "Account Created",
         description: message,
-        buttonText: "Continue",
-        icon: Icons.check_circle,
+        buttonText: "Continue to Login",
+        icon: Icons.check_circle_outline_rounded,
         onPressed: () {
-          Navigator.of(context).pop(); // close dialog
+          Navigator.pop(context);
           context.go(RouteNames.loginScreen);
         },
-        buttonGradient: const [Color(0xFF00FF7F), Color(0xFF006400)],
+        buttonGradient: const [Color(0xFF10B981), Color(0xFF059669)],
+      ),
+    );
+  }
+
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (_) => CustomDialog(
+        title: title,
+        description: message,
+        buttonText: "Try Again",
+        icon: Icons.error_outline_rounded,
+        buttonGradient: const [Color(0xFFFF6B6B), Color(0xFFC0392B)],
+        onPressed: () => Navigator.pop(context),
       ),
     );
   }
@@ -91,13 +100,12 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
     final password = _passwordController.text.trim();
     final address = _addressController.text.trim();
 
-    // ----> EXTRA CLIENT-SIDE CHECKS <----
     if (fullName.isEmpty ||
         email.isEmpty ||
         phone.isEmpty ||
         password.isEmpty ||
         address.isEmpty) {
-      _showErrorDialog("Validation Error", "All fields are required.");
+      _showErrorDialog("Validation Error", "Please fill all required fields.");
       return;
     }
 
@@ -114,187 +122,221 @@ class _SignupScreenState extends ConsumerState<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = ref.watch(signupProvider) is SignupLoading;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 1.h),
-        child: TextButton(
-          onPressed: () {
-            context.go(RouteNames.incomingUserScreen);
-          },
-          child: CustomText(
-            title: 'Back to Main Menu',
-            color: AppColors.hintTextColor,
-          ),
-        ),
-      ),
+      backgroundColor: AppColors.kBgDark,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(2.h),
+          padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
           child: Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Logo + Welcome Header
+                Row(
+                  children: [
+                    Container(
+                      height: 14.h,
+                      width: 40.w,
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.kEmerald.withOpacity(0.2),
+                            blurRadius: 20,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: Image.asset(
+                        AppAssets.logoImage,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    SizedBox(width: 4.w),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomText(
+                          title: "Create Your\nAccount",
+                          color: AppColors.kTextPrimary,
+                          fontSize: 20.sp,
+                          maxLines: 2,
+                          weight: FontWeight.w800,
+                        ),
+                        CustomText(
+                          title: "Join our legal\nplatform in seconds",
+                          color: AppColors.kTextSecondary,
+                          fontSize: 16.sp,
+                          maxLines: 2,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5.h),
+      
+                // Form Fields (glassmorphic style - assume CustomTextField updated)
+                CustomTextField(
+                  controller: _nameController,
+                  hintText: "Full Name",
+                  validator: AppValidation.validateFullName,
+                  prefixIcon: Icon(
+                    Icons.person_rounded,
+                    color: AppColors.kEmerald,
+                    size: 24,
+                  ),
+                  textColor: AppColors.kTextPrimary,
+                  hintTextColor: AppColors.kTextSecondary,
+                ),
+                SizedBox(height: 2.2.h),
+      
+                CustomTextField(
+                  controller: _phoneNumberController,
+                  hintText: "Phone Number",
+                  validator: AppValidation.validatePhoneNumber,
+                  keyboardType: TextInputType.phone,
+                  prefixIcon: Icon(
+                    Icons.phone_rounded,
+                    color: AppColors.kEmerald,
+                    size: 24,
+                  ),
+                  textColor: AppColors.kTextPrimary,
+                  hintTextColor: AppColors.kTextSecondary,
+                ),
+                SizedBox(height: 2.2.h),
+      
+                CustomTextField(
+                  controller: _emailController,
+                  hintText: "Email Address",
+                  validator: AppValidation.validateEmail,
+                  keyboardType: TextInputType.emailAddress,
+                  prefixIcon: Icon(
+                    Icons.email_rounded,
+                    color: AppColors.kEmerald,
+                    size: 24,
+                  ),
+                  textColor: AppColors.kTextPrimary,
+                  hintTextColor: AppColors.kTextSecondary,
+                ),
+                SizedBox(height: 2.2.h),
+      
+                CustomTextField(
+                  controller: _passwordController,
+                  hintText: "Create Password",
+                  obscureText: _obscurePassword,
+                  validator: AppValidation.checkText,
+                  prefixIcon: Icon(
+                    Icons.lock_rounded,
+                    color: AppColors.kEmerald,
+                    size: 24,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword
+                          ? Icons.visibility_off_rounded
+                          : Icons.visibility_rounded,
+                      color: AppColors.kEmerald.withOpacity(0.8),
+                    ),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
+                  ),
+                  textColor: AppColors.kTextPrimary,
+                  hintTextColor: AppColors.kTextSecondary,
+                ),
+                SizedBox(height: 2.2.h),
+      
+                CustomTextField(
+                  controller: _addressController,
+                  hintText: "Address",
+                  validator: AppValidation.checkText,
+                  prefixIcon: Icon(
+                    Icons.location_on_rounded,
+                    color: AppColors.kEmerald,
+                    size: 24,
+                  ),
+                  textColor: AppColors.kTextPrimary,
+                  hintTextColor: AppColors.kTextSecondary,
+                ),
+      
+                SizedBox(height: 4.5.h),
+      
+                // Signup Button
                 SizedBox(
-                  // width: double.infinity,
-                  child: Image.asset(
-                    AppAssets.logoImage,
-                    alignment: Alignment.center,
+                  width: double.infinity,
+                  height: 56,
+                  child: isLoading
+                      ? const Center(
+                          child: LoadingIndicator(color: AppColors.kEmerald),
+                        )
+                      : CustomButton(
+                          text: 'Create Account',
+                          onPressed: _signup,
+                          gradient: LinearGradient(
+                            colors: [
+                              AppColors.kEmerald,
+                              AppColors.kEmeraldDark,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          textColor: Colors.white,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                          borderRadius: 16,
+                        ),
+                ),
+      
+                SizedBox(height: 3.5.h),
+      
+                // Login Link
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                      text: "Already have an account? ",
+                      style: TextStyle(
+                        color: AppColors.kTextSecondary,
+                        fontSize: 15.sp,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Sign In',
+                          style: TextStyle(
+                            color: AppColors.kEmerald,
+                            fontWeight: FontWeight.w600,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () =>
+                                context.go(RouteNames.loginScreen),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                CustomText(
-                  title: "Sign Up",
-                  fontSize: 24.sp,
-                  color: AppColors.whiteColor,
-                  weight: FontWeight.bold,
+      
+                SizedBox(height: 4.h),
+      
+                // Back to role selection
+                Center(
+                  child: TextButton(
+                    onPressed: () =>
+                        context.go(RouteNames.incomingUserScreen),
+                    child: Text(
+                      '← Back to Role Selection',
+                      style: TextStyle(
+                        color: AppColors.kTextSecondary,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                  ),
                 ),
-                SizedBox(height: 2.h),
-                _builNameTextField(),
-                SizedBox(height: 1.5.h),
-                _builPhoneNumberTextField(),
-                SizedBox(height: 1.5.h),
-                _builEmailTextField(),
-                SizedBox(height: 1.5.h),
-                _builPasswordTextField(),
-                SizedBox(height: 1.5.h),
-                _builAddressTextField(),
-                SizedBox(height: 2.h),
-                _buildSignupButton(),
-                SizedBox(height: 1.h),
-                _loginTagLine(),
+      
+                SizedBox(height: 4.h),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _builNameTextField() {
-    return CustomTextField(
-      controller: _nameController,
-      hintText: "Full Name",
-      validator: AppValidation.validateFullName,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.person, color: AppColors.iconColor, size: 20),
-    );
-  }
-
-  Widget _builPhoneNumberTextField() {
-    return CustomTextField(
-      controller: _phoneNumberController,
-      hintText: "Phone Number",
-      validator: AppValidation.validatePhoneNumber,
-      keyboardType: TextInputType.phone,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.phone, color: AppColors.iconColor, size: 20),
-    );
-  }
-
-  Widget _builEmailTextField() {
-    return CustomTextField(
-      controller: _emailController,
-      hintText: "Email",
-      validator: AppValidation.validateEmail,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.mail, color: AppColors.iconColor, size: 20),
-    );
-  }
-
-  Widget _builPasswordTextField() {
-    return CustomTextField(
-      controller: _passwordController,
-      hintText: "Password",
-      obscureText: _obscurePassword,
-      validator: AppValidation.checkText,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(Icons.lock, color: AppColors.iconColor, size: 20),
-      suffixIcon: IconButton(
-        icon: Icon(
-          _obscurePassword ? Icons.visibility_off : Icons.visibility,
-          color: AppColors.iconColor,
-        ),
-        onPressed: () {
-          setState(() {
-            _obscurePassword = !_obscurePassword;
-            log("LoginScreen → Password visibility: $_obscurePassword");
-          });
-        },
-      ),
-    );
-  }
-
-  Widget _builAddressTextField() {
-    return CustomTextField(
-      controller: _addressController,
-      hintText: "Address",
-      validator: AppValidation.checkText,
-      textColor: AppColors.whiteColor,
-      hintTextColor: AppColors.hintTextColor,
-      prefixIcon: Icon(
-        Icons.location_history,
-        color: AppColors.iconColor,
-        size: 20,
-      ),
-    );
-  }
-
-  Widget _buildSignupButton() {
-    final signupState = ref.watch(signupProvider);
-    return SizedBox(
-      width: double.infinity,
-      height: 14.w,
-      child: signupState is SignupLoading
-          ? const Center(child: LoadingIndicator())
-          : CustomButton(
-              text: 'Signup',
-              fontSize: 16.sp,
-              onPressed: _signup,
-              textColor: AppColors.blackColor,
-              gradient: AppColors.buttonGradientColor,
-              fontWeight: FontWeight.w600,
-              borderRadius: 30,
-            ),
-    );
-  }
-
-  Widget _loginTagLine() {
-    return Center(
-      child: RichText(
-        text: TextSpan(
-          text: "Already have an account?",
-          style: TextStyle(color: AppColors.hintTextColor, fontSize: 16.sp),
-          children: [
-            TextSpan(
-              text: ' Sign In',
-              style: TextStyle(color: AppColors.iconColor),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  context.go(RouteNames.loginScreen);
-                },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showErrorDialog(String title, String message) {
-    showDialog(
-      context: context,
-      builder: (_) => CustomDialog(
-        title: title,
-        description: message,
-        buttonText: "OK",
-        icon: Icons.error_outline,
-        buttonGradient: const [Color(0xFFFF6B6B), Color(0xFFC0392B)],
-        onPressed: () => Navigator.pop(context),
       ),
     );
   }

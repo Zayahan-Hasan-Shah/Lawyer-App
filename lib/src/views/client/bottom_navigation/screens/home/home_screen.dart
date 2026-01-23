@@ -5,7 +5,8 @@ import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/models/client_model/case_model/case_model.dart';
 import 'package:lawyer_app/src/providers/client_provider/client_cases_provider/client_case_provider.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_appbar.dart';
-import 'package:lawyer_app/src/widgets/common_widgets/custom_client_drawer.dart';
+import 'package:lawyer_app/src/widgets/common_widgets/custom_button.dart';
+import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:lawyer_app/src/widgets/home_widgets/tabs/cases_tab_button.dart';
 import 'package:lawyer_app/src/widgets/home_widgets/tabs/dispose_case_tab.dart';
 import 'package:lawyer_app/src/widgets/home_widgets/tabs/donation_tab.dart';
@@ -40,14 +41,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final caseState = ref.watch(caseControllerProvider);
-
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: CustomAppbar(isDrawwer: true, logoImage: AppAssets.logoImage),
-      drawer: const CustomClientDrawer(),
-      body: SafeArea(
+    return Container(
+      color: AppColors.backgroundColor,
+      child: SafeArea(
+        top: false,
+        bottom: false,
         child: Column(
           children: [
+            CustomAppbar(logoImage: AppAssets.logoImage, isDrawer: true),
             SizedBox(height: 3.h),
 
             SingleChildScrollView(
@@ -94,7 +95,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 initial: () => const Center(child: SizedBox()),
                 loading: () => const Center(
                   child: CircularProgressIndicator(
-                    color: AppColors.brightYellowColor,
+                    color: AppColors.kEmerald,
                     strokeWidth: 4,
                   ),
                 ),
@@ -104,38 +105,31 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     children: [
                       Icon(
                         Icons.error_outline,
-                        size: 80,
+                        size: 10.h,
                         color: Colors.redAccent,
                       ),
                       SizedBox(height: 2.h),
-                      Text(
-                        "Failed to load cases",
-                        style: TextStyle(
-                          fontSize: 20.sp,
-                          color: AppColors.whiteColor,
-                        ),
+                      CustomText(
+                        title: "Failed to load cases",
+                        fontSize: 20.sp,
+                        color: AppColors.whiteColor,
                       ),
                       SizedBox(height: 1.h),
-                      Text(
-                        error,
-                        style: TextStyle(
-                          color: Colors.redAccent,
-                          fontSize: 14.sp,
-                        ),
-                        textAlign: TextAlign.center,
+                      CustomText(
+                        title: error,
+                        color: Colors.redAccent,
+                        fontSize: 14.sp,
+                        alignText: TextAlign.center,
                       ),
                       SizedBox(height: 4.h),
-                      ElevatedButton(
+                      CustomButton(
+                        text: "Retry",
                         onPressed: () => ref
                             .read(caseControllerProvider.notifier)
                             .getAllCases(),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.brightYellowColor,
-                        ),
-                        child: const Text(
-                          "Retry",
-                          style: TextStyle(color: AppColors.blackColor),
-                        ),
+                        fontSize: 18.sp,
+                        textColor: Colors.white,
+                        backgroundColor: AppColors.kEmerald,
                       ),
                     ],
                   ),

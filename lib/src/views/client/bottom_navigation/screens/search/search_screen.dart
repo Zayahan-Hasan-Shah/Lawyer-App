@@ -1,8 +1,8 @@
-// search_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
+import 'package:lawyer_app/src/models/lawyer_model/lawyer_model.dart';
 import 'package:lawyer_app/src/providers/client_provider/home_screen_provider/search_provider.dart';
 import 'package:lawyer_app/src/providers/client_provider/lawyer_provider/lawyer_provider.dart';
 import 'package:lawyer_app/src/routing/route_names.dart';
@@ -26,16 +26,13 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   void initState() {
     super.initState();
-    // Load first page
+    // Load initial page
     Future.microtask(() => ref.read(lawyerProvider.notifier).loadLawyers());
 
-    // Infinite scroll
+    // Infinite scroll detection
     _scrollController.addListener(() {
-      final maxScroll = _scrollController.position.maxScrollExtent;
-      final currentScroll = _scrollController.position.pixels;
-      final threshold = maxScroll * 0.9; // 90% down
-
-      if (currentScroll >= threshold) {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent * 0.85) {
         ref.read(lawyerProvider.notifier).loadMore();
       }
     });
@@ -57,83 +54,188 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     final searchQuery = ref.watch(searchQueryProvider).toLowerCase();
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: const CustomAppbar(title: "Find Lawyers"),
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: 3.h),
-            SearchWidget(
-              hintText: 'Search Lawyer',
-              useSearchProvider: true,
-              onChanged: (q) =>
-                  ref.read(searchQueryProvider.notifier).state = q,
-            ),
-            SizedBox(height: 3.h),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: _onRefresh,
-                color: AppColors.iconColor,
-                backgroundColor: Colors.white,
-                child: _buildBody(state, searchQuery),
+      extendBodyBehindAppBar: true,
+      appBar: CustomAppbar(
+        title: "Find Lawyers",
+        backgroundColor: Colors.transparent,
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF0D1117), Color(0xFF0A1F24), Color(0xFF08151A)],
+            stops: [0.0, 0.6, 1.0],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              SizedBox(height: 2.h),
+
+              // Glassmorphic search bar
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 6.w),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.kSurface.withOpacity(0.88),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColors.kEmerald.withOpacity(0.18),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.25),
+                        blurRadius: 16,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: SearchWidget(
+                      hintText: 'Search lawyers by name or expertise...',
+                      useSearchProvider: true,
+                      prefixIcon: Icons.search_rounded,
+                      textColor: AppColors.kTextPrimary,
+                      hintTextColor: AppColors.kTextSecondary,
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
+
+              SizedBox(height: 3.h),
+
+              // Main content area
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: _onRefresh,
+                  color: AppColors.kEmerald,
+                  backgroundColor: AppColors.kSurface.withOpacity(0.92),
+                  child: _buildBody(state, searchQuery),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildBody(LawyerState state, String query) {
-    if (state is LawyerLoading && (state is! LawyerLoaded)) {
-      return const Center(child: CircularProgressIndicator());
-    }
-
-    if (state is LawyerError) {
+    if (state is LawyerLoading) {
       return Center(
-        child: CustomText(
-          title: state.message,
-          color: Colors.white,
-          fontSize: 18.sp,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              color: AppColors.kEmerald,
+              strokeWidth: 4,
+            ),
+            SizedBox(height: 2.5.h),
+            CustomText(
+              title: "Loading lawyers...",
+              fontSize: 16.sp,
+              color: AppColors.kTextSecondary,
+            ),
+          ],
         ),
       );
     }
 
-    if (state is LawyerLoaded) {
-      final filtered = state.lawyers.where((lawyer) {
-        final fullName = '${lawyer.firstName} ${lawyer.lastName}'.toLowerCase();
-        return fullName.contains(query);
-      }).toList();
+    if (state is LawyerError) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              size: 80,
+              color: Colors.redAccent,
+            ),
+            SizedBox(height: 3.h),
+            CustomText(
+              title: "Failed to load lawyers",
+              fontSize: 20.sp,
+              weight: FontWeight.w600,
+              color: AppColors.kTextPrimary,
+            ),
+            SizedBox(height: 1.2.h),
+            CustomText(
+              title: state.message,
+              fontSize: 15.sp,
+              color: Colors.redAccent,
+              alignText: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
 
-      if (filtered.isEmpty) {
-        return Center(
-          child: CustomText(
-            title: query.isEmpty
-                ? 'No lawyers available.'
-                : 'No lawyers match your search.',
-            color: Colors.white,
-            fontSize: 18.sp,
-          ),
-        );
-      }
+    final lawyers = state is LawyerLoaded ? state.lawyers : <LawyerModel>[];
 
-      return ListView.builder(
-        controller: _scrollController,
-        physics:
-            const AlwaysScrollableScrollPhysics(), // Important for RefreshIndicator
-        padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 1.h),
-        itemCount: filtered.length + (state.hasMore ? 1 : 0),
-        itemBuilder: (context, index) {
-          // Loading indicator at bottom
-          if (index == filtered.length) {
-            return const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-            );
-          }
+    final filtered = lawyers.where((lawyer) {
+      final fullName = '${lawyer.firstName} ${lawyer.lastName}'.toLowerCase();
+      return fullName.contains(query);
+    }).toList();
 
-          final lawyer = filtered[index];
-          return LawyerCard(
+    if (filtered.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.search_off_rounded,
+              size: 90,
+              color: AppColors.kTextSecondary.withOpacity(0.6),
+            ),
+            SizedBox(height: 3.5.h),
+            CustomText(
+              title: query.isEmpty
+                  ? "No lawyers available yet"
+                  : "No matching lawyers",
+              fontSize: 22.sp,
+              weight: FontWeight.w700,
+              color: AppColors.kTextPrimary,
+            ),
+            SizedBox(height: 1.5.h),
+            CustomText(
+              title: query.isEmpty
+                  ? "Check back later or adjust filters"
+                  : "Try different keywords or clear search",
+              fontSize: 15.sp,
+              color: AppColors.kTextSecondary,
+              alignText: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      controller: _scrollController,
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
+      itemCount:
+          filtered.length + (state is LawyerLoaded && state.hasMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        // Bottom loading indicator when fetching more
+        if (index == filtered.length) {
+          return Padding(
+            padding: EdgeInsets.all(5.h),
+            child: Center(
+              child: CircularProgressIndicator(
+                color: AppColors.kEmerald,
+                strokeWidth: 3,
+              ),
+            ),
+          );
+        }
+
+        final lawyer = filtered[index];
+        return Padding(
+          padding: EdgeInsets.only(bottom: 2.h),
+          child: LawyerCard(
             profileImage: lawyer.profilePhoto,
             firstName: lawyer.firstName,
             lastName: lawyer.lastName,
@@ -141,11 +243,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             onTap: () {
               context.push(RouteNames.lawyerScreen, extra: lawyer);
             },
-          );
-        },
-      );
-    }
-
-    return const SizedBox.shrink();
+          ),
+        );
+      },
+    );
   }
 }

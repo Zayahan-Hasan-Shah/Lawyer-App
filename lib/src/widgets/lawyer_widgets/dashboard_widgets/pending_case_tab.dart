@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/models/lawyer_model/case_model/lawyer_case_model.dart';
@@ -11,170 +13,182 @@ class PendingLawyerCasesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     if (cases.isEmpty) {
       return Center(
-        child: CustomText(
-          title: 'No pending matters',
-          fontSize: 18.sp,
-          color: AppColors.lightDescriptionTextColor,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.hourglass_empty_rounded,
+              size: 80,
+              color: AppColors.kTextSecondary,
+            ),
+            SizedBox(height: 2.h),
+            Text(
+              'No pending cases',
+              style: TextStyle(
+                color: AppColors.kTextPrimary,
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(height: 1.h),
+            Text(
+              'New matters will appear here',
+              style: TextStyle(
+                color: AppColors.kTextSecondary,
+                fontSize: 15.sp,
+              ),
+            ),
+          ],
         ),
       );
     }
 
     return ListView.builder(
-      padding: EdgeInsets.all(2.w),
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 1.h),
       itemCount: cases.length,
-      itemBuilder: (_, i) {
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (context, i) {
         final c = cases[i];
 
-        return Container(
-          margin: EdgeInsets.only(bottom: 2.h),
-          decoration: BoxDecoration(
-            color: colorScheme.surface.withOpacity(0.95),
-            borderRadius: BorderRadius.circular(2.h),
-            border: Border.all(color: colorScheme.primary.withOpacity(0.28)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.35),
-                blurRadius: 18,
-                offset: const Offset(0, 10),
+        return Padding(
+          padding: EdgeInsets.only(bottom: 1.h),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: AppColors.kEmerald.withOpacity(0.18),
+                width: 1,
               ),
-            ],
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(2.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Left column: case number + category
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 8.h,
-                          height: 8.h,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [
-                                colorScheme.primary,
-                                colorScheme.secondary,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                          child: Center(
-                            child: CustomText(
-                              title: c.caseNo.split('/').last,
-                              fontSize: 14.sp,
-                              weight: FontWeight.bold,
-                              color: colorScheme.onPrimary,
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 1.h),
-                        Container(
-                          // height: 4.2.h,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 3.w,
-                            vertical: 1.w,
-                          ),
-                          decoration: BoxDecoration(
-                            color: (c.category == 'Criminal'
-                                    ? Colors.redAccent
-                                    : Colors.tealAccent)
-                                .withOpacity(0.18),
-                            borderRadius: BorderRadius.circular(1.5.w),
-                            border: Border.all(
-                              color: c.category == 'Criminal'
-                                  ? Colors.redAccent
-                                  : Colors.tealAccent,
-                            ),
-                          ),
-                          child: Center(
-                            child: CustomText(
-                              title: c.category,
-                              color: c.category == 'Criminal'
-                                  ? Colors.redAccent
-                                  : Colors.tealAccent,
-                              weight: FontWeight.bold,
-                              fontSize: 15.sp,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(width: 3.w),
-                    // Right column: case details and appointment
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                child: Padding(
+                  padding: EdgeInsets.all(2.w),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          CustomText(
-                            title: c.title,
-                            fontSize: 16.sp,
-                            weight: FontWeight.bold,
-                            color: colorScheme.onSurface,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 0.5.h),
-                          CustomText(
-                            title: '${c.client} • ${c.court}',
-                            color: AppColors.lightDescriptionTextColor,
-                            fontSize: 14.sp,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          SizedBox(height: 0.8.h),
-                          Row(
-                            children: [
-                              Icon(
-                                c.appointmentType == 'Video'
-                                    ? Icons.videocam
-                                    : Icons.meeting_room,
-                                size: 24,
-                                color: colorScheme.tertiary,
+                          Container(
+                            width: 6.h,
+                            height: 6.h,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  AppColors.kEmerald,
+                                  AppColors.kEmeraldDark,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                              SizedBox(width: 2.w),
-                              Expanded(
-                                child: CustomText(
-                                  title:
-                                      '${c.appointmentType} appointment • Next: ${c.hearingDate ?? '-'}',
-                                  color: colorScheme.secondary,
-                                  weight: FontWeight.w600,
-                                  fontSize: 14.sp,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AppColors.kEmerald.withOpacity(0.35),
+                                  blurRadius: 4,
                                 ),
+                              ],
+                            ),
+                            child: Center(
+                              child: CustomText(
+                                title: c.caseNo.split('/').last,
+                                color: Colors.white,
+                                fontSize: 15.sp,
+                                weight: FontWeight.w800,
                               ),
-                            ],
+                            ),
+                          ),
+                          SizedBox(width: 4.w),
+                          Expanded(
+                            child: CustomText(
+                              title: c.title,
+                              color: AppColors.kTextPrimary,
+                              fontSize: 17.sp,
+                              weight: FontWeight.w700,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 1.2.h),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    onPressed: () => _showDocuments(context, c),
-                    icon: const Icon(Icons.description, color: Colors.white70),
-                    label: CustomText(
-                      title: 'View Documents (${c.documents.length})',
-                      color: colorScheme.primary,
-                      fontSize: 14.sp,
-                    ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: 0.5.h),
+                                CustomText(
+                                  title: '${c.client} • ${c.court}',
+                                  color: AppColors.kTextSecondary,
+                                  fontSize: 16.sp,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                SizedBox(height: 1.2.h),
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 3.w,
+                                    vertical: 0.8.h,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.kEmerald.withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        c.appointmentType == 'Video'
+                                            ? Icons.videocam_rounded
+                                            : Icons.meeting_room_rounded,
+                                        size: 2.5.h,
+                                        color: AppColors.kEmerald,
+                                      ),
+                                      SizedBox(width: 2.w),
+                                      CustomText(
+                                        title:
+                                            '${c.appointmentType} • Next: ${c.hearingDate ?? '-'}',
+                                        color: AppColors.kEmerald,
+                                        fontSize: 14.sp,
+                                        weight: FontWeight.w600,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 0.5.h),
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton.icon(
+                          onPressed: () => _showDocuments(context, c),
+                          icon: Icon(
+                            Icons.description_rounded,
+                            color: AppColors.kEmerald,
+                            size: 2.5.h,
+                          ),
+                          label: CustomText(
+                            title: 'Documents (${c.documents.length})',
+                            color: AppColors.kEmerald,
+                            fontSize: 14.sp,
+                            weight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         );
@@ -182,6 +196,7 @@ class PendingLawyerCasesTab extends StatelessWidget {
     );
   }
 
+  // _showDocuments remains mostly the same, just update colors
   void _showDocuments(BuildContext context, LawyerCaseModel c) {
     showModalBottomSheet(
       context: context,
@@ -189,10 +204,11 @@ class PendingLawyerCasesTab extends StatelessWidget {
       isScrollControlled: true,
       builder: (_) => Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface.withOpacity(0.98),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          color: AppColors.kSurface.withOpacity(0.95),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          border: Border.all(color: AppColors.kEmerald.withOpacity(0.18)),
         ),
-        padding: EdgeInsets.fromLTRB(6.w, 3.h, 6.w, 4.h),
+        padding: EdgeInsets.fromLTRB(6.w, 3.h, 6.w, 5.h),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,12 +216,9 @@ class PendingLawyerCasesTab extends StatelessWidget {
             Center(
               child: Container(
                 width: 12.w,
-                height: 4,
+                height: 5,
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary
-                      .withOpacity(0.4),
+                  color: AppColors.kEmerald.withOpacity(0.35),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -213,53 +226,53 @@ class PendingLawyerCasesTab extends StatelessWidget {
             SizedBox(height: 3.h),
             CustomText(
               title: 'Case Documents',
-              fontSize: 18.sp,
-              weight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onSurface,
+              color: AppColors.kTextPrimary,
+              fontSize: 20.sp,
+              weight: FontWeight.w700,
             ),
-            SizedBox(height: 1.h),
+            SizedBox(height: 0.8.h),
             CustomText(
               title: '${c.caseNo} • ${c.title}',
-              fontSize: 14.sp,
-              color: AppColors.lightDescriptionTextColor,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              color: AppColors.kTextSecondary,
+              fontSize: 16.sp,
             ),
-            SizedBox(height: 2.h),
+            SizedBox(height: 3.h),
             ...c.documents.map(
-              (doc) => Container(
-                margin: EdgeInsets.only(bottom: 1.2.h),
-                padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 1.4.h),
-                decoration: BoxDecoration(
-                  color: AppColors.inputBackgroundColor,
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: AppColors.iconColor.withOpacity(0.25),
+              (doc) => Padding(
+                padding: EdgeInsets.only(bottom: 1.6.h),
+                child: Container(
+                  padding: EdgeInsets.all(3.5.w),
+                  decoration: BoxDecoration(
+                    color: AppColors.kInputBg.withOpacity(0.85),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.kEmerald.withOpacity(0.2),
+                    ),
                   ),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.insert_drive_file,
-                      color: Colors.white70,
-                      size: 22,
-                    ),
-                    SizedBox(width: 3.w),
-                    Expanded(
-                      child: CustomText(
-                        title: doc,
-                        color: AppColors.whiteColor,
-                        fontSize: 14.sp,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.insert_drive_file_rounded,
+                        color: AppColors.kTextSecondary,
+                        size: 24,
                       ),
-                    ),
-                    const Icon(
-                      Icons.visibility,
-                      color: AppColors.brightYellowColor,
-                      size: 20,
-                    ),
-                  ],
+                      SizedBox(width: 4.w),
+                      Expanded(
+                        child: CustomText(
+                          title: doc,
+                          color: AppColors.kTextPrimary,
+                          fontSize: 15.sp,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Icon(
+                        Icons.visibility_rounded,
+                        color: AppColors.kEmerald,
+                        size: 22,
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

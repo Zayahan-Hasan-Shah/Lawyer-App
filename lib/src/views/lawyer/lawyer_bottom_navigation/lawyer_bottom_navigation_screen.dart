@@ -34,32 +34,36 @@ class _LawyerBottomNavigationScreenState
       backgroundColor: AppColors.kBgDark, // deep dark consistent background
       extendBody: true, // important for glass effect to show behind
       body: _screens[currentIndex],
-      bottomNavigationBar: CustomBottomNavbar(
-        currentIndex: currentIndex,
-        onTap: (index) =>
-            ref.read(lawyerBottomNavigationProvider.notifier).setIndex(index),
-        items: [
-          BottomNavItem(
-            activeIcon: Icons.dashboard_rounded,
-            inactiveIcon: Icons.dashboard_outlined,
-            label: '',
-          ),
-          BottomNavItem(
-            activeIcon: Icons.chat_rounded,
-            inactiveIcon: Icons.chat_outlined,
-            label: '',
-          ),
-          BottomNavItem(
-            activeIcon: Icons.settings_rounded,
-            inactiveIcon: Icons.settings_outlined,
-            label: '',
-          ),
-          BottomNavItem(
-            activeIcon: Icons.person_rounded,
-            inactiveIcon: Icons.person_outline_rounded,
-            label: '',
-          ),
-        ],
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: CustomBottomNavbar(
+          currentIndex: currentIndex,
+          onTap: (index) => ref
+              .read(lawyerBottomNavigationProvider.notifier)
+              .setIndex(index),
+          items: [
+            BottomNavItem(
+              activeIcon: Icons.dashboard_rounded,
+              inactiveIcon: Icons.dashboard_outlined,
+              label: '',
+            ),
+            BottomNavItem(
+              activeIcon: Icons.chat_rounded,
+              inactiveIcon: Icons.chat_outlined,
+              label: '',
+            ),
+            BottomNavItem(
+              activeIcon: Icons.settings_rounded,
+              inactiveIcon: Icons.settings_outlined,
+              label: '',
+            ),
+            BottomNavItem(
+              activeIcon: Icons.person_rounded,
+              inactiveIcon: Icons.person_outline_rounded,
+              label: '',
+            ),
+          ],
+        ),
       ),
     );
   }

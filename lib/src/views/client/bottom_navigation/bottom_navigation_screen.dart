@@ -36,43 +36,45 @@ class _BottomNavigationScreenState
       drawer: const CustomClientDrawer(),
       extendBody: true, // to make FAB overlap cleanly
       body: _screens[currentIndex],
-      bottomNavigationBar: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          CustomBottomNavbar(
-            currentIndex: currentIndex,
-            onTap: (index) =>
-                ref.read(bottomNavigationProvider.notifier).setIndex(index),
-            items: [
-              BottomNavItem(
-                activeIcon: Icons.home,
-                inactiveIcon: Icons.home_outlined,
-                label: 'Home',
-              ),
-              BottomNavItem(
-                activeIcon: Icons.chat,
-                inactiveIcon: Icons.chat_outlined,
-                label: 'Chat',
-              ),
-              BottomNavItem(
-                activeIcon: Icons.video_call,
-                inactiveIcon: Icons.video_call_outlined,
-                label: 'Video',
-              ),
-              BottomNavItem(
-                activeIcon: Icons.search,
-                inactiveIcon: Icons.search_outlined,
-                label: 'Search',
-              ),
-
-              BottomNavItem(
-                activeIcon: Icons.notifications,
-                inactiveIcon: Icons.notifications_outlined,
-                label: 'Notifications',
-              ),
-            ],
-          ),
-        ],
+      bottomNavigationBar: SafeArea(
+        top: false,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            CustomBottomNavbar(
+              currentIndex: currentIndex,
+              onTap: (index) =>
+                  ref.read(bottomNavigationProvider.notifier).setIndex(index),
+              items: [
+                BottomNavItem(
+                  activeIcon: Icons.home,
+                  inactiveIcon: Icons.home_outlined,
+                  label: 'Home',
+                ),
+                BottomNavItem(
+                  activeIcon: Icons.chat,
+                  inactiveIcon: Icons.chat_outlined,
+                  label: 'Chat',
+                ),
+                BottomNavItem(
+                  activeIcon: Icons.video_call,
+                  inactiveIcon: Icons.video_call_outlined,
+                  label: 'Video',
+                ),
+                BottomNavItem(
+                  activeIcon: Icons.search,
+                  inactiveIcon: Icons.search_outlined,
+                  label: 'Search',
+                ),
+                BottomNavItem(
+                  activeIcon: Icons.notifications,
+                  inactiveIcon: Icons.notifications_outlined,
+                  label: 'Notifications',
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }

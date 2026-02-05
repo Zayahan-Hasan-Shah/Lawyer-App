@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lawyer_app/src/core/constants/app_assets.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
 import 'package:lawyer_app/src/core/utils/incoming_user_data/incoming_user_data.dart';
+import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:lawyer_app/src/widgets/incoming_user_widgets/incoming_user_card.dart';
 import 'package:sizer/sizer.dart';
 
@@ -49,24 +50,20 @@ class _IncomingUserTypeScreenState extends State<IncomingUserTypeScreen> {
                 SizedBox(height: isLandscape ? 1.5.h : 2.h),
 
                 // Optional elegant title
-                Text(
-                  "Choose Your Role",
-                  style: TextStyle(
+                CustomText(
+                  title:"Choose Your Role",
                     color: AppColors.kTextPrimary,
                     fontSize: 24.sp,
-                    fontWeight: FontWeight.w800,
+                    weight: FontWeight.w800,
                     letterSpacing: 1.2,
-                  ),
                 ),
 
                 SizedBox(height: 0.5.h),
 
-                Text(
-                  "Get started in seconds",
-                  style: TextStyle(
+                CustomText(
+                  title: "Get started in seconds",
                     color: AppColors.kTextSecondary,
                     fontSize: 15.sp,
-                  ),
                 ),
 
                 SizedBox(height: isLandscape ? 2.5.h : 3.h),

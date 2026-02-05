@@ -22,6 +22,8 @@ import 'package:lawyer_app/src/views/on_boarding/splash_screen.dart';
 import 'package:lawyer_app/src/views/profile/lawyer_profile_screen.dart';
 import 'package:lawyer_app/src/views/lawyer/lawyer_bottom_navigation/screens/lawyer_profile_screen.dart'
     as self_profile;
+import 'package:lawyer_app/src/views/student/auth/student_login_screen.dart';
+import 'package:lawyer_app/src/views/student/auth/student_signup_screen.dart';
 
 class AppRouter {
   static final router = GoRouter(
@@ -134,6 +136,18 @@ class AppRouter {
         path: RouteNames.lawyerPrfoileScreen,
         name: RouteNames.lawyerPrfoileScreen,
         builder: (context, state) => const self_profile.LawyerProfileScreen(),
+      ),
+
+      // Student's screen
+      GoRoute(
+        path: RouteNames.studentSignupScreen,
+        name: RouteNames.studentSignupScreen,
+        builder: (context, state) => StudentSignupScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.studentLoginScreen,
+        name: RouteNames.studentLoginScreen,
+        builder: (context, state) => StudentLoginScreen(),
       ),
     ],
   );

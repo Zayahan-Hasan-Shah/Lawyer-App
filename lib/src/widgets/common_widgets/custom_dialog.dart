@@ -58,8 +58,8 @@ class CustomDialog extends StatelessWidget {
                 width: 25.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  gradient: const RadialGradient(
-                    colors: [Color(0xFFFFD700), Color(0xFF9A7C00)],
+                  gradient:  RadialGradient(
+                    colors: [AppColors.kEmerald, AppColors.kEmeraldDark],
                     center: Alignment.center,
                     radius: 0.8,
                   ),

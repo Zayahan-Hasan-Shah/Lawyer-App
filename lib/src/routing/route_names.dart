@@ -16,6 +16,10 @@ class RouteNames {
   static const lawyerScreen = '/lawyerscreen';
   static const chatDetailScreen = '/chatdetailscreen';
 
+  // student's screens
+  static const studentSignupScreen = '/studentsignupscreen';
+  static const studentLoginScreen = '/studentloginscreen';
+
   // lawyer's screens
   static const lawyerSignupScreen = '/lawyersignupscreen';
   static const lawyerloginScreen = '/lawyerloginscreen';

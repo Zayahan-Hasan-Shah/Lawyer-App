@@ -9,7 +9,9 @@ List<Map<String, dynamic>> incomingUserData = [
     "icon": Icons.person,
     "title": "Student",
     "description": "Enrolled as Student for \ncertification",
-    "onTap": (WidgetRef ref, BuildContext context) {},
+    "onTap": (WidgetRef ref, BuildContext context) {
+      context.go(RouteNames.studentSignupScreen);
+    },
   },
   {
     "id": 2,

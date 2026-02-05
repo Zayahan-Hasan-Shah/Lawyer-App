@@ -15,6 +15,7 @@ class CustomText extends StatelessWidget {
   final String? fontFamily;
   final FontStyle? fontStyle;
   final double? textHeight;
+  final double? letterSpacing;
 
   const CustomText({
     super.key,
@@ -31,6 +32,7 @@ class CustomText extends StatelessWidget {
     this.fontFamily = 'Roboto Flex',
     this.fontStyle,
     this.textHeight,
+    this.letterSpacing,
   });
 
   String _truncateByWords(String text, {int maxWords = 3}) {
@@ -59,6 +61,7 @@ class CustomText extends StatelessWidget {
     return Text(
       displayText,
       style: TextStyle(
+        letterSpacing: letterSpacing,
         fontSize: fontSize ?? 16,
         fontWeight: weight,
         height: textHeight,

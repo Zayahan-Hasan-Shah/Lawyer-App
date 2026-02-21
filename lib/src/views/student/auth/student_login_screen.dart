@@ -56,6 +56,8 @@ class _StudentLoginScreenState extends ConsumerState<StudentLoginScreen> {
             ),
           ),
         );
+        // Navigate to Student Bottom Navigation screen after successful login
+        context.go(RouteNames.studentBottomNavigationScreen);
       } else {
         _showErrorSnackBar("Invalid credentials");
       }

@@ -24,6 +24,14 @@ import 'package:lawyer_app/src/views/lawyer/lawyer_bottom_navigation/screens/law
     as self_profile;
 import 'package:lawyer_app/src/views/student/auth/student_login_screen.dart';
 import 'package:lawyer_app/src/views/student/auth/student_signup_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/student_bottom_navigation_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/student_dashboard_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/certification_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/tasks_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/research_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/student_profile_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/internship_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/programs_screen.dart';
 
 class AppRouter {
   static final router = GoRouter(
@@ -148,6 +156,46 @@ class AppRouter {
         path: RouteNames.studentLoginScreen,
         name: RouteNames.studentLoginScreen,
         builder: (context, state) => StudentLoginScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.studentBottomNavigationScreen,
+        name: RouteNames.studentBottomNavigationScreen,
+        builder: (context, state) => const StudentBottomNavigationScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.studentDashboardScreen,
+        name: RouteNames.studentDashboardScreen,
+        builder: (context, state) => const StudentDashboardScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.certificationScreen,
+        name: RouteNames.certificationScreen,
+        builder: (context, state) => const CertificationScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.tasksScreen,
+        name: RouteNames.tasksScreen,
+        builder: (context, state) => const TasksScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.researchScreen,
+        name: RouteNames.researchScreen,
+        builder: (context, state) => const ResearchScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.studentProfileScreen,
+        name: RouteNames.studentProfileScreen,
+        builder: (context, state) => const StudentProfileScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.internshipScreen,
+        name: RouteNames.internshipScreen,
+        builder: (context, state) => const InternshipScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.programsScreen,
+        name: RouteNames.programsScreen,
+        builder: (context, state) => const ProgramsScreen(),
       ),
     ],
   );

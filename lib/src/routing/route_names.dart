@@ -19,6 +19,14 @@ class RouteNames {
   // student's screens
   static const studentSignupScreen = '/studentsignupscreen';
   static const studentLoginScreen = '/studentloginscreen';
+  static const studentBottomNavigationScreen = '/studentbottomnavigationscreen';
+  static const studentDashboardScreen = '/studentdashboardscreen';
+  static const certificationScreen = '/certificationscreen';
+  static const tasksScreen = '/tasksscreen';
+  static const researchScreen = '/researchscreen';
+  static const studentProfileScreen = '/studentprofilescreen';
+  static const internshipScreen = '/internshipscreen';
+  static const programsScreen = '/programsscreen';
 
   // lawyer's screens
   static const lawyerSignupScreen = '/lawyersignupscreen';

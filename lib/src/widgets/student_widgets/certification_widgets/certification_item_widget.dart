@@ -28,15 +28,15 @@ class CertificationItemWidget extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.kSurface.withOpacity(0.8),
-            AppColors.kSurfaceElevated.withOpacity(0.6),
+            AppColors.kSurface.withValues(alpha: 0.8),
+            AppColors.kSurfaceElevated.withValues(alpha: 0.6),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isCompleted 
-              ? AppColors.kEmerald.withOpacity(0.5)
-              : levelColor.withOpacity(0.3),
+          color: isCompleted
+              ? AppColors.kEmerald.withValues(alpha: 0.5)
+              : levelColor.withValues(alpha: 0.3),
           width: isCompleted ? 2 : 1,
         ),
       ),
@@ -55,15 +55,15 @@ class CertificationItemWidget extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.all(2.w),
                       decoration: BoxDecoration(
-                        color: isCompleted 
-                            ? AppColors.kEmerald.withOpacity(0.3)
-                            : levelColor.withOpacity(0.2),
+                        color: isCompleted
+                            ? AppColors.kEmerald.withValues(alpha: 0.3)
+                            : levelColor.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
                         isCompleted ? Icons.verified : Icons.school_outlined,
                         color: isCompleted ? AppColors.kEmerald : levelColor,
-                        size: 6.w,
+                        size: 10.w,
                       ),
                     ),
                     SizedBox(width: 3.w),
@@ -73,16 +73,22 @@ class CertificationItemWidget extends StatelessWidget {
                         children: [
                           CustomText(
                             title: certification.title,
-                            fontSize: 16.sp,
+                            fontSize: 20.sp,
                             weight: FontWeight.w600,
                             color: AppColors.kTextPrimary,
+                            maxLines: 2,
                           ),
                           if (isCompleted)
                             Container(
                               margin: EdgeInsets.only(top: 0.5.h),
-                              padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.3.h),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 2.w,
+                                vertical: 0.3.h,
+                              ),
                               decoration: BoxDecoration(
-                                color: AppColors.kEmerald.withOpacity(0.2),
+                                color: AppColors.kEmerald.withValues(
+                                  alpha: 0.2,
+                                ),
                                 borderRadius: BorderRadius.circular(6),
                               ),
                               child: CustomText(
@@ -95,45 +101,54 @@ class CertificationItemWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 2.w, vertical: 0.5.h),
-                      decoration: BoxDecoration(
-                        color: levelColor.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: CustomText(
-                        title: certification.level.toUpperCase(),
-                        fontSize: 10.sp,
-                        color: levelColor,
-                        weight: FontWeight.w600,
-                      ),
-                    ),
                   ],
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 1.h),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 2.w,
+                    vertical: 0.5.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: levelColor.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: CustomText(
+                    title: certification.level.toUpperCase(),
+                    fontSize: 14.sp,
+                    color: levelColor,
+                    weight: FontWeight.w600,
+                  ),
+                ),
+                SizedBox(height: 1.h),
                 CustomText(
                   title: certification.description,
-                  fontSize: 14.sp,
+                  fontSize: 16.sp,
                   color: AppColors.kTextSecondary,
-                  maxLines: 2,
+                  maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 0.5.h),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Icon(Icons.person, size: 14, color: AppColors.kEmerald),
+                    Icon(Icons.person, size: 10.w, color: AppColors.kEmerald),
                     SizedBox(width: 1.w),
                     CustomText(
                       title: certification.instructor,
-                      fontSize: 12.sp,
+                      fontSize: 16.sp,
                       color: AppColors.kTextSecondary,
                     ),
-                    SizedBox(width: 4.w),
-                    Icon(Icons.schedule, size: 14, color: AppColors.kEmerald),
+                  ],
+                ),
+                    SizedBox(height: 0.5.h),
+                Row(
+                  children: [
+                    Icon(Icons.schedule, size: 10.w, color: AppColors.kEmerald),
                     SizedBox(width: 1.w),
                     CustomText(
                       title: certification.duration,
-                      fontSize: 12.sp,
+                      fontSize: 16.sp,
                       color: AppColors.kTextSecondary,
                     ),
                   ],
@@ -142,19 +157,27 @@ class CertificationItemWidget extends StatelessWidget {
                 Wrap(
                   spacing: 1.w,
                   runSpacing: 0.5.h,
-                  children: certification.skills.take(3).map((skill) => Container(
-                    padding: EdgeInsets.symmetric(horizontal: 1.5.w, vertical: 0.3.h),
-                    decoration: BoxDecoration(
-                      color: AppColors.kEmerald.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(6),
-                    ),
-                    child: CustomText(
-                      title: skill,
-                      fontSize: 10.sp,
-                      color: AppColors.kEmerald,
-                      weight: FontWeight.w500,
-                    ),
-                  )).toList(),
+                  children: certification.skills
+                      .take(3)
+                      .map(
+                        (skill) => Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 1.5.w,
+                            vertical: 0.3.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.kEmerald.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: CustomText(
+                            title: skill,
+                            fontSize: 16.sp,
+                            color: AppColors.kEmerald,
+                            weight: FontWeight.w500,
+                          ),
+                        ),
+                      )
+                      .toList(),
                 ),
                 if (!isCompleted) ...[
                   SizedBox(height: 2.h),

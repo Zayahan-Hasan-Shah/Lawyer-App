@@ -21,19 +21,19 @@ class CustomStudentDrawer extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              AppColors.kSurface.withOpacity(0.94),
-              AppColors.kSurfaceElevated.withOpacity(0.88),
+              AppColors.kSurface.withValues(alpha: 0.94),
+              AppColors.kSurfaceElevated.withValues(alpha: 0.88),
             ],
           ),
           border: Border(
             right: BorderSide(
-              color: AppColors.kEmerald.withOpacity(0.18),
+              color: AppColors.kEmerald.withValues(alpha: 0.18),
               width: 1.4,
             ),
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.45),
+              color: Colors.black.withValues(alpha: 0.45),
               blurRadius: 32,
               offset: const Offset(8, 0),
             ),
@@ -51,7 +51,7 @@ class CustomStudentDrawer extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: AppColors.kEmerald.withOpacity(0.2),
+                        color: AppColors.kEmerald.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -130,8 +130,7 @@ class CustomStudentDrawer extends StatelessWidget {
                 icon: Icons.business_center,
                 title: 'Internships',
                 onTap: () {
-                  Navigator.pop(context);
-                  _showComingSoon(context, 'Internships');
+                  context.push('/internshipscreen');
                 },
               ),
 

@@ -22,10 +22,12 @@ class RouteNames {
   static const studentBottomNavigationScreen = '/studentbottomnavigationscreen';
   static const studentDashboardScreen = '/studentdashboardscreen';
   static const certificationScreen = '/certificationscreen';
+  static const certificationDetailScreen = '/certificationdetailscreen';
   static const tasksScreen = '/tasksscreen';
   static const researchScreen = '/researchscreen';
   static const studentProfileScreen = '/studentprofilescreen';
   static const internshipScreen = '/internshipscreen';
+  static const internshipDetailScreen = '/internshipdetailscreen';
   static const programsScreen = '/programsscreen';
 
   // lawyer's screens

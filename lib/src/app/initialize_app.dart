@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lawyer_app/src/routing/app_router.dart';
+import 'package:sizer/sizer.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -9,13 +10,14 @@ class MyApp extends StatelessWidget {
     final colorScheme = ColorScheme.fromSeed(
       seedColor: const Color(0xFF4F8DF5), // modern blue accent
       brightness: Brightness.dark,
-      background: const Color(0xFF050608),
+      surface: const Color(0xFF050608),
+      // background: const Color(0xFF050608),
     );
 
     final baseTheme = ThemeData(
       useMaterial3: true,
       colorScheme: colorScheme,
-      scaffoldBackgroundColor: colorScheme.background,
+      scaffoldBackgroundColor: colorScheme.surface,
       appBarTheme: AppBarTheme(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -33,65 +35,48 @@ class MyApp extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          textStyle: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-          ),
+          textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white.withOpacity(0.04),
+        fillColor: Colors.white.withValues(alpha: 0.04),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: Colors.white.withOpacity(0.15),
-          ),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.15)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: Colors.white.withOpacity(0.10),
-          ),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.10)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: colorScheme.primary,
-            width: 1.4,
-          ),
+          borderSide: BorderSide(color: colorScheme.primary, width: 1.4),
         ),
-        hintStyle: TextStyle(
-          color: Colors.white.withOpacity(0.45),
-        ),
-        labelStyle: const TextStyle(
-          color: Colors.white,
-        ),
+        hintStyle: TextStyle(color: Colors.white.withValues(alpha: 0.45)),
+        labelStyle: const TextStyle(color: Colors.white),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: const Color(0xFF050608),
         selectedItemColor: colorScheme.primary,
-        unselectedItemColor: Colors.white.withOpacity(0.6),
+        unselectedItemColor: Colors.white.withValues(alpha: 0.6),
         type: BottomNavigationBarType.fixed,
         showUnselectedLabels: false,
       ),
-      textTheme: const TextTheme(
+      textTheme: TextTheme(
         headlineSmall: TextStyle(
-          fontSize: 22,
+          fontSize: 22.sp,
           fontWeight: FontWeight.w700,
           color: Colors.white,
         ),
         titleMedium: TextStyle(
-          fontSize: 18,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w600,
           color: Colors.white,
         ),
-        bodyMedium: TextStyle(
-          fontSize: 14,
-          color: Colors.white70,
-        ),
+        bodyMedium: TextStyle(fontSize: 14.sp, color: Colors.white70),
         labelLarge: TextStyle(
-          fontSize: 14,
+          fontSize: 14.sp,
           fontWeight: FontWeight.w500,
           color: Colors.white,
         ),

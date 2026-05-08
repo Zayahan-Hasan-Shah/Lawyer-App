@@ -1,280 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:lawyer_app/src/core/constants/app_assets.dart';
+import 'package:flutter/material.dart';
 import 'package:lawyer_app/src/core/constants/app_colors.dart';
-import 'package:lawyer_app/src/widgets/common_widgets/custom_appbar.dart';
+import 'package:lawyer_app/src/models/student_model/internship_model/internship_model.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_button.dart';
 import 'package:lawyer_app/src/widgets/common_widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
-
-class InternshipModel {
-  final String id;
-  final String title;
-  final String company;
-  final String location;
-  final String duration;
-  final String stipend;
-  final String description;
-  final List<String> requirements;
-  final String postedDate;
-
-  InternshipModel({
-    required this.id,
-    required this.title,
-    required this.company,
-    required this.location,
-    required this.duration,
-    required this.stipend,
-    required this.description,
-    required this.requirements,
-    required this.postedDate,
-  });
-}
-
-class InternshipScreen extends ConsumerStatefulWidget {
-  const InternshipScreen({super.key});
-
-  @override
-  ConsumerState<InternshipScreen> createState() => _InternshipScreenState();
-}
-
-class _InternshipScreenState extends ConsumerState<InternshipScreen> {
-  // Mock data for internships
-  final List<InternshipModel> internships = [
-    InternshipModel(
-      id: '1',
-      title: 'Software Development Intern',
-      company: 'Tech Corp',
-      location: 'San Francisco, CA',
-      duration: '3 months',
-      stipend: '\$2000/month',
-      description: 'Join our engineering team to work on cutting-edge web applications using modern technologies like React, Node.js, and cloud platforms.',
-      requirements: [
-        'Currently pursuing a degree in Computer Science or related field',
-        'Strong programming skills in JavaScript/TypeScript',
-        'Experience with React or similar frameworks',
-        'Good problem-solving abilities',
-        'Excellent communication skills'
-      ],
-      postedDate: '2024-02-01',
-    ),
-    InternshipModel(
-      id: '2',
-      title: 'Data Science Intern',
-      company: 'Data Analytics Inc',
-      location: 'New York, NY',
-      duration: '6 months',
-      stipend: '\$2500/month',
-      description: 'Work with our data science team to analyze large datasets, build machine learning models, and create data visualizations.',
-      requirements: [
-        'Currently enrolled in a graduate program',
-        'Strong background in statistics and mathematics',
-        'Proficiency in Python and R',
-        'Experience with machine learning frameworks',
-        'Knowledge of SQL and data visualization tools'
-      ],
-      postedDate: '2024-02-05',
-    ),
-    InternshipModel(
-      id: '3',
-      title: 'Mobile App Development Intern',
-      company: 'App Studio',
-      location: 'Remote',
-      duration: '4 months',
-      stipend: '\$1800/month',
-      description: 'Help design and develop mobile applications for iOS and Android platforms using Flutter and React Native.',
-      requirements: [
-        'Computer Science or Engineering student',
-        'Experience with mobile app development',
-        'Knowledge of Flutter or React Native',
-        'Understanding of mobile UI/UX principles',
-        'Ability to work independently'
-      ],
-      postedDate: '2024-02-08',
-    ),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xFF0D1117),
-            Color(0xFF0A1F24),
-            Color(0xFF08151A),
-          ],
-          stops: [0.0, 0.6, 1.0],
-        ),
-      ),
-      child: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            CustomAppbar(
-              logoImage: AppAssets.logoImage,
-              backgroundColor: Colors.transparent,
-            ),
-
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 6.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 2.h),
-                  CustomText(
-                    title: "Internships",
-                    color: AppColors.kTextPrimary,
-                    fontSize: 26.sp,
-                    weight: FontWeight.w800,
-                  ),
-                  SizedBox(height: 0.4.h),
-                  CustomText(
-                    title: "Find exciting internship opportunities",
-                    color: AppColors.kTextSecondary,
-                    fontSize: 15.sp,
-                  ),
-                  SizedBox(height: 3.h),
-                ],
-              ),
-            ),
-
-            Expanded(
-              child: ListView.builder(
-                padding: EdgeInsets.symmetric(horizontal: 6.w),
-                itemCount: internships.length,
-                itemBuilder: (context, index) {
-                  final internship = internships[index];
-                  return _buildInternshipCard(internship);
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInternshipCard(InternshipModel internship) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 2.h),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AppColors.kSurface.withOpacity(0.8),
-            AppColors.kSurfaceElevated.withOpacity(0.6),
-          ],
-        ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.kEmerald.withOpacity(0.3),
-          width: 1,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => InternshipDetailScreen(internship: internship),
-              ),
-            );
-          },
-          child: Padding(
-            padding: EdgeInsets.all(4.w),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(2.w),
-                      decoration: BoxDecoration(
-                        color: AppColors.kEmerald.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Icon(
-                        Icons.business_center,
-                        color: AppColors.kEmerald,
-                        size: 6.w,
-                      ),
-                    ),
-                    SizedBox(width: 3.w),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            title: internship.title,
-                            fontSize: 16.sp,
-                            weight: FontWeight.w600,
-                            color: AppColors.kTextPrimary,
-                          ),
-                          CustomText(
-                            title: internship.company,
-                            fontSize: 14.sp,
-                            color: AppColors.kEmerald,
-                            weight: FontWeight.w500,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 2.h),
-                Row(
-                  children: [
-                    Icon(Icons.location_on, size: 14, color: AppColors.kEmerald),
-                    SizedBox(width: 1.w),
-                    CustomText(
-                      title: internship.location,
-                      fontSize: 12.sp,
-                      color: AppColors.kTextSecondary,
-                    ),
-                    SizedBox(width: 4.w),
-                    Icon(Icons.schedule, size: 14, color: AppColors.kEmerald),
-                    SizedBox(width: 1.w),
-                    CustomText(
-                      title: internship.duration,
-                      fontSize: 12.sp,
-                      color: AppColors.kTextSecondary,
-                    ),
-                  ],
-                ),
-                SizedBox(height: 1.h),
-                Row(
-                  children: [
-                    Icon(Icons.attach_money, size: 14, color: AppColors.kEmerald),
-                    SizedBox(width: 1.w),
-                    CustomText(
-                      title: internship.stipend,
-                      fontSize: 12.sp,
-                      color: AppColors.kTextSecondary,
-                    ),
-                    SizedBox(width: 4.w),
-                    Icon(Icons.calendar_today, size: 14, color: AppColors.kEmerald),
-                    SizedBox(width: 1.w),
-                    CustomText(
-                      title: "Posted: ${internship.postedDate}",
-                      fontSize: 12.sp,
-                      color: AppColors.kTextSecondary,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 class InternshipDetailScreen extends StatefulWidget {
   final InternshipModel internship;
@@ -332,13 +62,13 @@ class _InternshipDetailScreenState extends State<InternshipDetailScreen> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.kSurface.withOpacity(0.8),
-                      AppColors.kSurfaceElevated.withOpacity(0.6),
+                      AppColors.kSurface.withValues(alpha: 0.8),
+                      AppColors.kSurfaceElevated.withValues(alpha: 0.6),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: AppColors.kEmerald.withOpacity(0.3),
+                    color: AppColors.kEmerald.withValues(alpha: 0.3),
                     width: 1,
                   ),
                 ),
@@ -350,7 +80,7 @@ class _InternshipDetailScreenState extends State<InternshipDetailScreen> {
                         Container(
                           padding: EdgeInsets.all(3.w),
                           decoration: BoxDecoration(
-                            color: AppColors.kEmerald.withOpacity(0.2),
+                            color: AppColors.kEmerald.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Icon(
@@ -434,13 +164,13 @@ class _InternshipDetailScreenState extends State<InternshipDetailScreen> {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      AppColors.kSurface.withOpacity(0.8),
-                      AppColors.kSurfaceElevated.withOpacity(0.6),
+                      AppColors.kSurface.withValues(alpha: 0.8),
+                      AppColors.kSurfaceElevated.withValues(alpha: 0.6),
                     ],
                   ),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: AppColors.kEmerald.withOpacity(0.3),
+                    color: AppColors.kEmerald.withValues(alpha:0.3),
                     width: 1,
                   ),
                 ),
@@ -465,9 +195,9 @@ class _InternshipDetailScreenState extends State<InternshipDetailScreen> {
                         width: double.infinity,
                         padding: EdgeInsets.all(3.w),
                         decoration: BoxDecoration(
-                          color: AppColors.kEmerald.withOpacity(0.1),
+                          color: AppColors.kEmerald.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColors.kEmerald.withOpacity(0.3)),
+                          border: Border.all(color: AppColors.kEmerald.withValues(alpha: 0.3)),
                         ),
                         child: Row(
                           children: [
@@ -569,13 +299,13 @@ class _InternshipDetailScreenState extends State<InternshipDetailScreen> {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppColors.kSurface.withOpacity(0.8),
-            AppColors.kSurfaceElevated.withOpacity(0.6),
+            AppColors.kSurface.withValues(alpha: 0.8),
+            AppColors.kSurfaceElevated.withValues(alpha: 0.6),
           ],
         ),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: AppColors.kEmerald.withOpacity(0.3),
+          color: AppColors.kEmerald.withValues(alpha: 0.3),
           width: 1,
         ),
       ),

@@ -33,7 +33,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
     if (_formKey.currentState?.validate() ?? false) {
       try {
         final response = await ref.read(otpProvider.notifier).verifyOtp(_pin);
-        if (response != null) {
+        if (response.isEmpty) {
           log("OTPScreen → OTP response: $response");
           context.pushNamed(RouteNames.loginScreen);
         }
@@ -69,7 +69,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.kEmerald.withOpacity(0.18),
+                              color: AppColors.kEmerald.withValues(alpha: 0.18),
                               blurRadius: 32,
                               spreadRadius: 4,
                             ),

@@ -42,7 +42,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         final response = await ref
             .read(forgotPasswordProvider.notifier)
             .forgotPassword(email: email);
-        if (response != null) {
+        if (response.isEmpty) {
           log("ForgotPasswordScreen → ForgotPassword response: $response");
           await _storageService.saveForgotEmail(email);
           log("Saving forgot email: $email");
@@ -80,7 +80,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                         decoration: BoxDecoration(
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.kEmerald.withOpacity(0.18),
+                              color: AppColors.kEmerald.withValues(alpha: 0.18),
                               blurRadius: 32,
                               spreadRadius: 4,
                             ),

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawyer_app/src/models/bottom_navigation_model/bottom_nav_item.dart';
 import 'package:lawyer_app/src/providers/student_provider/bottom_navigation_provider/student_bottom_navigation_provider.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/screens/student_dashboard_screen.dart';
-import 'package:lawyer_app/src/views/student/bottom_navigation/screens/certification_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/certification_screens/certification_screen.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/screens/tasks_screen.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/screens/research_screen.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/screens/student_profile_screen.dart';

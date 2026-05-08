@@ -1,5 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/src/models/lawyer_model/lawyer_model.dart';
+import 'package:lawyer_app/src/models/student_model/certification_model.dart';
+import 'package:lawyer_app/src/models/student_model/internship_model/internship_model.dart';
 import 'package:lawyer_app/src/routing/route_names.dart';
 import 'package:lawyer_app/src/views/auth/forgot_password_screen.dart';
 import 'package:lawyer_app/src/views/auth/incoming_user_type_screen.dart';
@@ -24,13 +26,15 @@ import 'package:lawyer_app/src/views/lawyer/lawyer_bottom_navigation/screens/law
     as self_profile;
 import 'package:lawyer_app/src/views/student/auth/student_login_screen.dart';
 import 'package:lawyer_app/src/views/student/auth/student_signup_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/certification_screens/certification_detail_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/internship_screens/internship_detail_screen.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/student_bottom_navigation_screen.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/screens/student_dashboard_screen.dart';
-import 'package:lawyer_app/src/views/student/bottom_navigation/screens/certification_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/certification_screens/certification_screen.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/screens/tasks_screen.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/screens/research_screen.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/screens/student_profile_screen.dart';
-import 'package:lawyer_app/src/views/student/bottom_navigation/screens/internship_screen.dart';
+import 'package:lawyer_app/src/views/student/bottom_navigation/screens/internship_screens/internship_screen.dart';
 import 'package:lawyer_app/src/views/student/bottom_navigation/screens/programs_screen.dart';
 
 class AppRouter {
@@ -173,6 +177,14 @@ class AppRouter {
         builder: (context, state) => const CertificationScreen(),
       ),
       GoRoute(
+        path: RouteNames.certificationDetailScreen,
+        name: RouteNames.certificationDetailScreen,
+        builder: (context, state) {
+          final certDetail = state.extra as CertificationModel;
+          return CertificationDetailScreen(certification: certDetail);
+        },
+      ),
+      GoRoute(
         path: RouteNames.tasksScreen,
         name: RouteNames.tasksScreen,
         builder: (context, state) => const TasksScreen(),
@@ -191,6 +203,14 @@ class AppRouter {
         path: RouteNames.internshipScreen,
         name: RouteNames.internshipScreen,
         builder: (context, state) => const InternshipScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.internshipDetailScreen,
+        name: RouteNames.internshipDetailScreen,
+        builder: (context, state) {
+          final internship = state.extra as InternshipModel;
+          return InternshipDetailScreen(internship: internship);
+        },
       ),
       GoRoute(
         path: RouteNames.programsScreen,

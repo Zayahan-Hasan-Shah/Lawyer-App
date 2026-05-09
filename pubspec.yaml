@@ -56,6 +56,7 @@ dependencies:
   timezone: ^0.10.1
   device_info_plus: ^12.3.0
   permission_handler: ^12.0.1
+  get_it: ^9.2.1
 
 dev_dependencies:
   flutter_test:

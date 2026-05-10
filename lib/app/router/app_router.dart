@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:lawyer_app/features/client/presentation/screens/chat/chat_screen.dart';
 import 'package:lawyer_app/features/lawyer/data/models/lawyer_model.dart';
 import 'package:lawyer_app/features/student/data/models/certification_model.dart';
 import 'package:lawyer_app/features/student/data/models/internship_model/internship_model.dart';
@@ -10,12 +11,17 @@ import 'package:lawyer_app/features/auth/presentation/screens/otp_screen.dart';
 import 'package:lawyer_app/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:lawyer_app/features/auth/presentation/screens/signup_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/bottom_navigation_screen.dart';
-import 'package:lawyer_app/features/client/presentation/screens/chat/chat.dart';
-import 'package:lawyer_app/features/client/presentation/screens/chat/chat_screen.dart';
+import 'package:lawyer_app/features/client/presentation/screens/video/video_screen.dart';
+import 'package:lawyer_app/features/client/presentation/screens/home/court_info_screen.dart';
+import 'package:lawyer_app/features/client/presentation/screens/support/support_form_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/home/home_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/notifications/notification_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/search/search_screen.dart';
-import 'package:lawyer_app/features/client/presentation/screens/video/video_screen.dart';
+import 'package:lawyer_app/features/chat/presentation/screens/video_list_screen.dart';
+import 'package:lawyer_app/features/chat/presentation/screens/video_call_screen.dart';
+import 'package:lawyer_app/features/chat/presentation/screens/chat_list_screen.dart';
+import 'package:lawyer_app/features/chat/presentation/screens/chat_detail_screen.dart' as shared_chat;
+import 'package:lawyer_app/features/lawyer/presentation/screens/settings/lawyer_settings_screen.dart';
 import 'package:lawyer_app/features/lawyer/presentation/screens/lawyer_login.dart';
 import 'package:lawyer_app/features/lawyer/presentation/screens/lawyer_signup.dart';
 import 'package:lawyer_app/features/lawyer/presentation/screens/lawyer_bottom_navigation_screen.dart';
@@ -37,6 +43,8 @@ import 'package:lawyer_app/features/student/presentation/screens/research_screen
 import 'package:lawyer_app/features/student/presentation/screens/student_profile_screen.dart';
 import 'package:lawyer_app/features/student/presentation/screens/internship_screens/internship_screen.dart';
 import 'package:lawyer_app/features/student/presentation/screens/programs_screen.dart';
+import 'package:lawyer_app/features/student/presentation/screens/settings/student_settings_screen.dart';
+import 'package:lawyer_app/shared/screens/help_support_screen.dart';
 
 class AppRouter {
   static final router = GoRouter(
@@ -98,6 +106,16 @@ class AppRouter {
         builder: (context, state) => const HomeScreen(),
       ),
       GoRoute(
+        path: RouteNames.courtInfoScreen,
+        name: RouteNames.courtInfoScreen,
+        builder: (context, state) => const CourtInfoScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.supportFormScreen,
+        name: RouteNames.supportFormScreen,
+        builder: (context, state) => const SupportFormScreen(),
+      ),
+      GoRoute(
         path: RouteNames.chatScreen,
         name: RouteNames.chatScreen,
         builder: (context, state) => const ChatScreen(),
@@ -105,12 +123,24 @@ class AppRouter {
       GoRoute(
         path: RouteNames.chatDetailScreen,
         name: RouteNames.chatDetailScreen,
-        builder: (context, state) => const ChatDetailScreen(),
+        builder: (context, state) {
+          final chatId = state.pathParameters['chatId'] ?? 'default';
+          return shared_chat.ChatDetailScreen(chatId: chatId);
+        },
+      ),
+      GoRoute(
+        path: RouteNames.chatListScreen,
+        name: RouteNames.chatListScreen,
+        builder: (context, state) => const ChatListScreen(),
       ),
       GoRoute(
         path: RouteNames.videoScreen,
         name: RouteNames.videoScreen,
-        builder: (context, state) => const VideoScreen(),
+        builder: (context, state) => const VideoListScreen(),
+      ),
+      GoRoute(
+        path: '/video-call',
+        builder: (context, state) => const VideoCallScreen(),
       ),
       GoRoute(
         path: RouteNames.searchScreen,
@@ -154,6 +184,11 @@ class AppRouter {
         path: RouteNames.lawyerPrfoileScreen,
         name: RouteNames.lawyerPrfoileScreen,
         builder: (context, state) => const self_profile.LawyerProfileScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.lawyerSettingsScreen,
+        name: RouteNames.lawyerSettingsScreen,
+        builder: (context, state) => const LawyerSettingsScreen(),
       ),
 
       // Student's screen
@@ -204,6 +239,16 @@ class AppRouter {
         path: RouteNames.studentProfileScreen,
         name: RouteNames.studentProfileScreen,
         builder: (context, state) => const StudentProfileScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.studentSettingsScreen,
+        name: RouteNames.studentSettingsScreen,
+        builder: (context, state) => const StudentSettingsScreen(),
+      ),
+      GoRoute(
+        path: RouteNames.helpSupportScreen,
+        name: RouteNames.helpSupportScreen,
+        builder: (context, state) => const HelpSupportScreen(),
       ),
       GoRoute(
         path: RouteNames.internshipScreen,

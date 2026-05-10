@@ -11,6 +11,8 @@ final Map<String, dynamic> mockCasesData = {
         "hearingDate": "12 Dec 2025",
         "client": "Rajesh Kumar",
         "category": "Criminal",
+        "lawyerId": "L-101",
+        "lawyerName": "Zayahan Hasan",
       },
       {
         "id": 2,
@@ -21,6 +23,8 @@ final Map<String, dynamic> mockCasesData = {
         "hearingDate": "28 Jan 2026",
         "client": "Amit Sharma",
         "category": "Civil",
+        "lawyerId": "L-102",
+        "lawyerName": "Ahmad Khan",
       },
       {
         "id": 3,
@@ -31,6 +35,8 @@ final Map<String, dynamic> mockCasesData = {
         "hearingDate": "05 Dec 2025",
         "client": "Priya Singh",
         "category": "Civil",
+        "lawyerId": "L-103",
+        "lawyerName": "Sara Ahmed",
       },
     ],
     "disposed_cases": [
@@ -44,6 +50,8 @@ final Map<String, dynamic> mockCasesData = {
         "outcome": "Accused sentenced to 2 years imprisonment",
         "client": "Anil Mehta",
         "category": "Criminal",
+        "lawyerId": "L-101",
+        "lawyerName": "Zayahan Hasan",
       },
       {
         "id": 102,
@@ -55,6 +63,8 @@ final Map<String, dynamic> mockCasesData = {
         "outcome": "Out-of-court settlement reached",
         "client": "ABC Corporation",
         "category": "Civil",
+        "lawyerId": "L-102",
+        "lawyerName": "Ahmad Khan",
       },
       {
         "id": 103,
@@ -66,6 +76,8 @@ final Map<String, dynamic> mockCasesData = {
         "outcome": "Joint custody awarded with visitation rights",
         "client": "Rohan Patel",
         "category": "Civil",
+        "lawyerId": "L-103",
+        "lawyerName": "Sara Ahmed",
       },
     ],
   },

@@ -11,6 +11,8 @@ class CaseModel {
   final String? outcome; // disposed only
   final String client;
   final String category;
+  final String? lawyerId;
+  final String? lawyerName;
 
   CaseModel({
     required this.id,
@@ -23,6 +25,8 @@ class CaseModel {
     this.outcome,
     required this.client,
     required this.category,
+    this.lawyerId,
+    this.lawyerName,
   });
 
   factory CaseModel.fromJson(Map<String, dynamic> json) {
@@ -37,6 +41,8 @@ class CaseModel {
       outcome: json['outcome'] as String?,
       client: json['client'] as String,
       category: json['category'] as String,
+      lawyerId: json['lawyerId'] as String?,
+      lawyerName: json['lawyerName'] as String?,
     );
   }
 }

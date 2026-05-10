@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
+import 'package:lawyer_app/features/chat/presentation/screens/video_list_screen.dart';
 import 'package:lawyer_app/features/lawyer/presentation/providers/lawyer_bottom_navigation_provider/lawyer_bottom_navigation_provider.dart';
 import 'package:lawyer_app/features/lawyer/presentation/screens/lawyer_dashboard_screen.dart';
 import 'package:lawyer_app/features/lawyer/presentation/screens/lawyer_profile_screen.dart';
+import 'package:lawyer_app/features/chat/presentation/screens/chat_list_screen.dart';
+import 'package:lawyer_app/features/lawyer/presentation/screens/settings/lawyer_settings_screen.dart';
 import 'package:lawyer_app/shared/widgets/custom_bottom_navbar.dart';
 import 'package:lawyer_app/shared/widgets/custom_lawyer_drawer.dart';
 
@@ -19,8 +22,9 @@ class _LawyerBottomNavigationScreenState
     extends ConsumerState<LawyerBottomNavigationScreen> {
   final List<Widget> _screens = [
     const LawyerDashboardScreen(),
-    const Center(child: Text("Chat Screen (Coming Soon)")),
-    const Center(child: Text("Settings Screen (Coming Soon)")),
+    const ChatListScreen(),
+    const VideoListScreen(),
+    const LawyerSettingsScreen(),
     const LawyerProfileScreen(),
   ];
 
@@ -52,6 +56,11 @@ class _LawyerBottomNavigationScreenState
             BottomNavigationBarItem(
               activeIcon: Icon(Icons.chat_rounded),
               icon: Icon(Icons.chat_outlined),
+              label: '',
+            ),
+            BottomNavigationBarItem(
+              activeIcon: Icon(Icons.videocam_rounded),
+              icon: Icon(Icons.videocam_outlined),
               label: '',
             ),
             BottomNavigationBarItem(

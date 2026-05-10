@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
@@ -140,7 +140,7 @@ class CustomStudentDrawer extends StatelessWidget {
                 title: 'Video Programs',
                 onTap: () {
                   Navigator.pop(context);
-                  _showComingSoon(context, 'Video Programs');
+                  context.push(RouteNames.programsScreen);
                 },
               ),
 
@@ -159,23 +159,23 @@ class CustomStudentDrawer extends StatelessWidget {
 
               // Settings
               _buildDrawerItem(
-                icon: Icons.settings_rounded,
+                icon: Icons.settings,
                 title: 'Settings',
                 onTap: () {
                   Navigator.pop(context);
-                  _showComingSoon(context, 'Settings');
+                  context.push(RouteNames.studentSettingsScreen);
                 },
               ),
 
-              // // Help & Support
-              // _buildDrawerItem(
-              //   icon: Icons.help_rounded,
-              //   title: 'Help & Support',
-              //   onTap: () {
-              //     Navigator.pop(context);
-              //     _showComingSoon(context, 'Help & Support');
-              //   },
-              // ),
+              // Help & Support
+              _buildDrawerItem(
+                icon: Icons.help_outline,
+                title: 'Help & Support',
+                onTap: () {
+                  Navigator.pop(context);
+                  context.push(RouteNames.helpSupportScreen);
+                },
+              ),
 
               // Logout section
               Padding(

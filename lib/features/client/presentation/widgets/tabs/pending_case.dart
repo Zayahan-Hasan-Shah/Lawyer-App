@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
@@ -62,6 +62,21 @@ class PendingCasesTab extends StatelessWidget {
               fontSize: 16.sp,
               color: AppColors.kTextSecondary,
             ),
+            if (c.lawyerName != null) ...[
+              SizedBox(height: 0.5.h),
+              Row(
+                children: [
+                  Icon(Icons.gavel_rounded, color: AppColors.kGold, size: 18),
+                  SizedBox(width: 2.w),
+                  CustomText(
+                    title: "Lawyer: ${c.lawyerName} (${c.lawyerId})",
+                    fontSize: 15.sp,
+                    weight: FontWeight.w600,
+                    color: AppColors.kGoldLight,
+                  ),
+                ],
+              ),
+            ],
             SizedBox(height: 3.h),
 
             // Case Details Section

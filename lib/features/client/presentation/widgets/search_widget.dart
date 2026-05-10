@@ -1,4 +1,4 @@
-﻿// import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 // import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:lawyer_app/core/constants/app_colors.dart';
 // import 'package:lawyer_app/providers/home_screen_provider/search_provider.dart';
@@ -58,6 +58,7 @@ class SearchWidget extends ConsumerStatefulWidget {
   final String hintText;
   final bool useSearchProvider;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onFieldSubmitted;
   final IconData? prefixIcon;
   final Color? textColor;
   final Color? hintTextColor;
@@ -69,6 +70,7 @@ class SearchWidget extends ConsumerStatefulWidget {
     this.hintText = "Search lawyers, cases...",
     this.useSearchProvider = true,
     this.onChanged,
+    this.onFieldSubmitted,
     this.prefixIcon,
     this.textColor,
     this.hintTextColor,
@@ -144,6 +146,7 @@ class _SearchWidgetState extends ConsumerState<SearchWidget> {
               }
               widget.onChanged?.call(trimmed);
             },
+            onFieldSubmitted: widget.onFieldSubmitted,
             borderRadius: 20,
           ),
         ),

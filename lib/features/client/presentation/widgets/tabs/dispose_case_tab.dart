@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
 import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
 import 'package:lawyer_app/shared/widgets/custom_text.dart';
@@ -63,6 +63,15 @@ class DisposedCasesTab extends StatelessWidget {
                         color: AppColors.lightDescriptionTextColor,
                         fontSize: 15.sp,
                       ),
+                      if (c.lawyerName != null) ...[
+                        SizedBox(height: 0.5.h),
+                        CustomText(
+                          title: "Lawyer: ${c.lawyerName}",
+                          color: AppColors.kGoldLight,
+                          fontSize: 14.sp,
+                          weight: FontWeight.w600,
+                        ),
+                      ],
                       SizedBox(height: 1.h),
                       CustomText(
                         title: "Disposed: ${c.disposedDate}",

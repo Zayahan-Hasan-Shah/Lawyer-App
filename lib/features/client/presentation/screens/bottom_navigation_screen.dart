@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lawyer_app/features/client/presentation/providers/bottom_navigation_provider/bottom_navigation_provider.dart';
-import 'package:lawyer_app/features/client/presentation/screens/chat/chat_screen.dart';
+import 'package:lawyer_app/features/chat/presentation/screens/chat_list_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/home/home_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/search/search_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/video/video_screen.dart';
@@ -23,7 +23,7 @@ class _BottomNavigationScreenState
     extends ConsumerState<BottomNavigationScreen> {
   final List<Widget> _screens = [
     HomeScreen(),
-    ChatScreen(),
+    ChatListScreen(),
     VideoScreen(),
     SearchScreen(),
     NotificationScreen(),

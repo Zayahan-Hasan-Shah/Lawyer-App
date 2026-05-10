@@ -15,7 +15,9 @@ class RouteNames {
   static const searchScreen = '/searchscreen';
   static const notificationScreen = '/notificationscreen';
   static const lawyerScreen = '/lawyerscreen';
-  static const chatDetailScreen = '/chatdetailscreen';
+  static const chatDetailScreen = '/chat-detail/:chatId';
+  static const courtInfoScreen = '/courtinfoscreen';
+  static const supportFormScreen = '/supportformscreen';
 
   // student's screens
   static const studentSignupScreen = '/studentsignupscreen';
@@ -27,6 +29,8 @@ class RouteNames {
   static const tasksScreen = '/tasksscreen';
   static const researchScreen = '/researchscreen';
   static const studentProfileScreen = '/studentprofilescreen';
+  static const studentSettingsScreen = '/studentsettingsscreen';
+  static const helpSupportScreen = '/helpsupportscreen';
   static const internshipScreen = '/internshipscreen';
   static const internshipDetailScreen = '/internshipdetailscreen';
   static const programsScreen = '/programsscreen';
@@ -37,4 +41,6 @@ class RouteNames {
   static const lawyerDashboardScreen = '/lawyerDashboardScreen';
   static const lawyerBottomNavigationScreen = '/lawyerbottomnavigationscreen';
   static const lawyerPrfoileScreen = '/lawyerprofilescreen';
+  static const chatListScreen = '/chatlistscreen';
+  static const lawyerSettingsScreen = '/lawyersettingsscreen';
 }

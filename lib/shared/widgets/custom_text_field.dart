@@ -18,6 +18,8 @@ class CustomTextField extends StatelessWidget {
   final Color? hintTextColor;
   final Color? fillColor;
   final double? borderRadius;
+  final TextInputAction? textInputAction;
+  final void Function(String)? onFieldSubmitted;
 
   const CustomTextField({
     super.key,
@@ -36,6 +38,8 @@ class CustomTextField extends StatelessWidget {
     this.hintTextColor,
     this.fillColor,
     this.borderRadius,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -49,6 +53,8 @@ class CustomTextField extends StatelessWidget {
       maxLines: maxLines,
       readOnly: readOnly,
       onTap: onTap,
+      textInputAction: textInputAction,
+      onFieldSubmitted: onFieldSubmitted ?? (v) => FocusScope.of(context).unfocus(),
       style: TextStyle(
         color: textColor ?? AppColors.kTextPrimary, 
         fontSize: 14.sp

@@ -4,6 +4,7 @@ import 'package:lawyer_app/app/router/route_names.dart';
 import 'package:lawyer_app/core/constants/app_assets.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
 import 'package:lawyer_app/features/onboarding/presentation/widgets/role_card.dart';
+import 'package:lawyer_app/shared/widgets/custom_button.dart';
 import 'package:lawyer_app/shared/widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
 
@@ -106,6 +107,16 @@ class RoleOverviewScreen extends StatelessWidget {
                     ),
 
                     SizedBox(height: 4.h),
+
+                    CustomButton(
+                      text: "Select Your role",
+                      onPressed: () {
+                        context.pushReplacement(RouteNames.incomingUserScreen);
+                      },
+                      gradient: AppColors.goldGradient,
+                      width: double.infinity,
+                      textColor: Colors.black,
+                    ),
                   ],
                 ),
               ),

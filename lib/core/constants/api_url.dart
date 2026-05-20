@@ -6,5 +6,8 @@ class ApiUrl {
   static const String forgotPasswordUrl = '$baseUrl/forgotpassword';
   static const String otpUrl = '$baseUrl/otp';
   static const String resetPasswordUrl = '$baseUrl/resetpassword';
-  static const String getAllLayersUrl = '$baseUrl/LawyerInfos'; // fetch all the laywers
-} 
+  static const String getAllLayersUrl =
+      '$baseUrl/LawyerInfos'; // fetch all the laywers
+  static const String getCasesForClientByIdUrl = '$baseUrl/CaseInfos/by-user/';
+  static const String createCaseForClient = '$baseUrl/CaseInfos';
+}

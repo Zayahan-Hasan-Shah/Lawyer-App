@@ -1,4 +1,4 @@
-﻿import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/core/network/api_exceptions.dart';
 import 'package:lawyer_app/di/injection_container.dart';
 import 'package:lawyer_app/features/auth/domain/usecases/auth_usecases.dart';
@@ -17,6 +17,7 @@ class SignupController extends StateNotifier<SignupState> {
     required String phone,
     required String password,
     required String address,
+    required String userType,
   }) async {
     state = SignupLoading();
     try {
@@ -28,6 +29,7 @@ class SignupController extends StateNotifier<SignupState> {
           "password": password,
           "address": address,
           "profilePhoto": null,
+          "userType": userType,
         }
       };
 

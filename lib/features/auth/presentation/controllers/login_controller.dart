@@ -1,4 +1,4 @@
-﻿import 'dart:developer';
+import 'dart:developer';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/core/network/api_exceptions.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
@@ -23,10 +23,19 @@ class LoginController extends StateNotifier<LoginState> {
 
       if (responseData['status'] == 'success') {
         final data = responseData['data'] as Map<String, dynamic>;
+        final int userId = data['userId'] as int;
+        final String? userType = data['userType'] as String?;
         final String fullName = data['fullName'] as String;
         final String token = data['token'] as String;
+        final String expiresUtc = data['expiresUtc'] as String;
+        final String expiresLocal = data['expiresLocal'] as String;
 
         await StorageService.instance.saveAccessToken(token);
+        await StorageService.instance.saveUserId(userId);
+        await StorageService.instance.saveUserType(userType);
+        await StorageService.instance.saveFullName(fullName);
+        await StorageService.instance.saveExpiresUtc(expiresUtc);
+        await StorageService.instance.saveExpiresLocal(expiresLocal);
 
         state = LoginSuccess(
           fullName: fullName,
@@ -34,7 +43,14 @@ class LoginController extends StateNotifier<LoginState> {
           message: responseData['message'] ?? 'Login Successful',
         );
 
-        return {'fullName': fullName, 'token': token};
+        return {
+          'userId': userId,
+          'userType': userType,
+          'fullName': fullName,
+          'token': token,
+          'expiresUtc': expiresUtc,
+          'expiresLocal': expiresLocal,
+        };
       } else {
         state = LoginFailure(responseData['errorMessage'] ?? 'Login Failed');
         return null;

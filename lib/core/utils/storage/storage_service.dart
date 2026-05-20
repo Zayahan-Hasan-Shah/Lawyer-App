@@ -6,6 +6,11 @@ class StorageService {
   // Private constants for keys
   static const String _forgotEmailKey = 'forgot_email';
   static const String _accessTokenKey = 'access_token';
+  static const String _userIdKey = 'user_id';
+  static const String _userTypeKey = 'user_type';
+  static const String _fullNameKey = 'full_name';
+  static const String _expiresUtcKey = 'expires_utc';
+  static const String _expiresLocalKey = 'expires_local';
 
   // Singleton pattern (optional but recommended)
   StorageService._();
@@ -89,10 +94,125 @@ class StorageService {
     }
   }
 
-  // Optional: Clear all auth data (useful for logout)
+  // ======================================================
+  // Extra User Info Storage
+  // ======================================================
+  Future<void> saveUserId(int id) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt(_userIdKey, id);
+      log('User ID saved successfully: $id');
+    } catch (e) {
+      log('Error saving user ID: $e', error: e);
+    }
+  }
+
+  Future<int?> getUserId() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getInt(_userIdKey);
+    } catch (e) {
+      log('Error retrieving user ID: $e', error: e);
+      return null;
+    }
+  }
+
+  Future<void> saveUserType(String? type) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      if (type == null) {
+        await prefs.remove(_userTypeKey);
+      } else {
+        await prefs.setString(_userTypeKey, type);
+      }
+      log('User Type saved successfully: $type');
+    } catch (e) {
+      log('Error saving user type: $e', error: e);
+    }
+  }
+
+  Future<String?> getUserType() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(_userTypeKey);
+    } catch (e) {
+      log('Error retrieving user type: $e', error: e);
+      return null;
+    }
+  }
+
+  Future<void> saveFullName(String name) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_fullNameKey, name);
+      log('Full Name saved successfully: $name');
+    } catch (e) {
+      log('Error saving full name: $e', error: e);
+    }
+  }
+
+  Future<String?> getFullName() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(_fullNameKey);
+    } catch (e) {
+      log('Error retrieving full name: $e', error: e);
+      return null;
+    }
+  }
+
+  Future<void> saveExpiresUtc(String expires) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_expiresUtcKey, expires);
+    } catch (e) {
+      log('Error saving expires UTC: $e', error: e);
+    }
+  }
+
+  Future<String?> getExpiresUtc() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(_expiresUtcKey);
+    } catch (e) {
+      log('Error retrieving expires UTC: $e', error: e);
+      return null;
+    }
+  }
+
+  Future<void> saveExpiresLocal(String expires) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_expiresLocalKey, expires);
+    } catch (e) {
+      log('Error saving expires local: $e', error: e);
+    }
+  }
+
+  Future<String?> getExpiresLocal() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      return prefs.getString(_expiresLocalKey);
+    } catch (e) {
+      log('Error retrieving expires local: $e', error: e);
+      return null;
+    }
+  }
+
+  // Clear all auth data (useful for logout)
   Future<void> clearAllAuthData() async {
-    await deleteForgotEmail();
-    await deleteAccessToken();
-    log('All authentication data cleared.');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_forgotEmailKey);
+      await prefs.remove(_accessTokenKey);
+      await prefs.remove(_userIdKey);
+      await prefs.remove(_userTypeKey);
+      await prefs.remove(_fullNameKey);
+      await prefs.remove(_expiresUtcKey);
+      await prefs.remove(_expiresLocalKey);
+      log('All authentication data cleared.');
+    } catch (e) {
+      log('Error clearing all auth data: $e', error: e);
+    }
   }
 }

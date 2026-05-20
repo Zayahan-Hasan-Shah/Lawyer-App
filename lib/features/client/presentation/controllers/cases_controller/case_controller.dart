@@ -1,45 +1,67 @@
-﻿import 'dart:developer';
+import 'dart:developer';
 
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:lawyer_app/core/mock_data/cases_data.dart';
+import 'package:lawyer_app/core/utils/storage/storage_service.dart';
+import 'package:lawyer_app/di/injection_container.dart';
 import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
+import 'package:lawyer_app/features/client/domain/usecases/client_usecases.dart';
 import 'package:lawyer_app/features/client/presentation/states/case_states/case_states.dart';
 
 class CaseController extends StateNotifier<CaseStates> {
-  CaseController() : super(CaseInitialState());
+  final GetCasesByUserIdUseCase _getCasesUseCase;
+
+  CaseController({GetCasesByUserIdUseCase? getCasesUseCase})
+      : _getCasesUseCase = getCasesUseCase ?? sl<GetCasesByUserIdUseCase>(),
+        super(CaseInitialState());
 
   Future<void> getAllCases() async {
     state = CaseLoadingState();
     try {
-      // Simulate network delay
-      await Future.delayed(const Duration(seconds: 2));
-
-      // Simulate API response
-      final response = mockCasesData;
-
-      if (response['status'] != 200) {
-        state = CaseFailureState(error: "Failed to load cases");
+      final int? userId = await StorageService.instance.getUserId();
+      if (userId == null) {
+        state = CaseFailureState(error: "User not logged in");
+        return;
       }
 
-      final data = response['data'] as Map<String, dynamic>;
+      final response = await _getCasesUseCase.execute(userId);
 
-      final pendingList = (data['pending_cases'] as List)
-          .map((e) => CaseModel.fromJson(e as Map<String, dynamic>))
-          .toList();
+      if (response != null && response['status'] == 'success') {
+        final Map<String, dynamic> dataMap = response['data'] as Map<String, dynamic>;
+        final List<dynamic> casesList = dataMap['items'] as List<dynamic>;
 
-      final disposedList = (data['disposed_cases'] as List)
-          .map((e) => CaseModel.fromJson(e as Map<String, dynamic>))
-          .toList();
+        final List<CaseModel> allCasesList = casesList.map((item) {
+          final Map<String, dynamic> itemMap = item as Map<String, dynamic>;
+          final Map<String, dynamic> map = (itemMap['caseInfo'] ?? itemMap) as Map<String, dynamic>;
+          final List<dynamic> rawNotes = itemMap['notes'] as List<dynamic>? ?? [];
+          final notes = rawNotes
+              .map((n) => CaseNote.fromJson(n as Map<String, dynamic>))
+              .toList();
+          return CaseModel.fromJson(map, notes: notes);
+        }).toList();
 
-      final allCases = AllCasesResponse(
-        pendingCases: pendingList,
-        disposedCases: disposedList,
-      );
+        final pendingList = allCasesList.where((c) {
+          final s = c.status.toLowerCase();
+          return s != 'disposed' && s != 'closed' && s != 'disposed';
+        }).toList();
 
-      state = CaseSuccessState(data: allCases);
+        final disposedList = allCasesList.where((c) {
+          final s = c.status.toLowerCase();
+          return s == 'disposed' || s == 'closed' || s == 'disposed';
+        }).toList();
+
+        final allCases = AllCasesResponse(
+          pendingCases: pendingList,
+          disposedCases: disposedList,
+        );
+
+        state = CaseSuccessState(data: allCases);
+      } else {
+        final errorMsg = response != null ? response['errorMessage'] : "Server error";
+        state = CaseFailureState(error: errorMsg ?? "Failed to load cases");
+      }
     } catch (e, stack) {
-      log("Get All Cases â†’ Error: $e\n$stack");
-      state = CaseFailureState(error: "Unable to Load Cases");
+      log("Get All Cases → Error: $e\n$stack");
+      state = CaseFailureState(error: "Unable to load cases. Please check your internet connection and try again.");
     }
   }
 }

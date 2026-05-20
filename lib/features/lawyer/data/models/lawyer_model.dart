@@ -29,17 +29,17 @@ class LawyerModel {
 
   factory LawyerModel.fromJson(Map<String, dynamic> json) {
     return LawyerModel(
-      id: json['id'] as int,
-      firstName: json['firstName'] as String,
-      lastName: json['lastName'] as String,
-      category: json['category'] as String,
-      phone: json['phone'] as String,
-      email: json['email'] as String,
-      biography: json['biography'] as String,
-      description: json['description'] as String,
-      rating: (json['rating'] as num).toDouble(),
-      reviews: json['reviews'] as int,
-      profilePhoto: json['profilePhoto'] as String,
+      id: json['id'] as int? ?? 0,
+      firstName: json['firstName'] as String? ?? '',
+      lastName: json['lastName'] as String? ?? '',
+      category: json['category'] as String? ?? json['expertise'] as String? ?? "Criminal",
+      phone: json['phone'] as String? ?? '',
+      email: json['email'] as String? ?? '',
+      biography: json['biography'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
+      reviews: json['reviews'] as int? ?? 0,
+      profilePhoto: json['profilePhoto'] as String? ?? '',
     );
   }
 

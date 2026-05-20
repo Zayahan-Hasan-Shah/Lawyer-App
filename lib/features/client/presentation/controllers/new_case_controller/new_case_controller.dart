@@ -1,12 +1,19 @@
-﻿import 'dart:developer';
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:dio/dio.dart' as dio_pkg;
+import 'package:lawyer_app/di/injection_container.dart';
+import 'package:lawyer_app/features/client/domain/usecases/client_usecases.dart';
 import 'package:lawyer_app/features/client/presentation/states/new_case_state/new_case_state.dart';
 import 'package:lawyer_app/services/notification_services/notification_service.dart';
 
 class NewCaseController extends StateNotifier<NewCaseState> {
-  NewCaseController() : super(NewCaseInitial());
+  final CreateCaseUseCase _createCaseUseCase;
+
+  NewCaseController({CreateCaseUseCase? createCaseUseCase})
+      : _createCaseUseCase = createCaseUseCase ?? sl<CreateCaseUseCase>(),
+        super(NewCaseInitial());
 
   Future<void> submitApplication({
     required String category,
@@ -20,32 +27,80 @@ class NewCaseController extends StateNotifier<NewCaseState> {
     state = NewCaseLoading();
 
     try {
-      log("=== NEW CASE SUBMISSION (MOCK SUCCESS) ===");
-      log("Category: $category");
-      log("Method: $method");
-      log("Document: ${document ?? 'None'}");
-      log("Appointment: $appointmentType");
-      if (date != null && time != null) {
-        log(
-          "Date & Time: ${date.toString()} at ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}",
-        );
+      String caseType = category.trim();
+      if (caseType.toLowerCase() == "civil") {
+        caseType = "Civili";
       }
-      log("===========================================");
 
-      state = NewCaseSuccess(
-        "Your application has been submitted successfully! Our team will contact you shortly.",
-      );
+      String submissionMethod = (method.toLowerCase() == "upload" || method.toLowerCase() == "uploaddocument")
+          ? "UploadDocument"
+          : "WhatsApp";
 
-      try {
-        log('Attempting to show application submitted notification');
-        await NotificationService().showApplicationSubmittedNotification();
-        log('NotificationService.showApplicationSubmittedNotification() completed');
-      } catch (e, stack) {
-        log('NotificationService error: $e\n$stack');
+      String appointmentTypeVal = (appointmentType.toLowerCase() == "video" || appointmentType.toLowerCase() == "videocall")
+          ? "VideoCall"
+          : "WalkIn";
+
+      DateTime appointmentDate = DateTime.now();
+      if (date != null) {
+        if (time != null) {
+          appointmentDate = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+        } else {
+          appointmentDate = date;
+        }
+      }
+
+      File? uploadFile;
+      if (document != null && document.isNotEmpty) {
+        uploadFile = document.first;
+      } else {
+        final tempDir = Directory.systemTemp;
+        final tempFile = File('${tempDir.path}/whatsapp_case_request.txt');
+        await tempFile.writeAsString("WhatsApp Case Submission request for category: $category");
+        uploadFile = tempFile;
+      }
+
+      log("=== NEW CASE SUBMISSION (API CALL) ===");
+      log("Category / CaseType: $caseType");
+      log("Method / SubmissionMethod: $submissionMethod");
+      log("Document / File: ${uploadFile.path}");
+      log("Appointment / Appointment_Type: $appointmentTypeVal");
+      log("AppointmentDate: ${appointmentDate.toIso8601String()}");
+      log("======================================");
+
+      final formDataMap = {
+        'CaseType': caseType,
+        'SubmissionMethod': submissionMethod,
+        'Appointment_Type': appointmentTypeVal,
+        'AppointmentDate': appointmentDate.toIso8601String(),
+        'File': await dio_pkg.MultipartFile.fromFile(
+          uploadFile.path,
+          filename: uploadFile.path.split(Platform.pathSeparator).last,
+        ),
+      };
+
+      final formData = dio_pkg.FormData.fromMap(formDataMap);
+
+      final response = await _createCaseUseCase.execute(formData);
+
+      if (response != null && response['status'] == 'success') {
+        state = NewCaseSuccess(
+          "Your application has been submitted successfully! Our team will contact you shortly.",
+        );
+
+        try {
+          log('Attempting to show application submitted notification');
+          await NotificationService().showApplicationSubmittedNotification();
+          log('NotificationService.showApplicationSubmittedNotification() completed');
+        } catch (e, stack) {
+          log('NotificationService error: $e\n$stack');
+        }
+      } else {
+        final errorMsg = response != null ? response['errorMessage'] : "Server error";
+        state = NewCaseFailure(errorMsg ?? "Submission failed");
       }
     } catch (e, stack) {
-      log("NewCaseController â†’ Unexpected error: $e\n$stack");
-      state = NewCaseFailure("Something went wrong. Please try again.");
+      log("NewCaseController → Unexpected error: $e\n$stack");
+      state = NewCaseFailure("Something went wrong: $e");
     }
   }
 }

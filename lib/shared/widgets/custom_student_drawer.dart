@@ -40,154 +40,156 @@ class CustomStudentDrawer extends StatelessWidget {
           ],
         ),
         child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Padding(
-                padding: EdgeInsets.fromLTRB(6.w, 4.h, 6.w, 2.h),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: AppColors.kEmerald.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(12),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Padding(
+                  padding: EdgeInsets.fromLTRB(6.w, 4.h, 6.w, 2.h),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: AppColors.kEmerald.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.school_rounded,
+                          color: AppColors.kEmerald,
+                          size: 28,
+                        ),
                       ),
-                      child: Icon(
-                        Icons.school_rounded,
-                        color: AppColors.kEmerald,
-                        size: 28,
+                      SizedBox(width: 4.w),
+                      CustomText(
+                        title: 'Student Panel',
+                        fontSize: 20.sp,
+                        weight: FontWeight.w800,
+                        color: AppColors.kTextPrimary,
                       ),
-                    ),
-                    SizedBox(width: 4.w),
-                    CustomText(
-                      title: 'Student Panel',
-                      fontSize: 20.sp,
-                      weight: FontWeight.w800,
-                      color: AppColors.kTextPrimary,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
 
-              const Divider(
-                color: AppColors.kEmerald,
-                height: 1,
-                thickness: 1.2,
-                indent: 20,
-                endIndent: 20,
-              ),
-
-              SizedBox(height: 2.h),
-
-              // Dashboard
-              _buildDrawerItem(
-                icon: Icons.dashboard_rounded,
-                title: 'Dashboard',
-                onTap: () {
-                  Navigator.pop(context);
-                  // Navigate to dashboard (index 0)
-                  // This will be handled by the bottom navigation
-                },
-              ),
-
-              // Certifications
-              _buildDrawerItem(
-                icon: Icons.school,
-                title: 'Certifications',
-                onTap: () {
-                  Navigator.pop(context);
-                  // Navigate to certifications (index 1)
-                  // This will be handled by the bottom navigation
-                },
-              ),
-
-              // Tasks
-              _buildDrawerItem(
-                icon: Icons.assignment,
-                title: 'Tasks',
-                onTap: () {
-                  Navigator.pop(context);
-                  // Navigate to tasks (index 2)
-                  // This will be handled by the bottom navigation
-                },
-              ),
-
-              // Research
-              _buildDrawerItem(
-                icon: Icons.science,
-                title: 'Research',
-                onTap: () {
-                  Navigator.pop(context);
-                  // Navigate to research (index 3)
-                  // This will be handled by the bottom navigation
-                },
-              ),
-
-              // Internships
-              _buildDrawerItem(
-                icon: Icons.business_center,
-                title: 'Internships',
-                onTap: () {
-                  context.push('/internshipscreen');
-                },
-              ),
-
-              // Programs
-              _buildDrawerItem(
-                icon: Icons.video_library,
-                title: 'Video Programs',
-                onTap: () {
-                  Navigator.pop(context);
-                  context.push(RouteNames.programsScreen);
-                },
-              ),
-
-              // Profile
-              _buildDrawerItem(
-                icon: Icons.person_rounded,
-                title: 'Profile',
-                onTap: () {
-                  Navigator.pop(context);
-                  // Navigate to profile (index 4)
-                  // This will be handled by the bottom navigation
-                },
-              ),
-
-              const Spacer(),
-
-              // Settings
-              _buildDrawerItem(
-                icon: Icons.settings,
-                title: 'Settings',
-                onTap: () {
-                  Navigator.pop(context);
-                  context.push(RouteNames.studentSettingsScreen);
-                },
-              ),
-
-              // Help & Support
-              _buildDrawerItem(
-                icon: Icons.help_outline,
-                title: 'Help & Support',
-                onTap: () {
-                  Navigator.pop(context);
-                  context.push(RouteNames.helpSupportScreen);
-                },
-              ),
-
-              // Logout section
-              Padding(
-                padding: EdgeInsets.fromLTRB(6.w, 2.h, 6.w, 5.h),
-                child: _buildDrawerItem(
-                  icon: Icons.logout_rounded,
-                  title: 'Logout',
-                  color: Colors.redAccent,
-                  onTap: () => _confirmAndLogout(context),
+                const Divider(
+                  color: AppColors.kEmerald,
+                  height: 1,
+                  thickness: 1.2,
+                  indent: 20,
+                  endIndent: 20,
                 ),
-              ),
-            ],
+
+                SizedBox(height: 2.h),
+
+                // Dashboard
+                _buildDrawerItem(
+                  icon: Icons.dashboard_rounded,
+                  title: 'Dashboard',
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigate to dashboard (index 0)
+                    // This will be handled by the bottom navigation
+                  },
+                ),
+
+                // Certifications
+                _buildDrawerItem(
+                  icon: Icons.school,
+                  title: 'Certifications',
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigate to certifications (index 1)
+                    // This will be handled by the bottom navigation
+                  },
+                ),
+
+                // Tasks
+                _buildDrawerItem(
+                  icon: Icons.assignment,
+                  title: 'Tasks',
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigate to tasks (index 2)
+                    // This will be handled by the bottom navigation
+                  },
+                ),
+
+                // Research
+                _buildDrawerItem(
+                  icon: Icons.science,
+                  title: 'Research',
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigate to research (index 3)
+                    // This will be handled by the bottom navigation
+                  },
+                ),
+
+                // Internships
+                _buildDrawerItem(
+                  icon: Icons.business_center,
+                  title: 'Internships',
+                  onTap: () {
+                    context.push('/internshipscreen');
+                  },
+                ),
+
+                // Programs
+                _buildDrawerItem(
+                  icon: Icons.video_library,
+                  title: 'Video Programs',
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.push(RouteNames.programsScreen);
+                  },
+                ),
+
+                // Profile
+                _buildDrawerItem(
+                  icon: Icons.person_rounded,
+                  title: 'Profile',
+                  onTap: () {
+                    Navigator.pop(context);
+                    // Navigate to profile (index 4)
+                    // This will be handled by the bottom navigation
+                  },
+                ),
+
+                SizedBox(height: 4.h),
+
+                // Settings
+                _buildDrawerItem(
+                  icon: Icons.settings,
+                  title: 'Settings',
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.push(RouteNames.studentSettingsScreen);
+                  },
+                ),
+
+                // Help & Support
+                _buildDrawerItem(
+                  icon: Icons.help_outline,
+                  title: 'Help & Support',
+                  onTap: () {
+                    Navigator.pop(context);
+                    context.push(RouteNames.helpSupportScreen);
+                  },
+                ),
+
+                // Logout section
+                Padding(
+                  padding: EdgeInsets.fromLTRB(6.w, 2.h, 6.w, 5.h),
+                  child: _buildDrawerItem(
+                    icon: Icons.logout_rounded,
+                    title: 'Logout',
+                    color: Colors.redAccent,
+                    onTap: () => _confirmAndLogout(context),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -297,10 +299,7 @@ class CustomStudentDrawer extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: Text(
-                'OK',
-                style: TextStyle(color: AppColors.kEmerald),
-              ),
+              child: Text('OK', style: TextStyle(color: AppColors.kEmerald)),
             ),
           ],
         );
@@ -308,4 +307,3 @@ class CustomStudentDrawer extends StatelessWidget {
     );
   }
 }
-

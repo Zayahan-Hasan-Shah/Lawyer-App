@@ -9,6 +9,10 @@ import 'package:lawyer_app/features/auth/data/datasources/auth_remote_datasource
 import 'package:lawyer_app/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:lawyer_app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:lawyer_app/features/auth/domain/usecases/auth_usecases.dart';
+import 'package:lawyer_app/features/client/data/datasources/client_remote_datasource.dart';
+import 'package:lawyer_app/features/client/data/repositories/client_repository_impl.dart';
+import 'package:lawyer_app/features/client/domain/repositories/client_repository.dart';
+import 'package:lawyer_app/features/client/domain/usecases/client_usecases.dart';
 
 final sl = GetIt.instance;
 
@@ -32,4 +36,12 @@ Future<void> init() async {
   sl.registerLazySingleton<LawyerRepository>(
       () => LawyerRepositoryImpl(sl()));
   sl.registerLazySingleton(() => GetLawyersUseCase(sl()));
+
+  // Features - Client (Cases)
+  sl.registerLazySingleton<ClientRemoteDataSource>(
+      () => ClientRemoteDataSourceImpl(sl()));
+  sl.registerLazySingleton<ClientRepository>(
+      () => ClientRepositoryImpl(sl()));
+  sl.registerLazySingleton(() => CreateCaseUseCase(sl()));
+  sl.registerLazySingleton(() => GetCasesByUserIdUseCase(sl()));
 }

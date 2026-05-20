@@ -12,15 +12,16 @@ class NewCaseTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      child: Center(
+    return Center(
+      child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             // Floating emerald-glow icon container
             Container(
-              width: 18.h,
-              height: 18.h,
+              width: 16.h,
+              height: 16.h,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: LinearGradient(
@@ -32,37 +33,37 @@ class NewCaseTab extends ConsumerWidget {
                   end: Alignment.bottomRight,
                 ),
                 boxShadow: [
-                  // BoxShadow(
-                  //   color: AppColors.kEmerald.withOpacity(0.45),
-                  //   blurRadius: 32,
-                  //   spreadRadius: 8,
-                  // ),
+                  BoxShadow(
+                    color: AppColors.kEmerald.withOpacity(0.45),
+                    blurRadius: 32,
+                    spreadRadius: 8,
+                  ),
                   BoxShadow(
                     color: Colors.black.withOpacity(0.35),
-                    blurRadius: 40,
+                    blurRadius: 30,
                     offset: const Offset(0, 20),
                   ),
                 ],
               ),
               child: Icon(
                 Icons.add_circle_rounded,
-                size: 12.h,
+                size: 10.h,
                 color: Colors.white,
               ),
             ),
-
-            SizedBox(height: 2.5.h),
-
+            
+            SizedBox(height: 1.25.h),
+            
             // Main title
             CustomText(
               title: "Start a New Case",
-              fontSize: 26.sp,
+              fontSize: 24.sp,
               weight: FontWeight.w800,
               color: AppColors.kTextPrimary,
             ),
-
+            
             SizedBox(height: 1.h),
-
+            
             // Subtitle
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -73,9 +74,9 @@ class NewCaseTab extends ConsumerWidget {
                 alignText: TextAlign.center,
               ),
             ),
-
-            SizedBox(height: 3.h),
-
+            
+            SizedBox(height: 1.25.h),
+            
             // CTA Button with premium emerald gradient
             SizedBox(
               width: 65.w,
@@ -85,9 +86,9 @@ class NewCaseTab extends ConsumerWidget {
                 onPressed: () async {
                   // Fetch categories first
                   await ref.read(caseCategoryProvider.notifier).getCategories();
-
+            
                   if (!context.mounted) return;
-
+            
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
@@ -106,9 +107,9 @@ class NewCaseTab extends ConsumerWidget {
                 borderRadius: 16,
               ),
             ),
-
-            SizedBox(height: 4.h),
-
+            
+            SizedBox(height: 1.25.h),
+            
             // Optional subtle hint
             Opacity(
               opacity: 0.7,
@@ -122,7 +123,7 @@ class NewCaseTab extends ConsumerWidget {
                   ),
                   SizedBox(width: 2.w),
                   CustomText(
-                    title: "Takes about 3â€“5 minutes",
+                    title: "Takes about 5 minutes",
                     color: AppColors.kTextSecondary,
                     fontSize: 14.sp,
                   ),

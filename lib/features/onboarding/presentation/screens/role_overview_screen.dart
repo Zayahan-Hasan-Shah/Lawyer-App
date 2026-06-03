@@ -111,7 +111,7 @@ class RoleOverviewScreen extends StatelessWidget {
                     CustomButton(
                       text: "Select Your role",
                       onPressed: () {
-                        context.pushReplacement(RouteNames.incomingUserScreen);
+                        context.push(RouteNames.incomingUserScreen);
                       },
                       gradient: AppColors.goldGradient,
                       width: double.infinity,

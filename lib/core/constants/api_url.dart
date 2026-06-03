@@ -10,4 +10,5 @@ class ApiUrl {
       '$baseUrl/LawyerInfos'; // fetch all the laywers
   static const String getCasesForClientByIdUrl = '$baseUrl/CaseInfos/by-user/';
   static const String createCaseForClient = '$baseUrl/CaseInfos';
+  static const String getCaseInfoForLawyerByidUrl = '$baseUrl/CaseInfos/by-lawyer/';
 }

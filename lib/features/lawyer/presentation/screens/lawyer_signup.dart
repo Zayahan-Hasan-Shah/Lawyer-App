@@ -1,4 +1,4 @@
-﻿import 'package:flutter/gestures.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,7 +10,6 @@ import 'package:lawyer_app/app/router/route_names.dart';
 import 'package:lawyer_app/features/lawyer/presentation/states/lawyer_auth_state/lawyer_signup_state.dart';
 import 'package:lawyer_app/shared/widgets/custom_button.dart';
 import 'package:lawyer_app/shared/widgets/custom_dialog.dart';
-import 'package:lawyer_app/shared/widgets/custom_dropdown.dart';
 import 'package:lawyer_app/shared/widgets/custom_text.dart';
 import 'package:lawyer_app/shared/widgets/custom_text_field.dart';
 import 'package:lawyer_app/shared/widgets/loading_indicator.dart';
@@ -27,38 +26,18 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _barCouncilNumberController =
-      TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
-  final TextEditingController _yearOfEnrollmentController =
-      TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
-  String? _selectedCourt;
-  String? _selectedCategory;
 
   late final ProviderSubscription<LawyerSignupState> _signupListener;
-
-  final List<Map<String, String>> lawyerCategories = [
-    {"court": "Supreme Court", "category": "Platinum"},
-    {"court": "High Court", "category": "Gold"},
-    {"court": "City Court", "category": "Silver"},
-    {"court": "Student", "category": "Bronze"},
-    {"court": "Law Firm", "category": "Green Card"},
-  ];
-
-  late final List<String> courtNames = lawyerCategories
-      .map((item) => item["court"] as String)
-      .toList();
 
   @override
   void dispose() {
     _signupListener.close();
     _fullNameController.dispose();
     _emailController.dispose();
-    _barCouncilNumberController.dispose();
     _phoneNumberController.dispose();
-    _yearOfEnrollmentController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -70,7 +49,6 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
         ref.listenManual<LawyerSignupState>(lawyerSignupProvider, (prev, next) {
       if (next is LawyerSignupSuccess) {
         _showSuccessDialog(next.message);
-        context.go(RouteNames.lawyerloginScreen);
       } else if (next is LawyerSignupFailure) {
         _showErrorDialog("Signup Failed", next.error);
       }
@@ -80,24 +58,24 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
   void _showSuccessDialog(String message) {
     _fullNameController.clear();
     _emailController.clear();
-    _barCouncilNumberController.clear();
     _phoneNumberController.clear();
-    _yearOfEnrollmentController.clear();
     _passwordController.clear();
-    _selectedCategory = '';
-    _selectedCourt = '';
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => CustomDialog(
-        title: "Success",
+        title: "Verification Pending",
         description: message,
-        buttonText: "Continue",
-        icon: Icons.check_circle,
+        buttonText: "OK",
+        icon: Icons.hourglass_empty_rounded,
+        showCloseButton: false,
         onPressed: () {
           Navigator.of(context).pop();
+          if (mounted) {
+            context.go(RouteNames.lawyerloginScreen);
+          }
         },
-        buttonGradient: const [Color(0xFF00FF7F), Color(0xFF006400)],
+        buttonGradient: const [Color(0xFFF59E0B), Color(0xFFD97706)],
       ),
     );
   }
@@ -120,18 +98,13 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
     if (!(_formKey.currentState?.validate() ?? false)) return;
     final fullName = _fullNameController.text.trim();
     final email = _emailController.text.trim();
-    final barCouncilNo = _barCouncilNumberController.text.trim();
     final phoneNumber = _phoneNumberController.text.trim();
-    final yearOfEnroll = _yearOfEnrollmentController.text.trim();
     final password = _passwordController.text.trim();
 
     if (fullName.isEmpty ||
         email.isEmpty ||
-        barCouncilNo.isEmpty ||
         phoneNumber.isEmpty ||
-        yearOfEnroll.isEmpty ||
-        password.isEmpty ||
-        _selectedCategory == null) {
+        password.isEmpty) {
       _showErrorDialog("Validation Error", "All fields are required.");
       return;
     }
@@ -141,11 +114,8 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
         .lawyerSignUp(
           fullName: fullName,
           email: email,
-          barCouncilNo: barCouncilNo,
           phoneNumber: phoneNumber,
-          yearOfEnrollment: yearOfEnroll,
           password: password,
-          category: _selectedCategory!,
         );
   }
 
@@ -195,7 +165,6 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
                             weight: FontWeight.w800,
                             maxLines: 2,
                           ),
-                          // SizedBox(height: 0.4.h),
                           CustomText(
                             title: "Join the professional\nlegal network",
                             color: AppColors.kTextSecondary,
@@ -224,30 +193,12 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
                   keyboardType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: 2.h),
-                _buildCategoryDropdown(),
-                SizedBox(height: 2.h),
-                _buildField(
-                  "Bar Council Number",
-                  _barCouncilNumberController,
-                  Icons.qr_code_scanner,
-                  AppValidation.checkText,
-                  keyboardType: TextInputType.number,
-                ),
-                SizedBox(height: 2.h),
                 _buildField(
                   "Phone Number",
                   _phoneNumberController,
                   Icons.phone,
                   AppValidation.validatePhoneNumber,
                   keyboardType: TextInputType.phone,
-                ),
-                SizedBox(height: 2.h),
-                _buildField(
-                  "Year of Enrollment",
-                  _yearOfEnrollmentController,
-                  Icons.calendar_today,
-                  AppValidation.checkText,
-                  keyboardType: TextInputType.number,
                 ),
                 SizedBox(height: 2.h),
                 _buildPasswordField(),
@@ -305,39 +256,6 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
     );
   }
 
-  Widget _buildCategoryDropdown() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomDropdown(
-          items: courtNames,
-          selectedItem: _selectedCourt,
-          hint: "Select Court",
-          onChanged: (String selectedCourt) {
-            setState(() {
-              _selectedCourt = selectedCourt;
-              final selectedItem = lawyerCategories.firstWhere(
-                (item) => item["court"] == selectedCourt,
-              );
-              _selectedCategory = selectedItem["category"];
-            });
-          },
-        ),
-        if (_selectedCourt == null)
-          Padding(
-            padding: const EdgeInsets.only(left: 16, top: 6),
-            child: Text(
-              "Please select your court",
-              style: TextStyle(
-                color: Colors.redAccent.withOpacity(0.9),
-                fontSize: 14.sp,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
   Widget _buildLawyerSignupButton(bool isLoading) {
     return SizedBox(
       width: double.infinity,
@@ -360,7 +278,6 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
     );
   }
 
-  // Keep your _loginTagLine and _buildBackButton, just update colors
   Widget _loginTagLine() {
     return RichText(
       text: TextSpan(
@@ -385,7 +302,7 @@ class _LawyerSignupState extends ConsumerState<LawyerSignup> {
     return TextButton(
       onPressed: () => context.go(RouteNames.incomingUserScreen),
       child: Text(
-        'â† Back to Role Selection',
+        '← Back to Role Selection',
         style: TextStyle(color: AppColors.kTextSecondary, fontSize: 14.sp),
       ),
     );

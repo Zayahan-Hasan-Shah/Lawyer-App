@@ -24,24 +24,24 @@ Future<void> init() async {
   // Features - Auth
   sl.registerLazySingleton<AuthRemoteDataSource>(() => AuthRemoteDataSourceImpl(sl()));
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(sl()));
-  sl.registerLazySingleton(() => LoginUseCase(sl()));
-  sl.registerLazySingleton(() => SignupUseCase(sl()));
-  sl.registerLazySingleton(() => ForgotPasswordUseCase(sl()));
-  sl.registerLazySingleton(() => OtpUseCase(sl()));
-  sl.registerLazySingleton(() => ResetPasswordUseCase(sl()));
+  sl.registerLazySingleton<LoginUseCase>(() => LoginUseCase(sl()));
+  sl.registerLazySingleton<SignupUseCase>(() => SignupUseCase(sl()));
+  sl.registerLazySingleton<ForgotPasswordUseCase>(() => ForgotPasswordUseCase(sl()));
+  sl.registerLazySingleton<OtpUseCase>(() => OtpUseCase(sl()));
+  sl.registerLazySingleton<ResetPasswordUseCase>(() => ResetPasswordUseCase(sl()));
 
   // Features - Lawyer
   sl.registerLazySingleton<LawyerRemoteDataSource>(
       () => LawyerRemoteDataSourceImpl(sl()));
   sl.registerLazySingleton<LawyerRepository>(
       () => LawyerRepositoryImpl(sl()));
-  sl.registerLazySingleton(() => GetLawyersUseCase(sl()));
+  sl.registerLazySingleton<GetLawyersUseCase>(() => GetLawyersUseCase(sl()));
 
   // Features - Client (Cases)
   sl.registerLazySingleton<ClientRemoteDataSource>(
       () => ClientRemoteDataSourceImpl(sl()));
   sl.registerLazySingleton<ClientRepository>(
       () => ClientRepositoryImpl(sl()));
-  sl.registerLazySingleton(() => CreateCaseUseCase(sl()));
-  sl.registerLazySingleton(() => GetCasesByUserIdUseCase(sl()));
+  sl.registerLazySingleton<CreateCaseUseCase>(() => CreateCaseUseCase(sl()));
+  sl.registerLazySingleton<GetCasesByUserIdUseCase>(() => GetCasesByUserIdUseCase(sl()));
 }

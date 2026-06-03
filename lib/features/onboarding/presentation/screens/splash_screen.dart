@@ -44,12 +44,20 @@ class _SplashScreenState extends State<SplashScreen>
 
       final String? token = await StorageService.instance.getAccessToken();
       if (token != null && token.isNotEmpty) {
-        log("Splash → Already logged in → Home");
-        context.go(RouteNames.bottomNavigationScreen);
+        final String? userType = await StorageService.instance.getUserType();
+        log("Splash → Already logged in → userType: $userType");
+
+        if (userType == "Lawyer") {
+          context.go(RouteNames.lawyerBottomNavigationScreen);
+        } else if (userType == "Student") {
+          context.go(RouteNames.studentBottomNavigationScreen);
+        } else {
+          // Default to Client dashboard if type is Client, null or unrecognized
+          context.go(RouteNames.bottomNavigationScreen);
+        }
       } else {
         log("Splash → No token → Role overview");
         context.go(RouteNames.onboardingScreen);
-        // context.go(RouteNames.roleOverviewScreen);
       }
     } catch (e) {
       log("Splash navigation error: $e");

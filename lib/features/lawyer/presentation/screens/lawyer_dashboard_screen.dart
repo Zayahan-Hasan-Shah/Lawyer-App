@@ -8,6 +8,9 @@ import 'package:lawyer_app/shared/widgets/custom_text.dart';
 import 'package:lawyer_app/features/client/presentation/widgets/tabs/cases_tab_button.dart';
 import 'package:lawyer_app/features/lawyer/presentation/widgets/dashboard_widgets/disposed_case_tab.dart';
 import 'package:lawyer_app/features/lawyer/presentation/widgets/dashboard_widgets/pending_case_tab.dart';
+import 'package:lawyer_app/features/lawyer/data/models/case_model/lawyer_case_model.dart';
+import 'package:lawyer_app/features/lawyer/presentation/states/case_states/lawyer_case_states.dart';
+import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
 
 class LawyerDashboardScreen extends ConsumerStatefulWidget {
@@ -50,128 +53,138 @@ class _LawyerDashboardScreenState extends ConsumerState<LawyerDashboardScreen> {
             ),
 
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                // scrollDirection: Axis.vertical,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: 2.h),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await ref
+                      .read(lawyerCaseControllerProvider.notifier)
+                      .getAllCases();
+                },
+                color: AppColors.kEmerald,
+                backgroundColor: AppColors.kBgDark,
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 2.h),
 
-                    // Header + Statistics + Tabs
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6.w),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            title: "Cases",
-                            color: AppColors.kTextPrimary,
-                            fontSize: 26.sp,
-                            weight: FontWeight.w800,
+                      // Header + Statistics + Tabs
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 6.w),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              title: "Cases",
+                              color: AppColors.kTextPrimary,
+                              fontSize: 26.sp,
+                              weight: FontWeight.w800,
+                            ),
+                            SizedBox(height: 0.4.h),
+                            CustomText(
+                              title: "Manage your pending & disposed matters",
+                              color: AppColors.kTextSecondary,
+                              fontSize: 15.sp,
+                            ),
+
+                            SizedBox(height: 3.h),
+
+                            // Statistics Visualization
+                            _buildStatistics(),
+
+                            SizedBox(height: 3.h),
+
+                            _buildNextHearingCard(caseState),
+
+                            SizedBox(height: 4.h),
+
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  CasesTabButton(
+                                    title: 'Pending',
+                                    index: 0,
+                                    selectedTab: selectedTab,
+                                    onTap: _onTabChanged,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  CasesTabButton(
+                                    title: 'Disposed',
+                                    index: 1,
+                                    selectedTab: selectedTab,
+                                    onTap: _onTabChanged,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 3.h),
+
+                      // Content Area
+                      caseState.when(
+                        initial: () => const SizedBox(),
+                        loading: () => Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10.h),
+                          child: const Center(
+                            child: CircularProgressIndicator(
+                              color: AppColors.kEmerald,
+                              strokeWidth: 4,
+                            ),
                           ),
-                          SizedBox(height: 0.4.h),
-                          CustomText(
-                            title: "Manage your pending & disposed matters",
-                            color: AppColors.kTextSecondary,
-                            fontSize: 15.sp,
-                          ),
-
-                          SizedBox(height: 3.h),
-
-                          // Statistics Visualization
-                          _buildStatistics(),
-
-                          SizedBox(height: 3.h),
-
-                          _buildNextHearingCard(),
-
-                          SizedBox(height: 4.h),
-
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
+                        ),
+                        failure: (error) => Padding(
+                          padding: EdgeInsets.symmetric(vertical: 5.h),
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                CasesTabButton(
-                                  title: 'Pending',
-                                  index: 0,
-                                  selectedTab: selectedTab,
-                                  onTap: _onTabChanged,
+                                Icon(
+                                  Icons.error_outline_rounded,
+                                  size: 80,
+                                  color: Colors.redAccent,
                                 ),
-                                SizedBox(width: 4.w),
-                                CasesTabButton(
-                                  title: 'Disposed',
-                                  index: 1,
-                                  selectedTab: selectedTab,
-                                  onTap: _onTabChanged,
+                                SizedBox(height: 2.h),
+                                CustomText(
+                                  title: 'Failed to load cases',
+                                  color: AppColors.kTextPrimary,
+                                  fontSize: 18.sp,
+                                  weight: FontWeight.w600,
+                                ),
+                                SizedBox(height: 1.h),
+                                CustomText(
+                                  title: error,
+                                  color: Colors.redAccent,
+                                  fontSize: 14.sp,
+                                  alignText: TextAlign.center,
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-
-                    SizedBox(height: 3.h),
-
-                    // Content Area
-                    caseState.when(
-                      initial: () => const SizedBox(),
-                      loading: () => Padding(
-                        padding: EdgeInsets.symmetric(vertical: 10.h),
-                        child: const Center(
-                          child: CircularProgressIndicator(
-                            color: AppColors.kEmerald,
-                            strokeWidth: 4,
-                          ),
+                        ),
+                        success: (data) => AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 400),
+                          transitionBuilder: (child, animation) =>
+                              FadeTransition(opacity: animation, child: child),
+                          child: selectedTab == 0
+                              ? PendingLawyerCasesTab(
+                                  key: const ValueKey('pending'),
+                                  cases: data.pendingCases,
+                                )
+                              : DisposedLawyerCasesTab(
+                                  key: const ValueKey('disposed'),
+                                  cases: data.disposedCases,
+                                ),
                         ),
                       ),
-                      failure: (error) => Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5.h),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.error_outline_rounded,
-                                size: 80,
-                                color: Colors.redAccent,
-                              ),
-                              SizedBox(height: 2.h),
-                              CustomText(
-                                title: 'Failed to load cases',
-                                color: AppColors.kTextPrimary,
-                                fontSize: 18.sp,
-                                weight: FontWeight.w600,
-                              ),
-                              SizedBox(height: 1.h),
-                              CustomText(
-                                title: error,
-                                color: Colors.redAccent,
-                                fontSize: 14.sp,
-                                alignText: TextAlign.center,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      success: (data) => AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 400),
-                        transitionBuilder: (child, animation) =>
-                            FadeTransition(opacity: animation, child: child),
-                        child: selectedTab == 0
-                            ? PendingLawyerCasesTab(
-                                key: const ValueKey('pending'),
-                                cases: data.pendingCases,
-                              )
-                            : DisposedLawyerCasesTab(
-                                key: const ValueKey('disposed'),
-                                cases: data.disposedCases,
-                              ),
-                      ),
-                    ),
-                    SizedBox(height: 8.h),
-                  ],
+                      SizedBox(height: 8.h),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -247,28 +260,77 @@ class _LawyerDashboardScreenState extends ConsumerState<LawyerDashboardScreen> {
     );
   }
 
-  Widget _buildNextHearingCard() {
+  String _formatHearingDate(String? rawDate) {
+    if (rawDate == null || rawDate.isEmpty) return "TBD";
+    try {
+      final DateTime dt = DateTime.parse(rawDate);
+      return DateFormat('dd MMM yyyy • hh:mm a').format(dt);
+    } catch (_) {
+      return rawDate;
+    }
+  }
+
+  Widget _buildNextHearingCard(LawyerCaseStates caseState) {
+    String title = "Loading...";
+    String subtitle = "Checking upcoming hearings";
+    bool hasHearing = false;
+
+    if (caseState is LawyerCaseSuccessState) {
+      final pendingCases = caseState.data.pendingCases;
+      LawyerCaseModel? nextHearingCase;
+      for (final c in pendingCases) {
+        if (c.hearingDate != null && c.hearingDate!.isNotEmpty) {
+          nextHearingCase = c;
+          break;
+        }
+      }
+
+      if (nextHearingCase != null) {
+        title = nextHearingCase.title;
+        subtitle = "${_formatHearingDate(nextHearingCase.hearingDate)} • ${nextHearingCase.court}";
+        hasHearing = true;
+      } else {
+        title = "No cases for hearing";
+        subtitle = "You have no upcoming hearings scheduled";
+      }
+    } else if (caseState is LawyerCaseFailureState) {
+      title = "Failed to fetch caseses";
+      subtitle = "Pull down to refresh and try again";
+    }
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(4.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.kGold.withOpacity(0.15), Colors.transparent],
+          colors: [
+            hasHearing
+                ? AppColors.kGold.withOpacity(0.15)
+                : AppColors.kSurface.withOpacity(0.2),
+            Colors.transparent
+          ],
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
         ),
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.kGold.withOpacity(0.3)),
+        border: Border.all(
+          color: hasHearing
+              ? AppColors.kGold.withOpacity(0.3)
+              : AppColors.kBorderSubtle.withOpacity(0.2),
+        ),
       ),
       child: Row(
         children: [
           Container(
             padding: EdgeInsets.all(3.w),
             decoration: BoxDecoration(
-              color: AppColors.kGold,
+              color: hasHearing ? AppColors.kGold : AppColors.kTextSecondary.withOpacity(0.2),
               borderRadius: BorderRadius.circular(14),
             ),
-            child: const Icon(Icons.event_note_rounded, color: Colors.black),
+            child: Icon(
+              Icons.event_note_rounded,
+              color: hasHearing ? Colors.black : AppColors.kTextSecondary,
+            ),
           ),
           SizedBox(width: 4.w),
           Expanded(
@@ -278,24 +340,25 @@ class _LawyerDashboardScreenState extends ConsumerState<LawyerDashboardScreen> {
                 CustomText(
                   title: "Next Hearing",
                   fontSize: 13.sp,
-                  color: AppColors.kGold,
+                  color: hasHearing ? AppColors.kGold : AppColors.kTextSecondary,
                   weight: FontWeight.bold,
                 ),
                 CustomText(
-                  title: "State vs Rajesh Kumar",
+                  title: title,
                   fontSize: 16.sp,
                   weight: FontWeight.w700,
                   color: AppColors.kTextPrimary,
                 ),
                 CustomText(
-                  title: "Tomorrow at 10:00 AM • Delhi High Court",
+                  title: subtitle,
                   fontSize: 12.sp,
                   color: AppColors.kTextSecondary,
                 ),
               ],
             ),
           ),
-          const Icon(Icons.chevron_right_rounded, color: AppColors.kGold),
+          if (hasHearing)
+            const Icon(Icons.chevron_right_rounded, color: AppColors.kGold),
         ],
       ),
     );

@@ -1,4 +1,4 @@
-﻿import 'dart:developer';
+import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -48,23 +48,31 @@ class _LawyerLoginState extends ConsumerState<LawyerLogin> {
           .lawyerLogin(email: email, password: password);
 
       if (response != null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text("Login Successful"),
-            backgroundColor: Colors.green.shade700,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text("Login Successful"),
+              backgroundColor: Colors.green.shade700,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
-          ),
-        );
-        context.go(RouteNames.lawyerBottomNavigationScreen);
+          );
+          context.go(RouteNames.lawyerBottomNavigationScreen);
+        }
       } else {
-        _showErrorSnackBar("Invalid credentials");
+        if (mounted) {
+          final loginState = ref.read(lawyerLoginProvider);
+          final message = loginState is LawyerLoginFailure ? loginState.error : "Invalid credentials";
+          _showErrorSnackBar(message);
+        }
       }
     } catch (e) {
       log("Login error: $e");
-      _showErrorSnackBar("Something went wrong. Please try again.");
+      if (mounted) {
+        _showErrorSnackBar("Something went wrong. Please try again.");
+      }
     }
   }
 

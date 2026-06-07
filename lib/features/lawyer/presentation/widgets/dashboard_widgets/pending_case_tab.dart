@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
-import 'package:lawyer_app/features/lawyer/data/models/case_model/lawyer_case_model.dart';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_case_entity.dart';
 import 'package:lawyer_app/shared/widgets/custom_button.dart';
 import 'package:lawyer_app/shared/widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
 
 class PendingLawyerCasesTab extends StatelessWidget {
-  final List<LawyerCaseModel> cases;
+  final List<LawyerCaseEntity> cases;
 
   const PendingLawyerCasesTab({super.key, required this.cases});
 
@@ -226,6 +226,7 @@ class PendingLawyerCasesTab extends StatelessWidget {
     String value, {
     bool isHeader = false,
     Color? valueColor,
+    int? maxLines = 3,
   }) {
     return TableRow(
       decoration: BoxDecoration(
@@ -248,14 +249,15 @@ class PendingLawyerCasesTab extends StatelessWidget {
             color: valueColor ?? AppColors.kTextPrimary,
             weight: FontWeight.w600,
             fontSize: 13.sp,
-            maxLines: 3,
+            maxLines: maxLines,
+            overflow: maxLines != null ? TextOverflow.ellipsis : null,
           ),
         ),
       ],
     );
   }
 
-  void _showCaseDetails(BuildContext context, LawyerCaseModel c) {
+  void _showCaseDetails(BuildContext context, LawyerCaseEntity c) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -512,7 +514,7 @@ class PendingLawyerCasesTab extends StatelessWidget {
                                       _tableRow("Note #${idx + 1}", note.createdBy ?? "System", isHeader: true),
                                       if (note.createdOn != null)
                                         _tableRow("Date", _formatDate(note.createdOn)),
-                                      _tableRow("Note", note.notes),
+                                      _tableRow("Note", note.notes, maxLines: null),
                                     ],
                                   ),
                                 ),

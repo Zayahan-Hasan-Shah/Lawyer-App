@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
-import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
+import 'package:lawyer_app/features/client/domain/entities/case_entity.dart';
 import 'package:lawyer_app/shared/widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
 
 class DisposedCasesTab extends StatelessWidget {
-  final List<CaseModel> cases;
+  final List<CaseEntity> cases;
   const DisposedCasesTab({super.key, required this.cases});
 
   @override

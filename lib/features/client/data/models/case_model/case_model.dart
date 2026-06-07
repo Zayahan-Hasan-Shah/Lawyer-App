@@ -1,28 +1,21 @@
 // models/case_model.dart
 
-class CaseNote {
-  final int id;
-  final String caseId;
-  final DateTime date;
-  final String notes;
-  final String? createdBy;
-  final String? createdOn;
-  final String? updatedBy;
-  final String? updatedOn;
+import 'package:lawyer_app/features/client/domain/entities/case_entity.dart';
 
-  CaseNote({
-    required this.id,
-    required this.caseId,
-    required this.date,
-    required this.notes,
-    this.createdBy,
-    this.createdOn,
-    this.updatedBy,
-    this.updatedOn,
+class CaseNoteModel extends CaseNoteEntity {
+  CaseNoteModel({
+    required super.id,
+    required super.caseId,
+    required super.date,
+    required super.notes,
+    super.createdBy,
+    super.createdOn,
+    super.updatedBy,
+    super.updatedOn,
   });
 
-  factory CaseNote.fromJson(Map<String, dynamic> json) {
-    return CaseNote(
+  factory CaseNoteModel.fromJson(Map<String, dynamic> json) {
+    return CaseNoteModel(
       id: json['id'] as int? ?? 0,
       caseId: json['caseId']?.toString() ?? '',
       date: DateTime.tryParse(json['date'] as String? ?? '') ?? DateTime.now(),
@@ -39,48 +32,31 @@ class CaseNote {
   }
 }
 
-class CaseModel {
-  final int id;
-  final String caseNo;
-  final String title;
-  final String court;
-  final String status;
-  final String? hearingDate; // pending only
-  final String? nextHearing;
-  final String? disposedDate; // disposed only
-  final String? outcome; // disposed only
-  final String client;
-  final String category;
-  final String? lawyerId;
-  final String? lawyerName;
-  final String? submissionMethod;
-  final String? appointmentType;
-  final String? advocate;
-  final List<CaseNote> notes;
-
+class CaseModel extends CaseEntity {
   CaseModel({
-    required this.id,
-    required this.caseNo,
-    required this.title,
-    required this.court,
-    required this.status,
-    this.hearingDate,
-    this.nextHearing,
-    this.disposedDate,
-    this.outcome,
-    required this.client,
-    required this.category,
-    this.lawyerId,
-    this.lawyerName,
-    this.submissionMethod,
-    this.appointmentType,
-    this.notes = const [],
-    this.advocate,
+    required super.id,
+    required super.caseNo,
+    required super.title,
+    required super.court,
+    required super.status,
+    super.hearingDate,
+    super.nextHearing,
+    super.disposedDate,
+    super.outcome,
+    required super.client,
+    required super.category,
+    super.lawyerId,
+    super.lawyerName,
+    super.submissionMethod,
+    super.appointmentType,
+    super.notes,
+    super.advocate,
+    super.documents,
   });
 
   factory CaseModel.fromJson(
     Map<String, dynamic> json, {
-    List<CaseNote> notes = const [],
+    List<CaseNoteEntity> notes = const [],
   }) {
     return CaseModel(
       id: json['id'] as int? ?? 0,
@@ -115,13 +91,9 @@ class CaseModel {
           json['appointmentType'] as String?,
       notes: notes,
       advocate: json['advocate'] as String?,
+      documents: json['documents'] != null
+          ? (json['documents'] as List<dynamic>).map((e) => e.toString()).toList()
+          : (json['file_Path'] != null ? [json['file_Path'] as String] : const <String>[]),
     );
   }
-}
-
-class AllCasesResponse {
-  final List<CaseModel> pendingCases;
-  final List<CaseModel> disposedCases;
-
-  AllCasesResponse({required this.pendingCases, required this.disposedCases});
 }

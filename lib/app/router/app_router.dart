@@ -1,6 +1,6 @@
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/features/client/presentation/screens/chat/chat_screen.dart';
-import 'package:lawyer_app/features/lawyer/data/models/lawyer_model.dart';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_entity.dart';
 import 'package:lawyer_app/features/student/data/models/certification_model.dart';
 import 'package:lawyer_app/features/student/data/models/internship_model/internship_model.dart';
 import 'package:lawyer_app/app/router/route_names.dart';
@@ -157,7 +157,7 @@ class AppRouter {
         name: RouteNames.lawyerScreen,
         builder: (context, state) {
           // 1. Grab the lawyer that was passed via `extra`
-          final lawyer = state.extra as LawyerModel;
+          final lawyer = state.extra as LawyerEntity;
 
           // 2. Return the screen with the required (non-nullable) lawyer
           return LawyerProfileScreen(lawyer: lawyer);

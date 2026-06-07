@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/app/router/route_names.dart';
 import 'package:lawyer_app/core/constants/app_assets.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
-import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
+import 'package:lawyer_app/features/client/domain/entities/case_entity.dart';
 import 'package:lawyer_app/features/client/presentation/providers/client_cases_provider/client_case_provider.dart';
 import 'package:lawyer_app/shared/widgets/custom_appbar.dart';
 import 'package:lawyer_app/shared/widgets/custom_button.dart';
@@ -195,7 +195,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget _buildTabContent(
     int tabIndex,
     AllCasesResponse data,
-    List<CaseModel> filteredPending,
+    List<CaseEntity> filteredPending,
   ) {
     switch (tabIndex) {
       case 0:

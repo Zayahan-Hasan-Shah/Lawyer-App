@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart' as dio_pkg;
+import 'package:lawyer_app/features/client/domain/entities/case_entity.dart';
 import 'package:lawyer_app/features/client/domain/repositories/client_repository.dart';
 
 class CreateCaseUseCase {
@@ -6,8 +6,8 @@ class CreateCaseUseCase {
 
   CreateCaseUseCase(this.repository);
 
-  Future<dynamic> execute(dio_pkg.FormData formData) async {
-    return await repository.createCase(formData);
+  Future<CaseEntity> execute(CreateCaseParams params) async {
+    return await repository.createCase(params);
   }
 }
 
@@ -16,7 +16,7 @@ class GetCasesByUserIdUseCase {
 
   GetCasesByUserIdUseCase(this.repository);
 
-  Future<dynamic> execute(int userId) async {
+  Future<List<CaseEntity>> execute(int userId) async {
     return await repository.getCasesByUserId(userId);
   }
 }

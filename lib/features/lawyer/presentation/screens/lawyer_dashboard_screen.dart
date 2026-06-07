@@ -8,7 +8,7 @@ import 'package:lawyer_app/shared/widgets/custom_text.dart';
 import 'package:lawyer_app/features/client/presentation/widgets/tabs/cases_tab_button.dart';
 import 'package:lawyer_app/features/lawyer/presentation/widgets/dashboard_widgets/disposed_case_tab.dart';
 import 'package:lawyer_app/features/lawyer/presentation/widgets/dashboard_widgets/pending_case_tab.dart';
-import 'package:lawyer_app/features/lawyer/data/models/case_model/lawyer_case_model.dart';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_case_entity.dart';
 import 'package:lawyer_app/features/lawyer/presentation/states/case_states/lawyer_case_states.dart';
 import 'package:intl/intl.dart';
 import 'package:sizer/sizer.dart';
@@ -277,7 +277,7 @@ class _LawyerDashboardScreenState extends ConsumerState<LawyerDashboardScreen> {
 
     if (caseState is LawyerCaseSuccessState) {
       final pendingCases = caseState.data.pendingCases;
-      LawyerCaseModel? nextHearingCase;
+      LawyerCaseEntity? nextHearingCase;
       for (final c in pendingCases) {
         if (c.hearingDate != null && c.hearingDate!.isNotEmpty) {
           nextHearingCase = c;

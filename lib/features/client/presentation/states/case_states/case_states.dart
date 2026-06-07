@@ -1,4 +1,4 @@
-﻿import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
+import 'package:lawyer_app/features/client/domain/entities/case_entity.dart';
 
 sealed class CaseStates {
   R when<R>({

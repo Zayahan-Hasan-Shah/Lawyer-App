@@ -1,10 +1,10 @@
-﻿import 'package:flutter_riverpod/legacy.dart';
-import 'package:lawyer_app/features/lawyer/data/models/lawyer_model.dart';
+import 'package:flutter_riverpod/legacy.dart';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_entity.dart';
 
-class SelectedLawyerNotifier extends StateNotifier<LawyerModel?> {
+class SelectedLawyerNotifier extends StateNotifier<LawyerEntity?> {
   SelectedLawyerNotifier() : super(null);
 
-  void setLawyer(LawyerModel lawyer) {
+  void setLawyer(LawyerEntity lawyer) {
     state = lawyer;
   }
 
@@ -15,7 +15,6 @@ class SelectedLawyerNotifier extends StateNotifier<LawyerModel?> {
 
 // Global provider
 final selectedLawyerProvider =
-    StateNotifierProvider<SelectedLawyerNotifier, LawyerModel?>((ref) {
+    StateNotifierProvider<SelectedLawyerNotifier, LawyerEntity?>((ref) {
       return SelectedLawyerNotifier();
     });
-

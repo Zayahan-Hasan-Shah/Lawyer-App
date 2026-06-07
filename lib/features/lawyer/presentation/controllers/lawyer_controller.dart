@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:lawyer_app/features/lawyer/data/models/lawyer_model.dart';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_entity.dart';
 import 'package:lawyer_app/features/lawyer/domain/usecases/get_lawyers_usecase.dart';
 import 'package:lawyer_app/features/lawyer/presentation/states/lawyer_state.dart';
 import 'package:lawyer_app/di/injection_container.dart';
@@ -30,14 +30,10 @@ class LawyerController extends StateNotifier<LawyerState> {
     _isLoadingMore = true;
 
     try {
-      final data = await _getLawyersUseCase.execute(_currentPage, _pageSize);
+      final PaginatedLawyersEntity paginatedData = await _getLawyersUseCase.execute(_currentPage, _pageSize);
 
-      final List<dynamic> items = data['data']['items'];
-      final int totalPages = data['data']['totalPages'];
-
-      final newLawyers = items
-          .map((e) => LawyerModel.fromJson(e as Map<String, dynamic>))
-          .toList();
+      final newLawyers = paginatedData.lawyers;
+      final int totalPages = paginatedData.totalPages;
 
       if (isRefresh || state is! LawyerLoaded) {
         state = LawyerLoaded(
@@ -71,4 +67,3 @@ class LawyerController extends StateNotifier<LawyerState> {
   Future<void> loadMore() => loadLawyers();
   Future<void> refresh() => loadLawyers(isRefresh: true);
 }
-

@@ -1,30 +1,19 @@
 import 'dart:convert';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_entity.dart';
 
-class LawyerModel {
-  final int id;
-  final String firstName;
-  final String lastName;
-  final String category;
-  final String phone;
-  final String email;
-  final String biography;
-  final String description;
-  final double rating;
-  final int reviews;
-  final String profilePhoto;
-
+class LawyerModel extends LawyerEntity {
   LawyerModel({
-    required this.id,
-    required this.firstName,
-    required this.lastName,
-    required this.category,
-    required this.phone,
-    required this.email,
-    required this.biography,
-    required this.description,
-    required this.rating,
-    required this.reviews,
-    required this.profilePhoto,
+    required super.id,
+    required super.firstName,
+    required super.lastName,
+    required super.category,
+    required super.phone,
+    required super.email,
+    required super.biography,
+    required super.description,
+    required super.rating,
+    required super.reviews,
+    required super.profilePhoto,
   });
 
   factory LawyerModel.fromJson(Map<String, dynamic> json) {

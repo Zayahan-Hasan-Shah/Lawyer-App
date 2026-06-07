@@ -1,3 +1,4 @@
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_entity.dart';
 import 'package:lawyer_app/features/lawyer/domain/repositories/lawyer_repository.dart';
 
 class GetLawyersUseCase {
@@ -5,7 +6,7 @@ class GetLawyersUseCase {
 
   GetLawyersUseCase(this.repository);
 
-  Future<Map<String, dynamic>> execute(int pageNumber, int pageSize) async {
+  Future<PaginatedLawyersEntity> execute(int pageNumber, int pageSize) async {
     return await repository.getLawyers(pageNumber, pageSize);
   }
 }

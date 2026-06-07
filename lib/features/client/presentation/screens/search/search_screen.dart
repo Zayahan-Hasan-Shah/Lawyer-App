@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
 import 'package:lawyer_app/features/client/presentation/providers/home_screen_provider/search_provider.dart';
-import 'package:lawyer_app/features/lawyer/data/models/lawyer_model.dart';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_entity.dart';
 import 'package:lawyer_app/features/lawyer/presentation/providers/lawyer_provider.dart';
 import 'package:lawyer_app/app/router/route_names.dart';
 import 'package:lawyer_app/features/lawyer/presentation/states/lawyer_state.dart';
@@ -165,11 +165,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       );
     }
 
-    final lawyers = state is LawyerLoaded ? state.lawyers : <LawyerModel>[];
+    final lawyers = state is LawyerLoaded ? state.lawyers : <LawyerEntity>[];
 
     final filtered = lawyers.where((lawyer) {
-      final fullName = '${lawyer.firstName} ${lawyer.lastName}'.toLowerCase();
-      return fullName.contains(query);
+      return lawyer.fullName.toLowerCase().contains(query);
     }).toList();
 
     if (filtered.isEmpty) {

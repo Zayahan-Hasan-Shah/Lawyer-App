@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
-import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
+import 'package:lawyer_app/features/client/domain/entities/case_entity.dart';
 import 'package:lawyer_app/shared/widgets/custom_button.dart';
 import 'package:lawyer_app/shared/widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
 
 class PendingCasesTab extends StatelessWidget {
-  final List<CaseModel> cases;
+  final List<CaseEntity> cases;
   const PendingCasesTab({super.key, required this.cases});
 
   // ------------------------------------------------------------------
@@ -41,7 +41,7 @@ class PendingCasesTab extends StatelessWidget {
   // ------------------------------------------------------------------
   // Bottom-sheet detail
   // ------------------------------------------------------------------
-  void _showCaseDetails(BuildContext context, CaseModel c) {
+  void _showCaseDetails(BuildContext context, CaseEntity c) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -276,7 +276,7 @@ class PendingCasesTab extends StatelessWidget {
                                           "Date",
                                           _formatDate(note.createdOn),
                                         ),
-                                      _tableRow("Note", note.notes),
+                                      _tableRow("Note", note.notes, maxLines: null),
                                     ],
                                   ),
                                 ),
@@ -315,6 +315,7 @@ class PendingCasesTab extends StatelessWidget {
     String value, {
     bool isHeader = false,
     Color? valueColor,
+    int? maxLines = 3,
   }) {
     return TableRow(
       decoration: BoxDecoration(
@@ -337,7 +338,8 @@ class PendingCasesTab extends StatelessWidget {
             color: valueColor ?? AppColors.kTextPrimary,
             weight: FontWeight.w600,
             fontSize: 13.sp,
-            maxLines: 3,
+            maxLines: maxLines,
+            overflow: maxLines != null ? TextOverflow.ellipsis : null,
           ),
         ),
       ],

@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
@@ -26,6 +26,16 @@ class _OnBoardingScreenState extends ConsumerState<OnBoardingScreen> {
     const BookAppointmentWidget(),
     const PayAndProceedWidget(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
 
   void _onNextPressed() {
     if (_currentPage < _onboardingScreens.length - 1) {
@@ -66,18 +76,36 @@ class _OnBoardingScreenState extends ConsumerState<OnBoardingScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SmoothPageIndicator(
-                  controller: _pageController,
-                  count: _onboardingScreens.length,
-                  effect: ExpandingDotsEffect(
-                    expansionFactor: 3,
-                    activeDotColor: AppColors.kGold,
-                    dotColor: Colors.white.withOpacity(0.3),
-                    dotHeight: 1.h,
-                    dotWidth: 1.h,
-                    spacing: 2.w,
-                  ),
-                ),
+                _pageController.hasClients
+                    ? SmoothPageIndicator(
+                        controller: _pageController,
+                        count: _onboardingScreens.length,
+                        effect: ExpandingDotsEffect(
+                          expansionFactor: 3,
+                          activeDotColor: AppColors.kGold,
+                          dotColor: Colors.white.withOpacity(0.3),
+                          dotHeight: 1.h,
+                          dotWidth: 1.h,
+                          spacing: 2.w,
+                        ),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          _onboardingScreens.length,
+                          (index) => Container(
+                            margin: EdgeInsets.symmetric(horizontal: 2.w),
+                            width: 1.h,
+                            height: 1.h,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: index == 0
+                                  ? AppColors.kGold
+                                  : Colors.white.withOpacity(0.3),
+                            ),
+                          ),
+                        ),
+                      ),
                 SizedBox(height: 4.h),
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 6.w),

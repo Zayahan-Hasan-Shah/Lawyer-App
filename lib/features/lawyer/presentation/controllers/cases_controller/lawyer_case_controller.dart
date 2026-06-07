@@ -4,8 +4,9 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:lawyer_app/core/constants/app_keys.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 import 'package:lawyer_app/di/injection_container.dart';
-import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
+import 'package:lawyer_app/features/client/domain/entities/case_entity.dart';
 import 'package:lawyer_app/features/client/domain/usecases/client_usecases.dart';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_case_entity.dart';
 import 'package:lawyer_app/features/lawyer/data/models/case_model/lawyer_case_model.dart';
 import 'package:lawyer_app/features/lawyer/presentation/states/case_states/lawyer_case_states.dart';
 
@@ -26,46 +27,31 @@ class LawyerCaseController extends StateNotifier<LawyerCaseStates> {
         return;
       }
 
-      final response = await _getCasesUseCase.execute(userId);
+      final List<CaseEntity> caseEntities = await _getCasesUseCase.execute(userId);
 
-      if (response != null && response['status'] == 'success') {
-        final Map<String, dynamic> dataMap = response['data'] as Map<String, dynamic>;
-        final List<dynamic> casesList = dataMap['items'] as List<dynamic>;
+      final List<LawyerCaseModel> allCasesList = caseEntities
+          .map((entity) => LawyerCaseModel.fromEntity(entity))
+          .toList();
 
-        final List<LawyerCaseModel> allCasesList = casesList.map((item) {
-          final Map<String, dynamic> itemMap = item as Map<String, dynamic>;
-          final Map<String, dynamic> map = (itemMap['caseInfo'] ?? itemMap) as Map<String, dynamic>;
-          final List<dynamic> rawNotes = itemMap['notes'] as List<dynamic>? ?? [];
-          final notes = rawNotes
-              .map((n) => CaseNote.fromJson(n as Map<String, dynamic>))
-              .toList();
-          return LawyerCaseModel.fromJson(map, notes: notes);
-        }).toList();
+      final pendingList = allCasesList.where((c) {
+        final s = c.status.toLowerCase();
+        return s != 'disposed' && s != 'closed';
+      }).toList();
 
-        final pendingList = allCasesList.where((c) {
-          final s = c.status.toLowerCase();
-          return s != 'disposed' && s != 'closed';
-        }).toList();
+      final disposedList = allCasesList.where((c) {
+        final s = c.status.toLowerCase();
+        return s == 'disposed' || s == 'closed';
+      }).toList();
 
-        final disposedList = allCasesList.where((c) {
-          final s = c.status.toLowerCase();
-          return s == 'disposed' || s == 'closed';
-        }).toList();
+      final allCases = AllLawyerCasesResponse(
+        pendingCases: pendingList,
+        disposedCases: disposedList,
+      );
 
-        final allCases = AllLawyerCasesResponse(
-          pendingCases: pendingList,
-          disposedCases: disposedList,
-        );
-
-        state = LawyerCaseSuccessState(data: allCases);
-      } else {
-        final errorMsg = response != null ? response['errorMessage'] : "Server error";
-        state = LawyerCaseFailureState(error: errorMsg ?? "Failed to load lawyer cases");
-      }
+      state = LawyerCaseSuccessState(data: allCases);
     } catch (e, stack) {
       log('Get All Lawyer Cases → Error: $e\n$stack');
       state = LawyerCaseFailureState(error: 'Unable to load lawyer dashboard data');
     }
   }
 }
-

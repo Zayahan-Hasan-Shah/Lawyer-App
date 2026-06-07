@@ -1,3 +1,5 @@
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_entity.dart';
+
 abstract class LawyerRepository {
-  Future<Map<String, dynamic>> getLawyers(int pageNumber, int pageSize);
+  Future<PaginatedLawyersEntity> getLawyers(int pageNumber, int pageSize);
 }

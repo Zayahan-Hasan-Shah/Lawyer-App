@@ -3,14 +3,14 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
-import 'package:lawyer_app/features/lawyer/data/models/lawyer_model.dart';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_entity.dart';
 import 'package:lawyer_app/shared/widgets/custom_appbar.dart';
 import 'package:lawyer_app/shared/widgets/custom_button.dart';
 import 'package:lawyer_app/shared/widgets/custom_text.dart';
 import 'package:sizer/sizer.dart';
 
 class LawyerProfileScreen extends StatelessWidget {
-  final LawyerModel lawyer;
+  final LawyerEntity lawyer;
 
   const LawyerProfileScreen({super.key, required this.lawyer});
 

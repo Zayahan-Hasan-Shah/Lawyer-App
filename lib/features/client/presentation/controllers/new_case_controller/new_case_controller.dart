@@ -2,8 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/legacy.dart';
-import 'package:dio/dio.dart' as dio_pkg;
 import 'package:lawyer_app/di/injection_container.dart';
+import 'package:lawyer_app/features/client/domain/repositories/client_repository.dart';
 import 'package:lawyer_app/features/client/domain/usecases/client_usecases.dart';
 import 'package:lawyer_app/features/client/presentation/states/new_case_state/new_case_state.dart';
 import 'package:lawyer_app/services/notification_services/notification_service.dart';
@@ -67,36 +67,26 @@ class NewCaseController extends StateNotifier<NewCaseState> {
       log("AppointmentDate: ${appointmentDate.toIso8601String()}");
       log("======================================");
 
-      final formDataMap = {
-        'CaseType': caseType,
-        'SubmissionMethod': submissionMethod,
-        'Appointment_Type': appointmentTypeVal,
-        'AppointmentDate': appointmentDate.toIso8601String(),
-        'File': await dio_pkg.MultipartFile.fromFile(
-          uploadFile.path,
-          filename: uploadFile.path.split(Platform.pathSeparator).last,
-        ),
-      };
+      final params = CreateCaseParams(
+        caseType: caseType,
+        appointmentType: appointmentTypeVal,
+        appointmentDate: appointmentDate.toIso8601String(),
+        submissionMethod: submissionMethod,
+        filePath: uploadFile.path,
+      );
 
-      final formData = dio_pkg.FormData.fromMap(formDataMap);
+      await _createCaseUseCase.execute(params);
 
-      final response = await _createCaseUseCase.execute(formData);
+      state = NewCaseSuccess(
+        "Your application has been submitted successfully! Our team will contact you shortly.",
+      );
 
-      if (response != null && response['status'] == 'success') {
-        state = NewCaseSuccess(
-          "Your application has been submitted successfully! Our team will contact you shortly.",
-        );
-
-        try {
-          log('Attempting to show application submitted notification');
-          await NotificationService().showApplicationSubmittedNotification();
-          log('NotificationService.showApplicationSubmittedNotification() completed');
-        } catch (e, stack) {
-          log('NotificationService error: $e\n$stack');
-        }
-      } else {
-        final errorMsg = response != null ? response['errorMessage'] : "Server error";
-        state = NewCaseFailure(errorMsg ?? "Submission failed");
+      try {
+        log('Attempting to show application submitted notification');
+        await NotificationService().showApplicationSubmittedNotification();
+        log('NotificationService.showApplicationSubmittedNotification() completed');
+      } catch (e, stack) {
+        log('NotificationService error: $e\n$stack');
       }
     } catch (e, stack) {
       log("NewCaseController → Unexpected error: $e\n$stack");
@@ -104,4 +94,3 @@ class NewCaseController extends StateNotifier<NewCaseState> {
     }
   }
 }
-

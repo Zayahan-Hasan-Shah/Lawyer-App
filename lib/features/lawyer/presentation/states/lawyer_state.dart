@@ -1,5 +1,5 @@
-﻿// lawyer_state.dart
-import 'package:lawyer_app/features/lawyer/data/models/lawyer_model.dart';
+// lawyer_state.dart
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_entity.dart';
 
 sealed class LawyerState {
   const LawyerState();
@@ -10,7 +10,7 @@ class LawyerInitial extends LawyerState {}
 class LawyerLoading extends LawyerState {}
 
 class LawyerLoaded extends LawyerState {
-  final List<LawyerModel> lawyers;
+  final List<LawyerEntity> lawyers;
   final int currentPage;
   final int totalPages;
   final bool hasMore;
@@ -23,7 +23,7 @@ class LawyerLoaded extends LawyerState {
   });
 
   LawyerLoaded copyWith({
-    List<LawyerModel>? lawyers,
+    List<LawyerEntity>? lawyers,
     int? currentPage,
     int? totalPages,
     bool? hasMore,
@@ -41,4 +41,3 @@ class LawyerError extends LawyerState {
   final String message;
   const LawyerError(this.message);
 }
-

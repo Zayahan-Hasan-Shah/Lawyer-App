@@ -1,39 +1,25 @@
-import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
+import 'package:lawyer_app/features/client/domain/entities/case_entity.dart';
+import 'package:lawyer_app/features/lawyer/domain/entities/lawyer_case_entity.dart';
 
-class LawyerCaseModel {
-  final int id;
-  final String caseNo;
-  final String title;
-  final String court;
-  final String status;
-  final String client;
-  final String category;
-  final String appointmentType; // Walk-in or Video
-  final List<String> documents; // In-app documents list
-  final String? hearingDate; // pending only
-  final String? disposedDate; // disposed only
-  final String? outcomeSummary; // disposed only, lawyer POV
-  final List<CaseNote> notes;
-  final String? advocate;
-
+class LawyerCaseModel extends LawyerCaseEntity {
   LawyerCaseModel({
-    required this.id,
-    required this.caseNo,
-    required this.title,
-    required this.court,
-    required this.status,
-    required this.client,
-    required this.category,
-    required this.appointmentType,
-    required this.documents,
-    this.hearingDate,
-    this.disposedDate,
-    this.outcomeSummary,
-    this.notes = const [],
-    this.advocate,
+    required super.id,
+    required super.caseNo,
+    required super.title,
+    required super.court,
+    required super.status,
+    required super.client,
+    required super.category,
+    required super.appointmentType,
+    required super.documents,
+    super.hearingDate,
+    super.disposedDate,
+    super.outcomeSummary,
+    super.notes = const [],
+    super.advocate,
   });
 
-  factory LawyerCaseModel.fromJson(Map<String, dynamic> json, {List<CaseNote> notes = const []}) {
+  factory LawyerCaseModel.fromJson(Map<String, dynamic> json, {List<CaseNoteEntity> notes = const []}) {
     return LawyerCaseModel(
       id: json['id'] as int? ?? 0,
       caseNo: json['caseId'] as String? ?? json['caseNo'] as String? ?? json['caseNumber'] as String? ?? 'N/A',
@@ -53,14 +39,23 @@ class LawyerCaseModel {
       advocate: json['advocate'] as String?,
     );
   }
-}
 
-class AllLawyerCasesResponse {
-  final List<LawyerCaseModel> pendingCases;
-  final List<LawyerCaseModel> disposedCases;
-
-  AllLawyerCasesResponse({
-    required this.pendingCases,
-    required this.disposedCases,
-  });
+  factory LawyerCaseModel.fromEntity(CaseEntity entity) {
+    return LawyerCaseModel(
+      id: entity.id,
+      caseNo: entity.caseNo,
+      title: entity.title,
+      court: entity.court,
+      status: entity.status,
+      client: entity.client,
+      category: entity.category,
+      appointmentType: entity.appointmentType ?? 'Walk-In',
+      documents: entity.documents,
+      hearingDate: entity.hearingDate,
+      disposedDate: entity.disposedDate,
+      outcomeSummary: entity.outcome,
+      notes: entity.notes,
+      advocate: entity.advocate,
+    );
+  }
 }

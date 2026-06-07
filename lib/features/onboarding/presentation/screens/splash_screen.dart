@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/core/constants/app_assets.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
+import 'package:lawyer_app/core/constants/app_keys.dart';
 import 'package:lawyer_app/core/utils/app_launcher_manager.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 import 'package:lawyer_app/app/router/route_names.dart';
@@ -42,9 +43,9 @@ class _SplashScreenState extends State<SplashScreen>
         return;
       }
 
-      final String? token = await StorageService.instance.getAccessToken();
+      final String? token = await StorageService.instance.read(AppKeys.accessTokenKey);
       if (token != null && token.isNotEmpty) {
-        final String? userType = await StorageService.instance.getUserType();
+        final String? userType = await StorageService.instance.read(AppKeys.userTypeKey);
         log("Splash → Already logged in → userType: $userType");
 
         if (userType == "Lawyer") {

@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:lawyer_app/core/constants/app_keys.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 import 'package:lawyer_app/di/injection_container.dart';
+import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
 import 'package:lawyer_app/features/client/domain/usecases/client_usecases.dart';
 import 'package:lawyer_app/features/lawyer/data/models/case_model/lawyer_case_model.dart';
 import 'package:lawyer_app/features/lawyer/presentation/states/case_states/lawyer_case_states.dart';
@@ -17,7 +19,8 @@ class LawyerCaseController extends StateNotifier<LawyerCaseStates> {
   Future<void> getAllCases() async {
     state = LawyerCaseLoadingState();
     try {
-      final int? userId = await StorageService.instance.getUserId();
+      final dynamic rawUserId = await StorageService.instance.read(AppKeys.userIdKey);
+      final int? userId = rawUserId != null ? int.tryParse(rawUserId.toString()) : null;
       if (userId == null) {
         state = LawyerCaseFailureState(error: "User not logged in");
         return;
@@ -32,7 +35,11 @@ class LawyerCaseController extends StateNotifier<LawyerCaseStates> {
         final List<LawyerCaseModel> allCasesList = casesList.map((item) {
           final Map<String, dynamic> itemMap = item as Map<String, dynamic>;
           final Map<String, dynamic> map = (itemMap['caseInfo'] ?? itemMap) as Map<String, dynamic>;
-          return LawyerCaseModel.fromJson(map);
+          final List<dynamic> rawNotes = itemMap['notes'] as List<dynamic>? ?? [];
+          final notes = rawNotes
+              .map((n) => CaseNote.fromJson(n as Map<String, dynamic>))
+              .toList();
+          return LawyerCaseModel.fromJson(map, notes: notes);
         }).toList();
 
         final pendingList = allCasesList.where((c) {

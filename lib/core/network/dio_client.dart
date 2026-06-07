@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:lawyer_app/core/constants/api_url.dart';
+import 'package:lawyer_app/core/constants/app_keys.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 
 class DioClient {
@@ -20,7 +21,7 @@ class DioClient {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final token = await StorageService.instance.getAccessToken();
+          final token = await StorageService.instance.read(AppKeys.accessTokenKey);
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }

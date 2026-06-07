@@ -54,7 +54,9 @@ class PendingCasesTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.kSurface.withValues(alpha: 0.97),
             borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            border: Border.all(color: AppColors.kEmerald.withValues(alpha: 0.18)),
+            border: Border.all(
+              color: AppColors.kEmerald.withValues(alpha: 0.18),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.45),
@@ -98,15 +100,21 @@ class PendingCasesTab extends StatelessWidget {
                       color: AppColors.kTextSecondary,
                     ),
 
-                    if (c.lawyerName != null && c.lawyerName != 'Not Assigned') ...[
+                    if (c.lawyerName != null &&
+                        c.lawyerName != 'Not Assigned') ...[
                       SizedBox(height: 0.5.h),
                       Row(
                         children: [
-                          const Icon(Icons.gavel_rounded, color: AppColors.kGold, size: 18),
+                          const Icon(
+                            Icons.gavel_rounded,
+                            color: AppColors.kGold,
+                            size: 18,
+                          ),
                           SizedBox(width: 2.w),
                           Expanded(
                             child: CustomText(
-                              title: "Lawyer: ${c.lawyerName}${c.lawyerId != null ? ' (${c.lawyerId})' : ''}",
+                              title:
+                                  "Lawyer: ${c.lawyerName}${c.lawyerId != null ? ' (${c.lawyerId})' : ''}",
                               fontSize: 14.sp,
                               weight: FontWeight.w600,
                               color: AppColors.kGoldLight,
@@ -131,7 +139,9 @@ class PendingCasesTab extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: AppColors.kInputBg.withValues(alpha: 0.85),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: AppColors.kEmerald.withValues(alpha: 0.2)),
+                        border: Border.all(
+                          color: AppColors.kEmerald.withValues(alpha: 0.2),
+                        ),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16),
@@ -162,7 +172,8 @@ class PendingCasesTab extends StatelessWidget {
                             _tableRow(
                               "Category",
                               c.category,
-                              valueColor: c.category.toLowerCase().contains('criminal')
+                              valueColor:
+                                  c.category.toLowerCase().contains('criminal')
                                   ? Colors.redAccent
                                   : AppColors.kEmerald,
                             ),
@@ -170,6 +181,7 @@ class PendingCasesTab extends StatelessWidget {
                               _tableRow("Submission", c.submissionMethod!),
                             if (c.appointmentType != null)
                               _tableRow("Appt. Type", c.appointmentType!),
+                            _tableRow("Advocate", (c.advocate != null && c.advocate!.trim().isNotEmpty) ? c.advocate! : 'Not Assigned'),
                           ],
                         ),
                       ),
@@ -189,20 +201,25 @@ class PendingCasesTab extends StatelessWidget {
                     c.notes.isEmpty
                         ? Container(
                             padding: EdgeInsets.symmetric(
-                                vertical: 2.5.h, horizontal: 5.w),
+                              vertical: 2.5.h,
+                              horizontal: 5.w,
+                            ),
                             decoration: BoxDecoration(
                               color: AppColors.kInputBg.withValues(alpha: 0.6),
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                  color: AppColors.kEmerald
-                                      .withValues(alpha: 0.15)),
+                                color: AppColors.kEmerald.withValues(
+                                  alpha: 0.15,
+                                ),
+                              ),
                             ),
                             child: Row(
                               children: [
                                 Icon(
                                   Icons.notes_rounded,
-                                  color: AppColors.kEmerald
-                                      .withValues(alpha: 0.5),
+                                  color: AppColors.kEmerald.withValues(
+                                    alpha: 0.5,
+                                  ),
                                   size: 22,
                                 ),
                                 SizedBox(width: 3.w),
@@ -221,54 +238,47 @@ class PendingCasesTab extends StatelessWidget {
                               final idx = entry.key;
                               final note = entry.value;
                               return Container(
-                                margin:
-                                    EdgeInsets.only(bottom: idx < c.notes.length - 1 ? 1.5.h : 0),
-                                padding: EdgeInsets.all(4.w),
+                                margin: EdgeInsets.only(
+                                  bottom: idx < c.notes.length - 1 ? 1.5.h : 0,
+                                ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.kInputBg
-                                      .withValues(alpha: 0.7),
-                                  borderRadius: BorderRadius.circular(14),
+                                  color: AppColors.kInputBg.withValues(
+                                    alpha: 0.85,
+                                  ),
+                                  borderRadius: BorderRadius.circular(16),
                                   border: Border.all(
-                                    color: AppColors.kEmerald
-                                        .withValues(alpha: 0.2),
+                                    color: AppColors.kEmerald.withValues(
+                                      alpha: 0.2,
+                                    ),
                                   ),
                                 ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          Icons.sticky_note_2_rounded,
-                                          color: AppColors.kEmerald,
-                                          size: 18,
-                                        ),
-                                        SizedBox(width: 2.w),
-                                        Expanded(
-                                          child: CustomText(
-                                            title: note.createdBy ?? "Note",
-                                            fontSize: 13.sp,
-                                            weight: FontWeight.w600,
-                                            color: AppColors.kGold,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        if (note.createdOn != null)
-                                          CustomText(
-                                            title: _formatDate(note.createdOn),
-                                            fontSize: 11.sp,
-                                            color: AppColors.kTextSecondary,
-                                          ),
-                                      ],
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Table(
+                                    border: TableBorder.all(
+                                      color: AppColors.kEmerald.withValues(
+                                        alpha: 0.12,
+                                      ),
+                                      width: 1,
                                     ),
-                                    SizedBox(height: 1.h),
-                                    CustomText(
-                                      title: note.content,
-                                      fontSize: 14.sp,
-                                      color: AppColors.kTextPrimary,
-                                      maxLines: 10,
-                                    ),
-                                  ],
+                                    columnWidths: const {
+                                      0: IntrinsicColumnWidth(),
+                                      1: FlexColumnWidth(),
+                                    },
+                                    children: [
+                                      _tableRow(
+                                        "Note #${idx + 1}",
+                                        'Created By: ${note.createdBy ?? "System"}',
+                                        isHeader: true,
+                                      ),
+                                      if (note.createdOn != null)
+                                        _tableRow(
+                                          "Date",
+                                          _formatDate(note.createdOn),
+                                        ),
+                                      _tableRow("Note", note.notes),
+                                    ],
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -381,7 +391,8 @@ class PendingCasesTab extends StatelessWidget {
         // Short label for the hearing chip
         final hearingLabel = c.hearingDate != null
             ? DateFormat('dd MMM yyyy').format(
-                DateTime.tryParse(c.hearingDate!)?.toLocal() ?? DateTime.now())
+                DateTime.tryParse(c.hearingDate!)?.toLocal() ?? DateTime.now(),
+              )
             : 'TBD';
 
         return Padding(
@@ -430,7 +441,9 @@ class PendingCasesTab extends StatelessWidget {
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.kEmerald.withValues(alpha: 0.35),
+                                color: AppColors.kEmerald.withValues(
+                                  alpha: 0.35,
+                                ),
                                 blurRadius: 16,
                               ),
                             ],
@@ -479,7 +492,9 @@ class PendingCasesTab extends StatelessWidget {
                                   vertical: 0.7.h,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: AppColors.kEmerald.withValues(alpha: 0.12),
+                                  color: AppColors.kEmerald.withValues(
+                                    alpha: 0.12,
+                                  ),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Row(
@@ -515,13 +530,15 @@ class PendingCasesTab extends StatelessWidget {
                             vertical: 1.h,
                           ),
                           decoration: BoxDecoration(
-                            color: (c.category.toLowerCase().contains('criminal')
+                            color:
+                                (c.category.toLowerCase().contains('criminal')
                                         ? Colors.redAccent
                                         : AppColors.kEmerald)
                                     .withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: c.category.toLowerCase().contains('criminal')
+                              color:
+                                  c.category.toLowerCase().contains('criminal')
                                   ? Colors.redAccent
                                   : AppColors.kEmerald,
                             ),

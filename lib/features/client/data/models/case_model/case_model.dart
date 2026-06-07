@@ -1,17 +1,40 @@
 // models/case_model.dart
 
 class CaseNote {
-  final String content;
+  final int id;
+  final String caseId;
+  final DateTime date;
+  final String notes;
   final String? createdBy;
   final String? createdOn;
+  final String? updatedBy;
+  final String? updatedOn;
 
-  CaseNote({required this.content, this.createdBy, this.createdOn});
+  CaseNote({
+    required this.id,
+    required this.caseId,
+    required this.date,
+    required this.notes,
+    this.createdBy,
+    this.createdOn,
+    this.updatedBy,
+    this.updatedOn,
+  });
 
   factory CaseNote.fromJson(Map<String, dynamic> json) {
     return CaseNote(
-      content: json['content'] as String? ?? json['note'] as String? ?? '',
+      id: json['id'] as int? ?? 0,
+      caseId: json['caseId']?.toString() ?? '',
+      date: DateTime.tryParse(json['date'] as String? ?? '') ?? DateTime.now(),
+      notes:
+          json['notes'] as String? ??
+          json['content'] as String? ??
+          json['note'] as String? ??
+          '',
       createdBy: json['createdBy'] as String?,
       createdOn: json['createdOn'] as String?,
+      updatedBy: json['updatedBy'] as String?,
+      updatedOn: json['updatedOn'] as String?,
     );
   }
 }
@@ -32,6 +55,7 @@ class CaseModel {
   final String? lawyerName;
   final String? submissionMethod;
   final String? appointmentType;
+  final String? advocate;
   final List<CaseNote> notes;
 
   CaseModel({
@@ -51,26 +75,46 @@ class CaseModel {
     this.submissionMethod,
     this.appointmentType,
     this.notes = const [],
+    this.advocate,
   });
 
-  factory CaseModel.fromJson(Map<String, dynamic> json, {List<CaseNote> notes = const []}) {
+  factory CaseModel.fromJson(
+    Map<String, dynamic> json, {
+    List<CaseNote> notes = const [],
+  }) {
     return CaseModel(
       id: json['id'] as int? ?? 0,
-      caseNo: json['caseId'] as String? ?? json['caseNo'] as String? ?? json['caseNumber'] as String? ?? '',
-      title: json['title'] as String? ?? "${json['caseType'] ?? 'General'} Case",
+      caseNo:
+          json['caseId'] as String? ??
+          json['caseNo'] as String? ??
+          json['caseNumber'] as String? ??
+          '',
+      title:
+          json['title'] as String? ?? "${json['caseType'] ?? 'General'} Case",
       court: json['court'] as String? ?? 'TBD',
       status: json['status'] as String? ?? 'Pending',
-      hearingDate: json['hearingDate'] as String? ?? json['appointmentDate'] as String?,
+      hearingDate:
+          json['hearingDate'] as String? ?? json['appointmentDate'] as String?,
       nextHearing: json['nextHearing'] as String?,
       disposedDate: json['disposedDate'] as String?,
       outcome: json['outcome'] as String?,
-      client: json['client'] as String? ?? json['createdBy'] as String? ?? 'Client',
-      category: json['category'] as String? ?? json['caseType'] as String? ?? 'General',
+      client:
+          json['client'] as String? ?? json['createdBy'] as String? ?? 'Client',
+      category:
+          json['category'] as String? ??
+          json['caseType'] as String? ??
+          'General',
       lawyerId: json['lawyerId']?.toString(),
-      lawyerName: json['lawyerName'] as String? ?? json['advocate'] as String? ?? 'Not Assigned',
+      lawyerName:
+          json['lawyerName'] as String? ??
+          json['advocate'] as String? ??
+          'Not Assigned',
       submissionMethod: json['submissionMethod'] as String?,
-      appointmentType: json['appointment_Type'] as String? ?? json['appointmentType'] as String?,
+      appointmentType:
+          json['appointment_Type'] as String? ??
+          json['appointmentType'] as String?,
       notes: notes,
+      advocate: json['advocate'] as String?,
     );
   }
 }
@@ -81,4 +125,3 @@ class AllCasesResponse {
 
   AllCasesResponse({required this.pendingCases, required this.disposedCases});
 }
-

@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:lawyer_app/core/constants/app_keys.dart';
 import 'package:lawyer_app/core/network/api_exceptions.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 import 'package:lawyer_app/di/injection_container.dart';
@@ -29,10 +30,10 @@ class LawyerLoginController extends StateNotifier<LawyerLoginState> {
           "message": "Login Successful",
         };
 
-        await StorageService.instance.saveAccessToken("abc1234");
-        await StorageService.instance.saveUserId(24);
-        await StorageService.instance.saveUserType("Lawyer");
-        await StorageService.instance.saveFullName("Zayahan Hasan Shah");
+        await StorageService.instance.write(AppKeys.accessTokenKey, "abc1234");
+        await StorageService.instance.write(AppKeys.userIdKey, "24");
+        await StorageService.instance.write(AppKeys.userTypeKey, "Lawyer");
+        await StorageService.instance.write(AppKeys.fullNameKey, "Zayahan Hasan Shah");
 
         state = LawyerLoginSuccess(
           fullName: mockResponse["fullName"]!,
@@ -57,12 +58,12 @@ class LawyerLoginController extends StateNotifier<LawyerLoginState> {
         final String expiresUtc = data['expiresUtc'] as String;
         final String expiresLocal = data['expiresLocal'] as String;
 
-        await StorageService.instance.saveAccessToken(token);
-        await StorageService.instance.saveUserId(userId);
-        await StorageService.instance.saveUserType(userType);
-        await StorageService.instance.saveFullName(fullName);
-        await StorageService.instance.saveExpiresUtc(expiresUtc);
-        await StorageService.instance.saveExpiresLocal(expiresLocal);
+        await StorageService.instance.write(AppKeys.accessTokenKey, token);
+        await StorageService.instance.write(AppKeys.userIdKey, userId.toString());
+        await StorageService.instance.write(AppKeys.userTypeKey, userType ?? '');
+        await StorageService.instance.write(AppKeys.fullNameKey, fullName);
+        await StorageService.instance.write(AppKeys.expiresUtcKey, expiresUtc);
+        await StorageService.instance.write(AppKeys.expiresLocalKey, expiresLocal);
 
         state = LawyerLoginSuccess(
           fullName: fullName,

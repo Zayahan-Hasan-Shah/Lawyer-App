@@ -1,3 +1,5 @@
+import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
+
 class LawyerCaseModel {
   final int id;
   final String caseNo;
@@ -11,6 +13,8 @@ class LawyerCaseModel {
   final String? hearingDate; // pending only
   final String? disposedDate; // disposed only
   final String? outcomeSummary; // disposed only, lawyer POV
+  final List<CaseNote> notes;
+  final String? advocate;
 
   LawyerCaseModel({
     required this.id,
@@ -25,9 +29,11 @@ class LawyerCaseModel {
     this.hearingDate,
     this.disposedDate,
     this.outcomeSummary,
+    this.notes = const [],
+    this.advocate,
   });
 
-  factory LawyerCaseModel.fromJson(Map<String, dynamic> json) {
+  factory LawyerCaseModel.fromJson(Map<String, dynamic> json, {List<CaseNote> notes = const []}) {
     return LawyerCaseModel(
       id: json['id'] as int? ?? 0,
       caseNo: json['caseId'] as String? ?? json['caseNo'] as String? ?? json['caseNumber'] as String? ?? 'N/A',
@@ -43,6 +49,8 @@ class LawyerCaseModel {
       hearingDate: json['hearingDate'] as String? ?? json['appointmentDate'] as String?,
       disposedDate: json['disposedDate'] as String?,
       outcomeSummary: json['outcomeSummary'] as String? ?? json['outcome'] as String?,
+      notes: notes,
+      advocate: json['advocate'] as String?,
     );
   }
 }

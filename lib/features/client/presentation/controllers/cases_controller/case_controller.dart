@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:lawyer_app/core/constants/app_keys.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 import 'package:lawyer_app/di/injection_container.dart';
 import 'package:lawyer_app/features/client/data/models/case_model/case_model.dart';
@@ -17,7 +18,8 @@ class CaseController extends StateNotifier<CaseStates> {
   Future<void> getAllCases() async {
     state = CaseLoadingState();
     try {
-      final int? userId = await StorageService.instance.getUserId();
+      final dynamic rawUserId = await StorageService.instance.read(AppKeys.userIdKey);
+      final int? userId = rawUserId != null ? int.tryParse(rawUserId.toString()) : null;
       if (userId == null) {
         state = CaseFailureState(error: "User not logged in");
         return;

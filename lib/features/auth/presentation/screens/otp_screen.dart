@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/core/constants/app_assets.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
+import 'package:lawyer_app/core/constants/app_keys.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 import 'package:lawyer_app/features/auth/presentation/providers/forgot_password_provider.dart';
 import 'package:lawyer_app/features/auth/presentation/providers/otp_provider.dart';
@@ -173,7 +174,7 @@ class _OtpScreenState extends ConsumerState<OtpScreen> {
               style: TextStyle(color: AppColors.iconColor),
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {
-                  final email = await StorageService.instance.getForgotEmail();
+                  final email = await StorageService.instance.read(AppKeys.forgotEmailKey);
                   log("Resend OTP tapped.");
                   ref
                       .read(forgotPasswordProvider.notifier)

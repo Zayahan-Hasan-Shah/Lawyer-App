@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:lawyer_app/core/constants/app_keys.dart';
 import 'package:lawyer_app/core/network/api_exceptions.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 import 'package:lawyer_app/di/injection_container.dart';
@@ -30,12 +31,12 @@ class LoginController extends StateNotifier<LoginState> {
         final String expiresUtc = data['expiresUtc'] as String;
         final String expiresLocal = data['expiresLocal'] as String;
 
-        await StorageService.instance.saveAccessToken(token);
-        await StorageService.instance.saveUserId(userId);
-        await StorageService.instance.saveUserType(userType);
-        await StorageService.instance.saveFullName(fullName);
-        await StorageService.instance.saveExpiresUtc(expiresUtc);
-        await StorageService.instance.saveExpiresLocal(expiresLocal);
+        await StorageService.instance.write(AppKeys.accessTokenKey, token);
+        await StorageService.instance.write(AppKeys.userIdKey, userId.toString());
+        await StorageService.instance.write(AppKeys.userTypeKey, userType ?? '');
+        await StorageService.instance.write(AppKeys.fullNameKey, fullName);
+        await StorageService.instance.write(AppKeys.expiresUtcKey, expiresUtc);
+        await StorageService.instance.write(AppKeys.expiresLocalKey, expiresLocal);
 
         state = LoginSuccess(
           fullName: fullName,

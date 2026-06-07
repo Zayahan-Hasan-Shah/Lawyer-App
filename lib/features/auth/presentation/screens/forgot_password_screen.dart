@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lawyer_app/core/constants/app_assets.dart';
 import 'package:lawyer_app/core/constants/app_colors.dart';
+import 'package:lawyer_app/core/constants/app_keys.dart';
 import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 import 'package:lawyer_app/core/validation/app_validation.dart';
 import 'package:lawyer_app/features/auth/presentation/providers/forgot_password_provider.dart';
@@ -44,13 +45,15 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
             .forgotPassword(email: email);
         if (response.isEmpty) {
           log("ForgotPasswordScreen â†’ ForgotPassword response: $response");
-          await _storageService.saveForgotEmail(email);
+          await _storageService.write(AppKeys.forgotEmailKey, email);
           log("Saving forgot email: $email");
           context.pushNamed(RouteNames.otpScreen);
         }
         log("ForgotPasswordScreen â†’ ForgotPassword failed, response is null");
       } catch (e, st) {
-        log("ForgotPasswordScreen â†’ Exception during ForgotPassword: $e\n$st");
+        log(
+          "ForgotPasswordScreen â†’ Exception during ForgotPassword: $e\n$st",
+        );
       }
     }
   }
@@ -156,4 +159,3 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
     );
   }
 }
-

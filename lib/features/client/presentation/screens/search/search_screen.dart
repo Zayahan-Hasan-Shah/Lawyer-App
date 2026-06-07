@@ -9,8 +9,9 @@ import 'package:lawyer_app/app/router/route_names.dart';
 import 'package:lawyer_app/features/lawyer/presentation/states/lawyer_state.dart';
 import 'package:lawyer_app/shared/widgets/custom_appbar.dart';
 import 'package:lawyer_app/shared/widgets/custom_text.dart';
-import 'package:lawyer_app/features/client/presentation/widgets/search_widget.dart';
+import 'package:lawyer_app/shared/widgets/custom_search_filter_bar.dart';
 import 'package:lawyer_app/features/client/presentation/widgets/lawyer_card.dart';
+import 'package:lawyer_app/shared/widgets/failed_widget.dart';
 import 'package:sizer/sizer.dart';
 
 class SearchScreen extends ConsumerStatefulWidget {
@@ -66,35 +67,12 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             children: [
               SizedBox(height: 2.h),
 
-              // Glassmorphic search bar
-              Padding(
+              CustomSearchFilterBar(
+                hintText: 'Search lawyers by name or expertise...',
+                initialSearchQuery: ref.read(searchQueryProvider),
+                onSearchChanged: (v) =>
+                    ref.read(searchQueryProvider.notifier).state = v,
                 padding: EdgeInsets.symmetric(horizontal: 6.w),
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.kSurface.withOpacity(0.88),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: AppColors.kEmerald.withOpacity(0.18),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.25),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: SearchWidget(
-                      hintText: 'Search lawyers by name or expertise...',
-                      useSearchProvider: true,
-                      prefixIcon: Icons.search_rounded,
-                      textColor: AppColors.kTextPrimary,
-                      hintTextColor: AppColors.kTextSecondary,
-                    ),
-                  ),
-                ),
               ),
 
               SizedBox(height: 3.h),
@@ -137,31 +115,11 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
 
     if (state is LawyerError) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline_rounded,
-              size: 80,
-              color: Colors.redAccent,
-            ),
-            SizedBox(height: 3.h),
-            CustomText(
-              title: "Failed to load lawyers",
-              fontSize: 20.sp,
-              weight: FontWeight.w600,
-              color: AppColors.kTextPrimary,
-            ),
-            SizedBox(height: 1.2.h),
-            CustomText(
-              title: state.message,
-              fontSize: 15.sp,
-              color: Colors.redAccent,
-              alignText: TextAlign.center,
-            ),
-          ],
-        ),
+      return FailedWidget(
+        text: state.message,
+        icon: Icons.error_outline,
+        title: "Failed to load lawyers",
+        onRetry: () => ref.read(lawyerProvider.notifier).refresh(),
       );
     }
 
@@ -241,4 +199,3 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     );
   }
 }
-

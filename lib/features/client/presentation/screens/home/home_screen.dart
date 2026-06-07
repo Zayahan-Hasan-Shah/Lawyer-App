@@ -7,14 +7,17 @@ import 'package:lawyer_app/core/constants/app_colors.dart';
 import 'package:lawyer_app/features/client/domain/entities/case_entity.dart';
 import 'package:lawyer_app/features/client/presentation/providers/client_cases_provider/client_case_provider.dart';
 import 'package:lawyer_app/shared/widgets/custom_appbar.dart';
-import 'package:lawyer_app/shared/widgets/custom_button.dart';
 import 'package:lawyer_app/shared/widgets/custom_text.dart';
 import 'package:lawyer_app/features/client/presentation/widgets/tabs/cases_tab_button.dart';
 import 'package:lawyer_app/features/client/presentation/widgets/tabs/dispose_case_tab.dart';
 import 'package:lawyer_app/features/client/presentation/widgets/tabs/donation_tab.dart';
 import 'package:lawyer_app/features/client/presentation/widgets/tabs/new_case_tab.dart';
 import 'package:lawyer_app/features/client/presentation/widgets/tabs/pending_case.dart';
+import 'package:lawyer_app/core/utils/date_picker_helper.dart';
+import 'package:lawyer_app/shared/widgets/failed_widget.dart';
+import 'package:lawyer_app/shared/widgets/custom_search_filter_bar.dart';
 import 'package:sizer/sizer.dart';
+import '../../../../../shared/widgets/loading_indicator.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -102,8 +105,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             // Search and Filter Row
             if (selectedTab == 0) _buildFilterSection(),
 
-            // SizedBox(height: 0.25.h),
-
             Expanded(
               child: RefreshIndicator(
                 color: AppColors.kEmerald,
@@ -113,47 +114,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 },
                 child: caseState.when(
                   initial: () => const Center(child: SizedBox()),
-                  loading: () => const Center(
-                    child: CircularProgressIndicator(
-                      color: AppColors.kEmerald,
-                      strokeWidth: 4,
-                    ),
+                  loading: () => LoadingIndicator(
+                    color: AppColors.kEmerald,
+                    text: "Loading cases...",
+                    textColor: AppColors.kTextSecondary,
                   ),
-                  failure: (error) => Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.error_outline,
-                          size: 10.h,
-                          color: Colors.redAccent,
-                        ),
-                        SizedBox(height: 2.h),
-                        CustomText(
-                          title: "Failed to load cases",
-                          fontSize: 20.sp,
-                          color: AppColors.whiteColor,
-                        ),
-                        SizedBox(height: 1.h),
-                        CustomText(
-                          title: error,
-                          color: Colors.redAccent,
-                          fontSize: 14.sp,
-                          alignText: TextAlign.center,
-                        ),
-                        SizedBox(height: 4.h),
-                        CustomButton(
-                          text: "Retry",
-                          width: 45.w,
-                          onPressed: () => ref
-                              .read(caseControllerProvider.notifier)
-                              .getAllCases(),
-                          fontSize: 18.sp,
-                          textColor: Colors.white,
-                          backgroundColor: AppColors.kEmerald,
-                        ),
-                      ],
-                    ),
+                  failure: (error) => FailedWidget(
+                    text: error,
+                    icon: Icons.error_outline,
+                    title: "Failed to load cases",
                   ),
                   success: (data) {
                     // Filter logic for pending cases
@@ -240,118 +209,23 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Widget _buildFilterSection() {
-    return Padding(
+    final Map<String, VoidCallback> activeFilters = {};
+    if (categoryFilter != null) {
+      activeFilters[categoryFilter!] = () =>
+          setState(() => categoryFilter = null);
+    }
+    if (dateRange != null) {
+      activeFilters["Date Range"] = () => setState(() => dateRange = null);
+    }
+
+    return CustomSearchFilterBar(
+      hintText: "Search case ID or title...",
+      initialSearchQuery: searchQuery,
+      onSearchChanged: (v) => setState(() => searchQuery = v),
+      onFilterTap: () => _showFilterOptions(),
+      onDateTap: () => _showDatePicker(),
+      activeFilters: activeFilters,
       padding: EdgeInsets.symmetric(horizontal: 5.w),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Container(
-                  height: 6.h,
-                  decoration: BoxDecoration(
-                    color: AppColors.kSurface,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.kGold.withOpacity(0.2)),
-                  ),
-                  child: TextField(
-                    onChanged: (v) => setState(() => searchQuery = v),
-                    onSubmitted: (v) => FocusScope.of(context).unfocus(),
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: "Search case ID or title...",
-                      hintStyle: TextStyle(
-                        color: Colors.white54,
-                        fontSize: 13.sp,
-                      ),
-                      prefixIcon: const Icon(
-                        Icons.search_rounded,
-                        color: AppColors.kGold,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 3.w),
-              _buildFilterIcon(
-                Icons.filter_list_rounded,
-                () => _showFilterOptions(),
-              ),
-              SizedBox(width: 3.w),
-              _buildFilterIcon(
-                Icons.date_range_rounded,
-                () => _showDatePicker(),
-              ),
-            ],
-          ),
-          if (categoryFilter != null || dateRange != null)
-            Padding(
-              padding: EdgeInsets.only(top: 1.h),
-              child: Row(
-                children: [
-                  if (categoryFilter != null)
-                    _buildActiveFilterChip(
-                      categoryFilter!,
-                      () => setState(() => categoryFilter = null),
-                    ),
-                  if (dateRange != null)
-                    _buildActiveFilterChip(
-                      "Date Range",
-                      () => setState(() => dateRange = null),
-                    ),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFilterIcon(IconData icon, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 6.h,
-        width: 6.h,
-        decoration: BoxDecoration(
-          color: AppColors.kSurface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: AppColors.kGold.withOpacity(0.2)),
-        ),
-        child: Icon(icon, color: AppColors.kGold),
-      ),
-    );
-  }
-
-  Widget _buildActiveFilterChip(String label, VoidCallback onDelete) {
-    return Container(
-      margin: EdgeInsets.only(right: 2.w),
-      padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 0.5.h),
-      decoration: BoxDecoration(
-        color: AppColors.kGold.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.kGold.withOpacity(0.3)),
-      ),
-      child: Row(
-        children: [
-          CustomText(
-            title: label,
-            fontSize: 11.sp,
-            color: AppColors.kGold,
-            weight: FontWeight.w600,
-          ),
-          SizedBox(width: 1.w),
-          GestureDetector(
-            onTap: onDelete,
-            child: const Icon(
-              Icons.close_rounded,
-              size: 14,
-              color: AppColors.kGold,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -398,20 +272,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   void _showDatePicker() async {
-    final picked = await showDateRangePicker(
-      context: context,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2030),
-      builder: (context, child) => Theme(
-        data: Theme.of(context).copyWith(
-          colorScheme: const ColorScheme.dark(
-            primary: AppColors.kGold,
-            onPrimary: Colors.black,
-            surface: AppColors.kSurface,
-          ),
-        ),
-        child: child!,
-      ),
+    final picked = await DatePickerHelper.showGenericDateRangePicker(
+      context,
+      initialDateRange: dateRange,
     );
     if (picked != null) {
       setState(() => dateRange = picked);

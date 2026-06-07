@@ -90,8 +90,12 @@ class _ResearchScreenState extends ConsumerState<ResearchScreen> {
                 ),
                 failure: (error) => Center(
                   child: FailedWidget(
+                    title: "Failed to load research topics",
                     text: error,
                     icon: Icons.error_outline_rounded,
+                    onRetry: () => ref
+                        .read(researchControllerProvider.notifier)
+                        .getAllResearch(),
                   ),
                 ),
                 success: (data) => SingleChildScrollView(

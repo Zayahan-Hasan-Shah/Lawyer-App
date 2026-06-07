@@ -82,8 +82,12 @@ class _CertificationScreenState extends ConsumerState<CertificationScreen> {
                 loading: () => LoadingIndicator(),
                 failure: (error) => Center(
                   child: FailedWidget(
+                    title: "Failed to load certifications",
                     text: error,
                     icon: Icons.error_outline_rounded,
+                    onRetry: () => ref
+                        .read(certificationControllerProvider.notifier)
+                        .getAllCertifications(),
                   ),
                 ),
                 success: (data) => ListView.builder(

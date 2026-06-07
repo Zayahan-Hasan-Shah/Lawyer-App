@@ -148,8 +148,10 @@ class _TasksScreenState extends ConsumerState<TasksScreen> with SingleTickerProv
                 ),
                 failure: (error) => Center(
                   child: FailedWidget(
+                    title: "Failed to load active tasks",
                     text: error,
                     icon: Icons.error_outline_rounded,
+                    onRetry: () => ref.read(taskControllerProvider.notifier).getAllTasks(),
                   ),
                 ),
                 success: (data) => TabBarView(

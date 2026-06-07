@@ -302,7 +302,14 @@ class _StudentDashboardScreenState
           ),
         ),
         failure: (error) => Center(
-          child: FailedWidget(text: error, icon: Icons.error_outline_rounded),
+          child: FailedWidget(
+            title: "Failed to load certifications",
+            text: error,
+            icon: Icons.error_outline_rounded,
+            onRetry: () => ref
+                .read(certificationControllerProvider.notifier)
+                .getAllCertifications(),
+          ),
         ),
         success: (data) {
           final completedCertifications = data.completedCertifications;
@@ -390,7 +397,12 @@ class _StudentDashboardScreenState
           ),
         ),
         failure: (error) => Center(
-          child: FailedWidget(text: error, icon: Icons.error_outline_rounded),
+          child: FailedWidget(
+            title: "Failed to load active tasks",
+            text: error,
+            icon: Icons.error_outline_rounded,
+            onRetry: () => ref.read(taskControllerProvider.notifier).getAllTasks(),
+          ),
         ),
         success: (data) {
           final activeTasks = data.activeTasks.take(3).toList();
@@ -505,7 +517,14 @@ class _StudentDashboardScreenState
           ),
         ),
         failure: (error) => Center(
-          child: FailedWidget(text: error, icon: Icons.error_outline_rounded),
+          child: FailedWidget(
+            title: "Failed to load research topics",
+            text: error,
+            icon: Icons.error_outline_rounded,
+            onRetry: () => ref
+                .read(researchControllerProvider.notifier)
+                .getAllResearch(),
+          ),
         ),
         success: (data) {
           if (data.currentResearch.isEmpty) {

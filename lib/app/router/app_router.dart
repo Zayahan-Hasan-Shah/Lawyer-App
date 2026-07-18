@@ -11,7 +11,6 @@ import 'package:lawyer_app/features/auth/presentation/screens/otp_screen.dart';
 import 'package:lawyer_app/features/auth/presentation/screens/reset_password_screen.dart';
 import 'package:lawyer_app/features/auth/presentation/screens/signup_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/bottom_navigation_screen.dart';
-import 'package:lawyer_app/features/client/presentation/screens/video/video_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/home/court_info_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/support/support_form_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/home/home_screen.dart';
@@ -140,7 +139,14 @@ class AppRouter {
       ),
       GoRoute(
         path: '/video-call',
-        builder: (context, state) => const VideoCallScreen(),
+        builder: (context, state) {
+          final extra = state.extra as Map<String, dynamic>?;
+          return VideoCallScreen(
+            channelName: extra?['channelName'] as String?,
+            tempToken: extra?['tempToken'] as String?,
+            callerName: extra?['callerName'] as String?,
+          );
+        },
       ),
       GoRoute(
         path: RouteNames.searchScreen,

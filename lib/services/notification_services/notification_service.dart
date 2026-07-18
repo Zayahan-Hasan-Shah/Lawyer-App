@@ -2,7 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/data/latest_all.dart' as tz_init;
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -14,7 +15,7 @@ class NotificationService {
 
   Future<void> init() async {
     // Initialize timezone data (required for scheduled notifications)
-    tz.initializeTimeZones();
+    tz_init.initializeTimeZones();
 
     const AndroidInitializationSettings androidSettings =
         AndroidInitializationSettings(
@@ -98,5 +99,57 @@ class NotificationService {
       platformDetails,
       payload: 'new_case_submitted', // Optional payload
     );
+  }
+
+  Future<void> scheduleAppointmentReminders({
+    required int appointmentId,
+    required String title,
+    required String body,
+    required DateTime appointmentTime,
+  }) async {
+    final now = DateTime.now();
+
+    final scheduleTimes = [
+      appointmentTime.subtract(const Duration(minutes: 30)),
+      appointmentTime.subtract(const Duration(minutes: 10)),
+      appointmentTime,
+    ];
+
+    for (int i = 0; i < scheduleTimes.length; i++) {
+      final scheduleTime = scheduleTimes[i];
+      if (scheduleTime.isAfter(now)) {
+        final reminderMinutes = i == 0 ? 30 : (i == 1 ? 10 : 0);
+        final reminderText = reminderMinutes > 0
+            ? "Reminder: Your appointment starts in $reminderMinutes minutes!"
+            : "Your appointment is starting now! Tap to join.";
+
+        final tz.TZDateTime tzScheduleTime = tz.TZDateTime.from(scheduleTime, tz.local);
+
+        await _notificationsPlugin.zonedSchedule(
+          appointmentId * 10 + i, // Unique notification ID
+          title,
+          reminderText,
+          tzScheduleTime,
+          const NotificationDetails(
+            android: AndroidNotificationDetails(
+              'appointment_reminders_channel',
+              'Appointment Reminders',
+              channelDescription: 'Scheduled reminders for upcoming video calls',
+              importance: Importance.high,
+              priority: Priority.high,
+              playSound: true,
+              enableVibration: true,
+            ),
+            iOS: DarwinNotificationDetails(
+              presentAlert: true,
+              presentBadge: true,
+              presentSound: true,
+            ),
+          ),
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          payload: 'appointment_call_$appointmentId',
+        );
+      }
+    }
   }
 }

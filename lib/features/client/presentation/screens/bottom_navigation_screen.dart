@@ -4,7 +4,7 @@ import 'package:lawyer_app/features/client/presentation/providers/bottom_navigat
 import 'package:lawyer_app/features/chat/presentation/screens/chat_list_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/home/home_screen.dart';
 import 'package:lawyer_app/features/client/presentation/screens/search/search_screen.dart';
-import 'package:lawyer_app/features/client/presentation/screens/video/video_screen.dart';
+import 'package:lawyer_app/features/chat/presentation/screens/video_list_screen.dart';
 import 'package:lawyer_app/shared/widgets/custom_bottom_navbar.dart';
 import 'package:lawyer_app/features/client/presentation/screens/notifications/notification_screen.dart';
 import 'package:lawyer_app/shared/widgets/custom_client_drawer.dart';
@@ -24,7 +24,7 @@ class _BottomNavigationScreenState
   final List<Widget> _screens = [
     HomeScreen(),
     ChatListScreen(),
-    VideoScreen(),
+    VideoListScreen(),
     SearchScreen(),
     NotificationScreen(),
   ];

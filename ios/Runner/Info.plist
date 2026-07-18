@@ -49,5 +49,10 @@
 	<string>We need camera access to show your video stream during calls.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We need microphone access to transmit your audio during calls.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>voip</string>
+		<string>remote-notification</string>
+	</array>
 </dict>
 </plist>

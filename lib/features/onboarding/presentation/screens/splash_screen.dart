@@ -32,6 +32,21 @@ class _SplashScreenState extends State<SplashScreen>
     _decideNextRoute();
   }
 
+  Future<bool> _isTokenExpired() async {
+    try {
+      final String? expiresUtc = await StorageService.instance.read(AppKeys.expiresUtcKey);
+      if (expiresUtc == null || expiresUtc.isEmpty) return false;
+      
+      final DateTime? expiryDate = DateTime.tryParse(expiresUtc);
+      if (expiryDate == null) return false;
+      
+      return DateTime.now().toUtc().isAfter(expiryDate);
+    } catch (e) {
+      log("Error checking token expiry: $e");
+      return true;
+    }
+  }
+
   Future<void> _decideNextRoute() async {
     await Future.delayed(const Duration(seconds: 3));
     if (!mounted) return;
@@ -44,7 +59,13 @@ class _SplashScreenState extends State<SplashScreen>
       }
 
       final String? token = await StorageService.instance.read(AppKeys.accessTokenKey);
+      
+      bool expired = false;
       if (token != null && token.isNotEmpty) {
+        expired = await _isTokenExpired();
+      }
+
+      if (token != null && token.isNotEmpty && !expired) {
         final String? userType = await StorageService.instance.read(AppKeys.userTypeKey);
         log("Splash → Already logged in → userType: $userType");
 
@@ -57,7 +78,8 @@ class _SplashScreenState extends State<SplashScreen>
           context.go(RouteNames.bottomNavigationScreen);
         }
       } else {
-        log("Splash → No token → Role overview");
+        log("Splash → No token or expired → Role overview");
+        await StorageService.instance.clear();
         context.go(RouteNames.onboardingScreen);
       }
     } catch (e) {

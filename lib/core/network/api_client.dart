@@ -1,7 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:lawyer_app/app/router/app_router.dart';
+import 'package:lawyer_app/app/router/route_names.dart';
 import 'package:lawyer_app/core/network/api_exceptions.dart';
 import 'package:lawyer_app/core/network/dio_client.dart';
+import 'package:lawyer_app/core/utils/storage/storage_service.dart';
 
 class ApiClient {
   final DioClient _dioClient;
@@ -109,6 +113,7 @@ class ApiClient {
             'Unknown error';
             
         if (statusCode == 401) {
+          _performAutoLogout();
           return UnauthorizedException(message);
         } else if (statusCode == 400) {
           return BadRequestException(message);
@@ -122,5 +127,17 @@ class ApiClient {
       default:
         return ApiException('Something went wrong: ${e.message}');
     }
+  }
+
+  void _performAutoLogout() {
+    Future.microtask(() async {
+      try {
+        log("401 Unauthorized detected. Performing automatic logout...");
+        await StorageService.instance.clear();
+        AppRouter.router.go(RouteNames.incomingUserScreen);
+      } catch (e) {
+        log("Auto-logout error: $e");
+      }
+    });
   }
 }

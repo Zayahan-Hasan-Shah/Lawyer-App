@@ -1,4 +1,4 @@
-﻿import 'dart:developer';
+import 'dart:developer';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +59,9 @@ class _StudentLoginScreenState extends ConsumerState<StudentLoginScreen> {
         // Navigate to Student Bottom Navigation screen after successful login
         context.go(RouteNames.studentBottomNavigationScreen);
       } else {
-        _showErrorSnackBar("Invalid credentials");
+        final loginState = ref.read(studentLoginProvider);
+        final message = loginState is StudentLoginFailure ? loginState.error : "Invalid credentials";
+        _showErrorSnackBar(message);
       }
     } catch (e) {
       log("Login error: $e");

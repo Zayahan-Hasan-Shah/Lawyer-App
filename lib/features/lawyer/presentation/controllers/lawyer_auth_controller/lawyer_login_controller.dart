@@ -58,9 +58,14 @@ class LawyerLoginController extends StateNotifier<LawyerLoginState> {
         final String expiresUtc = data['expiresUtc'] as String;
         final String expiresLocal = data['expiresLocal'] as String;
 
+        if (userType == null || userType.toLowerCase() != 'lawyer') {
+          state = const LawyerLoginFailure("Account type does not match this login portal");
+          return null;
+        }
+
         await StorageService.instance.write(AppKeys.accessTokenKey, token);
         await StorageService.instance.write(AppKeys.userIdKey, userId.toString());
-        await StorageService.instance.write(AppKeys.userTypeKey, userType ?? '');
+        await StorageService.instance.write(AppKeys.userTypeKey, userType);
         await StorageService.instance.write(AppKeys.fullNameKey, fullName);
         await StorageService.instance.write(AppKeys.expiresUtcKey, expiresUtc);
         await StorageService.instance.write(AppKeys.expiresLocalKey, expiresLocal);

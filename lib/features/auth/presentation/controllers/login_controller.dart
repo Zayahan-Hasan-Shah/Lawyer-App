@@ -31,9 +31,14 @@ class LoginController extends StateNotifier<LoginState> {
         final String expiresUtc = data['expiresUtc'] as String;
         final String expiresLocal = data['expiresLocal'] as String;
 
+        // if (userType == null || userType.toLowerCase() != 'client') {
+        //   state = LoginFailure("Account type does not match this login portal");
+        //   return null;
+        // }
+
         await StorageService.instance.write(AppKeys.accessTokenKey, token);
         await StorageService.instance.write(AppKeys.userIdKey, userId.toString());
-        await StorageService.instance.write(AppKeys.userTypeKey, userType ?? '');
+        // await StorageService.instance.write(AppKeys.userTypeKey, userType);
         await StorageService.instance.write(AppKeys.fullNameKey, fullName);
         await StorageService.instance.write(AppKeys.expiresUtcKey, expiresUtc);
         await StorageService.instance.write(AppKeys.expiresLocalKey, expiresLocal);
